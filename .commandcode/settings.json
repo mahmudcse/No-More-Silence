@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Shell(git log --oneline -20 2>/dev/null; echo \"---STATUS---\"; git status --short 2>/dev/null | head -60)",
+      "Shell(php -v 2 >& 1)",
+      "Shell(composer:*)",
+      "Shell(docker:*)",
+      "Shell(ls -la vendor 2>/dev/null | head -5; echo \"---SAIL---\"; ls vendor/bin/sail 2>/dev/null; echo \"---VENDOR COUNT---\"; ls vendor 2>/dev/null | wc -l; echo \"---DOCKER PS---\"; docker ps --format '{{.Names}} {{.Status}}' 2>/dev/null | head -20)",
+      "Shell(php -m 2 > /dev/null)",
+      "Shell(grep:*)",
+      "Shell(apt-cache:*)",
+      "Shell(sudo -n true 2 >& 1)",
+      "Shell(ls vendor/bin/ 2>/dev/null; echo \"---PEST VERSION---\"; php vendor/bin/pest --version 2>&1 | head -5; echo \"---PEST INIT?---\"; ls tests/Pest.php 2>/dev/null || echo \"no Pest.php\")",
+      "Shell(php -i 2 > /dev/null)",
+      "Shell(find:*)",
+      "Shell(for:*)",
+      "Shell(do:*)",
+      "Shell(echo:*)",
+      "Shell(>:*)",
+      "Shell(done:*)",
+      "Shell(cp:*)",
+      "Shell(./vendor/bin/sail:*)",
+      "Shell(ss:*)",
+      "Shell(printf '\\nFORWARD_MAILPIT_PORT=1026\\nFORWARD_MAILPIT_DASHBOARD_PORT=8026\\n' >> .env; ./vendor/bin/sail up -d 2>&1 | tail -20)",
+      "Shell(find tests -type f | sort; echo \"---FEATURE---\"; cat tests/Feature/*.php 2>/dev/null; echo \"---UNIT---\"; cat tests/Unit/*.php 2>/dev/null)"
+    ],
+    "deny": [],
+    "defaultMode": "default"
+  }
+}

@@ -1,0 +1,9 @@
+In bangladesh the abuse in social media went into record high. In facebook when there is some women get raped and she there was also a photo with her boyfriend, lot of people are commenting in the news thread that, she should be laid with the rapist as well.
+
+People took initiative to keep the record for these peoples. and created a facebook group. but i am feeling the urge of making a website for this and an android app to support android phones.
+
+I am particularly good at, laravel, filament. I want to make the website with laravel, vue and admin panel with filament. But it should work in a way that exposes api's for android app as well. On the public page there will be a map of bangladesh where the density will be shown like from which zilla the reports are densed. Also the numbers will be shown like reported case, verified cases etc.
+
+people can search a name and see how many occurances are recorded under this facebook id. on the home page the recent verified reports will be shown. With his facebook profile, name and what he did, mainly screenshots.
+
+Admin can login to filament panel and see all the reports and can remove, or publish it to homepage. There should be layers of admins with roles. admin can make a role, and assign that role to a admin to work with.
