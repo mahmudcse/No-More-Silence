@@ -443,10 +443,10 @@ onUnmounted(() => {
                         <div class="flex items-center justify-between">
                             <div>
                                 <h3 class="text-sm font-bold text-slate-900 dark:text-white">
-                                    {{ isBn ? 'জেলা মানচিত্র' : 'District Distribution' }}
+                                    {{ isBn ? 'মন্তব্যকারীর জেলা মানচিত্র' : 'Commenter District Map' }}
                                 </h3>
                                 <p class="text-[10px] text-slate-500 dark:text-slate-400">
-                                    {{ isBn ? 'প্রতি ১ লাখ জনসংখ্যায় সহিংসতা ও মন্তব্যের বিস্তার' : 'Normalized per 100k BBS 2022' }}
+                                    {{ isBn ? 'প্রতি ১ লাখ জনসংখ্যায় সহিংসতা সমর্থক মন্তব্যকারীর বিস্তার' : 'Normalized per 100k BBS 2022' }}
                                 </p>
                             </div>
                             <Link
@@ -459,8 +459,6 @@ onUnmounted(() => {
 
                         <DistrictMap
                             :stats="activeDistrictStats"
-                            initial-mode="incident"
-                            @mode-change="handleModeChange"
                         />
                     </div>
 

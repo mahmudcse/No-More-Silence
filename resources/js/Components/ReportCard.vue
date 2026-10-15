@@ -282,15 +282,6 @@ function getCategoryColor(category?: string | null): string {
                                 ? 'যাচাইকৃত ও রেড্যাক্ট করা প্রমাণ'
                                 : 'Verified & Redacted Evidence'
                         }}</span>
-                        <span
-                            class="rounded-full border border-rose-500/20 bg-rose-500/10 px-2.5 py-0.5 text-[10px] font-medium text-rose-700 dark:border-rose-400/20 dark:bg-rose-500/15 dark:text-rose-300"
-                        >
-                            {{
-                                isBn
-                                    ? 'ভিকটিম তথ্য গোপন'
-                                    : 'Victim info redacted'
-                            }}
-                        </span>
                     </h4>
                     <button
                         type="button"

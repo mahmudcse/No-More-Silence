@@ -135,4 +135,10 @@ class Report extends Model implements HasMedia
     {
         return $this->hasMany(Appeal::class);
     }
+
+    /** @return HasMany<Comment, $this> */
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class);
+    }
 }

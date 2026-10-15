@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import PostDiscussion from '@/Components/PostDiscussion.vue';
 import { useLanguage } from '@/composables/useLanguage';
-import { formatDateByLocale } from '@/utils/bangla';
-import { Link } from '@inertiajs/vue3';
+import { formatDateByLocale, formatNumberByLocale } from '@/utils/bangla';
+import { Link, usePage } from '@inertiajs/vue3';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 
 export interface PhotoItem {
@@ -41,6 +42,7 @@ export interface ReportItem {
         slug: string;
         district?: string | null;
     } | null;
+    comments_count?: number;
 }
 
 const props = defineProps<{
@@ -48,6 +50,20 @@ const props = defineProps<{
 }>();
 
 const { isBn, locale } = useLanguage();
+const page = usePage();
+const currentUser = computed(() => (page.props.auth as any)?.user ?? null);
+
+// Discussion state
+const showDiscussion = ref(false);
+const commentsCount = ref(props.report.comments_count ?? 0);
+
+function toggleDiscussion() {
+    showDiscussion.value = !showDiscussion.value;
+}
+
+function handleUpdateCount(newCount: number) {
+    commentsCount.value = newCount;
+}
 
 // Lightbox state
 const lightboxOpen = ref(false);
@@ -295,12 +311,11 @@ function getCategoryColor(category?: string | null): string {
                     <span class="font-medium text-slate-600 dark:text-slate-300">
                         {{ isBn ? 'ঘটনা:' : 'Incident:' }}
                     </span>
-                    <Link
-                        :href="`/incidents/${report.incident.slug}`"
-                        class="text-rose-600 underline underline-offset-2 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300"
+                    <span
+                        class="font-medium text-slate-700 dark:text-slate-300"
                     >
                         {{ isBn ? report.incident.title_bn : report.incident.title_en }}
-                    </Link>
+                    </span>
                 </div>
             </div>
         </div>
@@ -402,44 +417,39 @@ function getCategoryColor(category?: string | null): string {
         </div>
 
         <!-- Post Action Bar (Facebook-Style Footer) -->
-        <div class="flex flex-wrap items-center justify-between gap-2 px-4 py-3 text-xs text-slate-600 dark:text-slate-400 sm:px-6">
-            <div class="flex items-center gap-2">
-                <!-- Redacted evidence pill button -->
-                <button
-                    v-if="allPhotos.length > 0"
-                    type="button"
-                    @click="openLightbox(0)"
-                    class="inline-flex items-center gap-1.5 rounded-full border border-black/[0.06] bg-black/[0.03] px-3 py-1 font-medium text-slate-700 transition-all hover:bg-black/[0.06] active:scale-95 dark:border-white/[0.08] dark:bg-white/[0.08] dark:text-slate-200 dark:hover:bg-white/[0.14]"
+        <div class="flex flex-wrap items-center justify-between gap-2 border-t border-black/[0.04] px-4 py-2 text-xs text-slate-600 dark:border-white/[0.04] dark:text-slate-400 sm:px-6">
+            <!-- Left: Discussion Toggle Button -->
+            <button
+                type="button"
+                @click="toggleDiscussion"
+                :class="[
+                    'inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-medium transition-all active:scale-95',
+                    showDiscussion
+                        ? 'bg-rose-500/10 text-rose-600 dark:bg-rose-500/20 dark:text-rose-400'
+                        : 'bg-black/[0.03] text-slate-700 hover:bg-black/[0.06] dark:bg-white/[0.06] dark:text-slate-200 dark:hover:bg-white/[0.12]',
+                ]"
+            >
+                <svg
+                    class="h-3.5 w-3.5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
                 >
-                    <svg
-                        class="h-3.5 w-3.5 text-slate-500"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        stroke-width="2"
-                    >
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
-                        />
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                        />
-                    </svg>
-                    <span>
-                        {{ isBn ? 'বড় করে দেখুন' : 'View Bigger' }}
-                        <span v-if="allPhotos.length > 1">({{ allPhotos.length }})</span>
-                    </span>
-                </button>
-
-                <!-- Redacted Protection Badge -->
-                <span class="hidden text-[11px] text-slate-400 sm:inline">
-                    {{ isBn ? 'ভিকটিম তথ্য স্থায়ীভাবে গোপন' : 'Victim info redacted' }}
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.636 1.05.512 1.656l-.42 2.053 2.21-.904a2.25 2.25 0 011.36-.085c.99.336 2.05.55 3.065.55z"
+                    />
+                </svg>
+                <span>{{ isBn ? 'আলোচনা' : 'Discussion' }}</span>
+                <span
+                    v-if="commentsCount > 0"
+                    class="rounded-full bg-rose-600/15 px-1.5 py-0.2 text-[10px] font-bold text-rose-600 dark:bg-rose-400/25 dark:text-rose-300"
+                >
+                    {{ formatNumberByLocale(commentsCount, isBn ? 'bn' : 'en') }}
                 </span>
-            </div>
+            </button>
 
             <!-- Right: Actions -->
             <div class="flex items-center gap-2 sm:gap-3">
@@ -488,6 +498,16 @@ function getCategoryColor(category?: string | null): string {
                 </button>
             </div>
         </div>
+
+        <!-- Discussion / Comments Section -->
+        <PostDiscussion
+            v-if="showDiscussion"
+            :report-uuid="report.uuid"
+            :initial-count="commentsCount"
+            :is-bn="isBn"
+            :current-user="currentUser"
+            @update-count="handleUpdateCount"
+        />
 
         <!-- Fullscreen Lightbox Modal for Photo Viewing -->
         <Teleport to="body">

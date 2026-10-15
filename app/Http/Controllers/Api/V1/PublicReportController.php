@@ -40,6 +40,7 @@ class PublicReportController extends Controller
                     });
             })
             ->with(['facebookProfile', 'incident.district', 'media'])
+            ->withCount(['comments' => fn ($q) => $q->where('is_hidden', false)])
             ->latest('created_at')
             ->paginate($limit);
 
@@ -69,6 +70,7 @@ class PublicReportController extends Controller
             ->where('workflow_status', WorkflowStatus::Verified)
             ->whereIn('visibility', [Visibility::Public, Visibility::Featured])
             ->with(['facebookProfile', 'incident.district', 'media'])
+            ->withCount(['comments' => fn ($q) => $q->where('is_hidden', false)])
             ->latest('published_at')
             ->limit($limit)
             ->get();

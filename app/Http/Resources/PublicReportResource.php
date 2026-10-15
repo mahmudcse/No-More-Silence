@@ -84,6 +84,7 @@ class PublicReportResource extends JsonResource
                 'slug' => $this->incident->slug,
                 'district' => $this->incident->district ? ($this->incident->district->name_bn ?: $this->incident->district->name_en) : null,
             ] : null,
+            'comments_count' => (int) ($this->comments_count ?? $this->comments()->where('is_hidden', false)->count()),
         ];
     }
 }

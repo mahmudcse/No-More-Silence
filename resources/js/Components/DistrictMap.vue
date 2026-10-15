@@ -24,21 +24,21 @@ export interface DistrictStat {
 const props = withDefaults(
     defineProps<{
         stats?: DistrictStat[];
-        initialMode?: 'incident' | 'commenter';
+        initialMode?: 'commenter';
     }>(),
     {
         stats: () => [],
-        initialMode: 'incident',
+        initialMode: 'commenter',
     },
 );
 
 const emit = defineEmits<{
-    (e: 'modeChange', mode: 'incident' | 'commenter'): void;
+    (e: 'modeChange', mode: 'commenter'): void;
 }>();
 
 const { isBn, locale } = useLanguage();
 const { isDark } = useTheme();
-const currentMode = ref<'incident' | 'commenter'>(props.initialMode);
+const currentMode = ref<'commenter'>('commenter');
 const hoveredDistrict = ref<{
     name_en: string;
     name_bn: string;
@@ -137,18 +137,13 @@ function handleDistrictClick(district: any) {
         router.visit(`/districts/${district.slug}`);
     }
 }
-
-function switchMode(newMode: 'incident' | 'commenter') {
-    currentMode.value = newMode;
-    emit('modeChange', newMode);
-}
 </script>
 
 <template>
     <div
         class="relative flex flex-col items-center rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900"
     >
-        <!-- Header & Mode Switcher -->
+        <!-- Header -->
         <div
             class="flex w-full flex-col items-center justify-between gap-4 border-b border-slate-200 pb-4 dark:border-slate-800 sm:flex-row"
         >
@@ -158,76 +153,34 @@ function switchMode(newMode: 'incident' | 'commenter') {
                 >
                     <span>{{
                         isBn
-                            ? '৬৪ জেলার ভৌগোলিক মানচিত্র'
-                            : '64 District Geographic Map'
+                            ? 'মন্তব্যকারীর জেলা অনুযায়ী ভৌগোলিক মানচিত্র'
+                            : 'Commenter Geographic Distribution Map'
                     }}</span>
                 </h3>
                 <p class="text-xs text-slate-500 dark:text-slate-400">
                     {{
                         isBn
-                            ? 'জেলায় ক্লিক করে বিস্তারিত রেকর্ড ও ঘটনা দেখুন'
-                            : 'Click on a district to explore records and incidents'
+                            ? 'জেলায় ক্লিক করে সংশ্লিষ্ট মন্তব্যকারীদের রেকর্ড দেখুন'
+                            : 'Click on a district to explore recorded commenter profiles'
                     }}
                 </p>
             </div>
-
-            <!-- Mode Switch Tabs -->
-            <div
-                class="flex items-center rounded-lg border border-slate-200 bg-slate-100 p-1 text-xs dark:border-slate-800 dark:bg-slate-950"
-            >
-                <button
-                    type="button"
-                    @click="switchMode('incident')"
-                    :class="[
-                        'rounded-md px-3 py-1.5 font-medium transition-colors',
-                        currentMode === 'incident'
-                            ? 'bg-rose-600 text-white shadow-sm'
-                            : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200',
-                    ]"
-                >
-                    {{ isBn ? 'ঘটনার অবস্থান' : 'Incident Location' }}
-                </button>
-                <button
-                    type="button"
-                    @click="switchMode('commenter')"
-                    :class="[
-                        'rounded-md px-3 py-1.5 font-medium transition-colors',
-                        currentMode === 'commenter'
-                            ? 'bg-rose-600 text-white shadow-sm'
-                            : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200',
-                    ]"
-                >
-                    {{ isBn ? 'মন্তব্যকারীর অবস্থান' : 'Commenter Location' }}
-                </button>
-            </div>
         </div>
 
-        <!-- Disclaimer Banner for Mode -->
+        <!-- Disclaimer Banner for Commenter Location -->
         <div
             class="mt-3 w-full rounded-lg border border-slate-200 bg-slate-50 px-3.5 py-2 text-[11px] text-slate-600 dark:border-slate-800 dark:bg-slate-950/60 dark:text-slate-300"
         >
-            <span v-if="currentMode === 'incident'">
-                <strong>{{
-                    isBn ? 'ঘটনার অবস্থান:' : 'Incident Location:'
-                }}</strong>
-                {{
-                    isBn
-                        ? 'যে জেলায় মূল সহিংসতা বা যৌন নির্যাতনের ঘটনাটি সংঘটিত হয়েছে।'
-                        : 'The geographic location where the primary harassment or violence incident occurred.'
-                }}
-            </span>
-            <span v-else>
-                <strong class="text-amber-600 dark:text-amber-400">{{
-                    isBn
-                        ? 'মন্তব্যকারীর অবস্থান (দাবি করা):'
-                        : 'Commenter Location (Self-Declared):'
-                }}</strong>
-                {{
-                    isBn
-                        ? 'মন্তব্যকারীর ফেসবুক প্রোফাইলে উল্লেখিত জেলা। এটি ব্যবহারকারীর স্ব-ঘোষিত তথ্য, আমাদের দ্বারা স্বাধীনভাবে প্রমাণিত নয়।'
-                        : 'Location self-declared by the commenter on their Facebook profile; not independently verified.'
-                }}
-            </span>
+            <strong class="text-amber-600 dark:text-amber-400">{{
+                isBn
+                    ? 'মন্তব্যকারীর অবস্থান (দাবি করা):'
+                    : 'Commenter Location (Self-Declared):'
+            }}</strong>
+            {{
+                isBn
+                    ? 'মন্তব্যকারীর ফেসবুক প্রোফাইলে উল্লেখিত জেলা। এটি ব্যবহারকারীর স্ব-ঘোষিত তথ্য, আমাদের দ্বারা স্বাধীনভাবে প্রমাণিত নয়।'
+                    : 'Location self-declared by the commenter on their Facebook profile; not independently verified.'
+            }}
         </div>
 
         <!-- Map Container -->
@@ -323,11 +276,10 @@ function switchMode(newMode: 'incident' | 'commenter') {
             </div>
         </div>
 
-        <!-- Legend & Attribution -->
+        <!-- Legend -->
         <div
-            class="flex w-full flex-col items-center justify-between gap-4 border-t border-slate-200 pt-4 text-xs text-slate-500 dark:border-slate-800 dark:text-slate-400 sm:flex-row"
+            class="flex w-full items-center justify-center border-t border-slate-200 pt-4 text-xs text-slate-500 dark:border-slate-800 dark:text-slate-400"
         >
-            <!-- Legend -->
             <div class="flex items-center gap-2">
                 <span class="text-[11px] text-slate-600 dark:text-slate-400">{{
                     isBn ? 'রেকর্ড সংখ্যা:' : 'Record count:'
@@ -377,10 +329,6 @@ function switchMode(newMode: 'incident' | 'commenter') {
                         >২১+</span
                     >
                 </div>
-            </div>
-
-            <div class="text-[10px] text-slate-500 dark:text-slate-400">
-                মানচিত্র তথ্যসূত্র: BBS / UN OCHA (CC BY-IGO 3.0)
             </div>
         </div>
     </div>

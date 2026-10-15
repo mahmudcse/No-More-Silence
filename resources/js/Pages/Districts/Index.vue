@@ -24,18 +24,15 @@ export interface DistrictListItem {
 
 const props = defineProps<{
     districts: DistrictListItem[];
-    incidentStats: DistrictStat[];
+    incidentStats?: DistrictStat[];
     commenterStats: DistrictStat[];
 }>();
 
 const { isBn, locale } = useLanguage();
 const filterSearch = ref('');
-const activeMode = ref<'incident' | 'commenter'>('incident');
 
 const currentStats = computed(() => {
-    return activeMode.value === 'incident'
-        ? props.incidentStats
-        : props.commenterStats;
+    return props.commenterStats;
 });
 
 const statsLookup = computed(() => {
@@ -58,10 +55,6 @@ const filteredDistricts = computed(() => {
             (d.division?.name_bn.includes(q) ?? false),
     );
 });
-
-function handleModeChange(mode: 'incident' | 'commenter') {
-    activeMode.value = mode;
-}
 </script>
 
 <template>
@@ -73,8 +66,8 @@ function handleModeChange(mode: 'incident' | 'commenter') {
                 name="description"
                 :content="
                     isBn
-                        ? 'বাংলাদেশের ৬৪ জেলার জনসংখ্যা, সহিংসতা এবং ভিকটিম-ব্লেমিং মন্তব্যের ভৌগোলিক বিস্তার।'
-                        : '64 district geographic data, incidents and comments on record.'
+                        ? 'বাংলাদেশের ৬৪ জেলার জনসংখ্যা ও ভিকটিম-ব্লেমিং মন্তব্যের ভৌগোলিক বিস্তার।'
+                        : '64 district geographic data and comments on record.'
                 "
             />
         </Head>
@@ -96,8 +89,8 @@ function handleModeChange(mode: 'incident' | 'commenter') {
                 >
                     {{
                         isBn
-                            ? '২০২২ সালের বাংলাদেশ পরিসংখ্যান ব্যুরো (BBS) জনশুমারি অনুযায়ী প্রতি ১ লাখ জনসংখ্যায় সহিংসতা ও সহিংসতার সমর্থক মন্তব্যের তুলনামূলক হার।'
-                            : 'Normalized rate of incidents and comments per 100k population using BBS Census 2022.'
+                            ? '২০২২ সালের বাংলাদেশ পরিসংখ্যান ব্যুরো (BBS) জনশুমারি অনুযায়ী প্রতি ১ লাখ জনসংখ্যায় সহিংসতা সমর্থক মন্তব্যকারীদের তুলনামূলক হার।'
+                            : 'Normalized rate of recorded commenters per 100k population using BBS Census 2022.'
                     }}
                 </p>
             </div>
@@ -106,8 +99,6 @@ function handleModeChange(mode: 'incident' | 'commenter') {
             <div class="mx-auto max-w-4xl">
                 <DistrictMap
                     :stats="currentStats"
-                    :initial-mode="activeMode"
-                    @mode-change="handleModeChange"
                 />
             </div>
 

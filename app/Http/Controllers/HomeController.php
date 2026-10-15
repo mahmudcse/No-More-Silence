@@ -32,13 +32,14 @@ class HomeController extends Controller
                     });
             })
             ->with(['facebookProfile', 'incident.district', 'media'])
+            ->withCount(['comments' => fn ($q) => $q->where('is_hidden', false)])
             ->latest('created_at');
 
         $paginated = $reportsQuery->paginate(8);
 
         return Inertia::render('Welcome', [
             'nationalStats' => $statsService->getNationalStats(),
-            'districtStats' => $statsService->getDistrictStats('incident'),
+            'districtStats' => $statsService->getDistrictStats('commenter'),
             'featuredReports' => PublicReportResource::collection($paginated->items())->resolve(),
             'initialPagination' => [
                 'current_page' => $paginated->currentPage(),

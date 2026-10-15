@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\AppealViewController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\DistrictViewController;
 use App\Http\Controllers\FeedbackViewController;
 use App\Http\Controllers\HomeController;
@@ -46,6 +47,14 @@ Route::get('/submit/shared-file/{shareId}/{filename}', [SubmissionViewController
 Route::get('/track/{code?}', [SubmissionViewController::class, 'track'])->name('track');
 Route::get('/appeals', [AppealViewController::class, 'create'])->name('appeals.create');
 Route::get('/my-submissions', [ReporterViewController::class, 'dashboard'])->name('reporter.dashboard');
+
+// Report Discussion & Comments
+Route::get('/reports/{reportUuid}/comments', [CommentController::class, 'index'])->name('comments.index');
+Route::middleware('auth')->group(function () {
+    Route::post('/reports/{reportUuid}/comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::post('/comments/{comment}/like', [CommentController::class, 'toggleLike'])->name('comments.like');
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+});
 
 // PWA & TWA Static Endpoints
 Route::get('/manifest.webmanifest', fn () => response()->file(public_path('manifest.webmanifest'), [
