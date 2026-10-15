@@ -6,6 +6,7 @@ namespace App\Actions\Reports;
 
 use App\Data\NewReportData;
 use App\Data\SubmittedReport;
+use App\Enums\Visibility;
 use App\Enums\WorkflowStatus;
 use App\Events\ReportSubmitted;
 use App\Models\Report;
@@ -30,6 +31,7 @@ final class SubmitReport
             'category' => $data->category,
             'severity' => $data->severity,
             'workflow_status' => WorkflowStatus::Submitted,
+            'visibility' => Visibility::Hidden,
             'platform' => $data->platform,
             'submitted_via' => $data->submittedVia,
             'submitter_ip_hash' => $data->submitterIpHash,

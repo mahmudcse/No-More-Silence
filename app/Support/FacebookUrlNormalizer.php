@@ -47,7 +47,7 @@ final class FacebookUrlNormalizer
         'watch',
     ];
 
-    public function normalize(string $url): ?string
+    public static function normalize(string $url): ?string
     {
         $url = trim($url);
 
@@ -83,11 +83,11 @@ final class FacebookUrlNormalizer
         $first = strtolower($segments[0]);
 
         if ($first === 'profile.php') {
-            return $this->canonicalFromNumericId($this->numericIdFromQuery($parts['query'] ?? ''));
+            return self::canonicalFromNumericId(self::numericIdFromQuery($parts['query'] ?? ''));
         }
 
         if ($first === 'people') {
-            return $this->canonicalFromNumericId($this->numericId($segments[count($segments) - 1] ?? ''));
+            return self::canonicalFromNumericId(self::numericId($segments[count($segments) - 1] ?? ''));
         }
 
         if (count($segments) === 1 && ! ctype_digit($first) && ! in_array($first, self::RESERVED_PATHS, true)) {
@@ -97,19 +97,19 @@ final class FacebookUrlNormalizer
         return null;
     }
 
-    private function canonicalFromNumericId(?string $id): ?string
+    private static function canonicalFromNumericId(?string $id): ?string
     {
         return $id !== null ? "https://www.facebook.com/profile.php?id={$id}" : null;
     }
 
-    private function numericIdFromQuery(string $query): ?string
+    private static function numericIdFromQuery(string $query): ?string
     {
         parse_str($query, $params);
 
-        return $this->numericId($params['id'] ?? '');
+        return self::numericId($params['id'] ?? '');
     }
 
-    private function numericId(mixed $value): ?string
+    private static function numericId(mixed $value): ?string
     {
         if (! is_string($value) && ! is_int($value)) {
             return null;

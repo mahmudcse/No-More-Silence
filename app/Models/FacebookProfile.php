@@ -11,6 +11,7 @@ use App\Enums\Platform;
 use App\Enums\ProfileStatus;
 use App\Support\FacebookUrlNormalizer;
 use App\Support\NameNormalizer;
+use Carbon\CarbonInterface;
 use Database\Factories\FacebookProfileFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Scope;
@@ -24,6 +25,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property DistrictSource $district_source
  * @property ProfileStatus $profile_status
  * @property Platform $platform
+ * @property CarbonInterface|null $first_recorded_at
+ * @property CarbonInterface|null $last_recorded_at
+ * @property CarbonInterface|null $last_checked_at
  */
 #[Fillable(['fb_numeric_id', 'canonical_url', 'current_display_name', 'display_name_normalized', 'district_id', 'district_source', 'profile_status', 'platform', 'last_checked_at', 'public_reports_count', 'first_recorded_at', 'last_recorded_at'])]
 class FacebookProfile extends Model

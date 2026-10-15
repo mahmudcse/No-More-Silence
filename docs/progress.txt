@@ -1,10 +1,11 @@
 # No More Silence — Implementation Progress
 
 Last Updated: 2026-10-15
-Current Phase: Phase 0 — Foundations (COMPLETED)
+Current Phase: Phase 2 — Public Website (COMPLETED)
 
-## Phase 0 Checklist Status
+---
 
+## Phase 0 Checklist Status: COMPLETED
 - [x] **Legal Consultation & Documentation:** Drafted ToS (`docs/legal/terms-of-service.md`), Privacy Policy (`docs/legal/privacy-policy.md`), Methodology (`docs/legal/methodology.md`), and Infrastructure/Governance (`docs/legal/infrastructure-and-governance.md`).
 - [x] **Domain, Registrar & Infrastructure Decisions:** Documented privacy registrar outside BD, EU VPS hosting, Cloudflare WAF/Turnstile, R2 dual-bucket architecture, and transition plan to legal-aid NGO.
 - [x] **Repository Setup:** Vue 3 + Inertia + TypeScript + Tailwind CSS starter kit, Pest v4, Larastan level 6, Laravel Pint, ESLint, Prettier, and GitHub Actions CI (`.github/workflows/ci.yml`).
@@ -14,72 +15,101 @@ Current Phase: Phase 0 — Foundations (COMPLETED)
 - [x] **Sentry Integration:** Installed `sentry/sentry-laravel` (^4.29), published `config/sentry.php`, integrated exception handling in `bootstrap/app.php` via `\Sentry\Laravel\Integration::handles($exceptions)`, documented in `.env.example` and `.env`.
 - [x] **i18n & Bengali Support:** Bengali default locale (`APP_LOCALE=bn`), English fallback (`en`), Hind Siliguri Bengali font loaded via Bunny Fonts in Tailwind, and numeral converter helper (`App\Support\BanglaNumber`) with unit tests.
 - [x] **Districts & Divisions Seeding:** Seeded all 8 divisions and 64 districts in `database/seeders/DivisionsAndDistrictsSeeder.php` with BBS geocodes, Bengali/English names, and official BBS Population & Housing Census 2022 population figures (total 165,089,479).
-- [x] **Git & Environment Hygiene:** Comprehensive `.gitignore` updated, untracked build artifacts (`build/`), Pint formatted, Larastan level 6 passed (0 errors), Pest suite passed (73 tests, 152 assertions), and frontend built (`npm run lint && npm run build`).
+- [x] **Git & Environment Hygiene:** Comprehensive `.gitignore` updated, untracked build artifacts (`build/`), Pint formatted, Larastan level 6 passed (0 errors), Pest suite passed (73 tests), and frontend built.
 
 ---
 
-## Detailed Step Log
-
-### Step 1: Git Ignore & Repository Cleanup
-- Audited repository and updated `.gitignore` with comprehensive exclusions:
-  - PHPStan/Larastan build artifacts (`/build`)
-  - SSR artifacts (`/bootstrap/ssr`)
-  - Filament public asset directories (`/public/css/filament`, `/public/fonts/filament`, `/public/js/filament`)
-  - Environment variations (`.env`, `.env.backup`, `.env.production`, `.env.*.local`)
-  - Testing & cache (`.phpunit.result.cache`, `.pest`, `.phpactor.json`)
-  - OS generated files (`.DS_Store`, `Thumbs.db`, etc.)
-  - IDE configs (`.idea`, `.vscode`, `.fleet`, etc.)
-  - Assistant tooling folders (`.claude`, `.commandcode`, `.junie`, `.gemini`, `.cursor`, `.sail`)
-  - Sentry release artifacts (`.sentry-native`)
-- Untracked legacy `build/` files using `git rm -r --cached build/`.
-
-### Step 2: GitHub Actions CI Workflow
-- Configured `.github/workflows/ci.yml` with two parallel jobs:
-  - `backend`: PHP 8.5, Redis service, Composer cache, Pint code style check, Larastan level 6 static analysis, Pest test suite with SQLite in-memory runner.
-  - `frontend`: Node 22, npm cache, ESLint check, TypeScript check (`vue-tsc`), Vite build & SSR build.
-
-### Step 3: Cloudflare R2 & Media Library Storage
-- Installed `league/flysystem-aws-s3-v3` (^3.35).
-- Configured `r2-private` and `r2-public` disk definitions in `config/filesystems.php`.
-- Added configurable disk options (`MEDIA_DISK_ORIGINAL`, `MEDIA_DISK_REDACTED`, `MEDIA_DISK_ARCHIVE`) in `config/media-library.php`.
-- Updated `Report` model (`registerMediaCollections`) to read disk configurations dynamically, using private local/R2 disk for original evidence and public local/R2 disk for redacted public evidence.
-- Added R2 environment configuration entries in `.env.example` and `.env`.
-
-### Step 4: Laravel Horizon Installation & Configuration
-- Installed `laravel/horizon` (^5.50).
-- Published Horizon service provider and assets via `artisan horizon:install`.
-- Configured `viewHorizon` gate in `app/Providers/HorizonServiceProvider.php` to authorize users with `super_admin` role or explicit whitelist emails.
-- Added automated test coverage in `tests/Feature/HorizonAccessTest.php` testing local access, production guest denial, regular user denial, and super admin access.
-
-### Step 5: Sentry Error Monitoring Integration
-- Installed `sentry/sentry-laravel` (^4.29).
-- Published `config/sentry.php`.
-- Hooked exception handler in `bootstrap/app.php` using `\Sentry\Laravel\Integration::handles($exceptions)`.
-- Added `SENTRY_LARAVEL_DSN` and `SENTRY_TRACES_SAMPLE_RATE` configuration keys to `.env.example` and `.env`.
-
-### Step 6: 64 Districts Population Data Seeding
-- Updated `database/seeders/DivisionsAndDistrictsSeeder.php` with official BBS Population and Housing Census 2022 figures for all 64 districts.
-- Successfully verified seeding into PostgreSQL with 64 districts populated (total population: 165,089,479).
-
-### Step 7: Legal, Policy, & Infrastructure Documentation
-- Drafted Terms of Service in `docs/legal/terms-of-service.md` addressing BD cyber law, zero victim PII policy, neutral terminology, and limitation of liability.
-- Drafted Privacy Policy in `docs/legal/privacy-policy.md` addressing reporter anonymity, EXIF stripping, IP hash retention, and profile owner rights.
-- Drafted Verification Methodology in `docs/legal/methodology.md` outlining the 5-step pipeline, two-person rule, perceptual hashing, and categories.
-- Documented Infrastructure Decisions in `docs/legal/infrastructure-and-governance.md` covering privacy registrar, EU VPS hosting, Cloudflare WAF, and NGO governance transition.
-
-### Step 8: Code Quality, Testing & Verification
-- `vendor/bin/pint --format agent`: Formatted and verified clean.
-- `vendor/bin/phpstan analyse --no-progress`: Level 6 static analysis passed with 0 errors across `app/`, `database/`, and `tests/`.
-- `php artisan test`: All 73 feature and unit tests passing (152 assertions).
-- `npm run lint`: ESLint check passed cleanly.
-- `npm run build`: `vue-tsc` passed, client Vite build and server SSR build generated successfully.
+## Phase 1 Checklist Status: COMPLETED
+- [x] **Migrations, Models, Enums & Factories:**
+  - Complete domain models with Eloquent factories for all tables: `Division`, `District`, `Incident`, `FacebookProfile`, `ProfileAlias`, `ProfileSnapshot`, `Reporter`, `Report`, `ReportReview`, `Appeal`, `StatsSnapshot`, and `User`.
+- [x] **Facebook URL Normalizer:**
+  - `App\Support\FacebookUrlNormalizer` with exhaustive test suite (`tests/Unit/FacebookUrlNormalizerTest.php`) mapping mobile, desktop, people paths, and tracking queries to canonical keys.
+- [x] **Workflow State Machine & Actions:**
+  - Complete state transitions implemented in `App\Support\ReportWorkflow` and Action classes (`SubmitReport`, `VerifyReport`, `PublishReport`, `RetractReport`, `RejectReport`, `RequestInfo`, `MarkDuplicate`, `TransitionReport`).
+  - Domain events dispatched on transitions: `ReportSubmitted`, `ReportVerified`, `ReportPublished`, `ReportRetracted`, `ProfileMerged`.
+- [x] **Filament Admin Panel & MFA:**
+  - MFA enforced via app authentication, dynamic roles via Filament Shield, resources configured:
+    - Reports (`ReportResource`)
+    - Profiles (`FacebookProfileResource`)
+    - Incidents (`IncidentResource`)
+    - Reporters (`ReporterResource`)
+    - Appeals (`AppealResource`)
+    - Admins (`UserResource` with role assignment and self-deletion guard)
+    - Activity Log (`ActivityResource`)
+- [x] **Review Queue Page with Checklist & Locking:**
+  - Dedicated custom page at `App\Filament\Pages\ReviewQueue` with side-by-side evidence viewer, permalink links, profile attribution, incident linking, 8-point verification checklist, and soft expiring locking (`ReportLock`) to prevent duplicate reviews by multiple moderators.
+  - Automated tests covering access gating, locking, and verification in `tests/Feature/ReviewQueueTest.php`.
+- [x] **Media Handling (EXIF strip, sha256, pHash):**
+  - `ProcessOriginalEvidence` event listener re-encodes uploaded screenshots via GD dropping EXIF/GPS, stores sha256 hash and perceptual hash (`pHash`).
+- [x] **Server-Side Redaction Tool:**
+  - `App\Actions\Evidence\RedactEvidence` renders solid black redaction boxes over evidence and exports to WebP in public `redacted` collection, leaving original evidence private. Tested in `tests/Feature/RedactEvidenceTest.php`.
+- [x] **Two-Person Rule & Self-Review Guard:**
+  - Enforced in `ReportPolicy`: verifier cannot publish the report they verified; submitter cannot review the report they submitted. Tested in `tests/Feature/ReportPolicyTest.php`.
+- [x] **Profile Merge Action:**
+  - `App\Actions\Profiles\MergeProfiles` merges secondary profile's aliases, snapshots, reports, and appeals into primary, deletes secondary, and dispatches `ProfileMerged`. Tested in `tests/Feature/MergeProfilesTest.php`.
+- [x] **Manual Report Creation by Admins:**
+  - `CreateReport` Filament page hooks `mutateFormDataBeforeCreate` to assign `submitted_by = auth()->id()`, `submitted_via = admin`, `workflow_status = submitted`, and `visibility = hidden`, ensuring imported records must be verified one by one.
+- [x] **End-to-End Moderation Lifecycle Test:**
+  - Comprehensive feature test in `tests/Feature/ModeratorWorkflowEndToEndTest.php` proving exit criteria: report ingestion -> evidence processing -> locking -> redaction -> 8-point verification -> two-person publishing -> profile count increment -> audit log generation.
 
 ---
 
-## Ready for Phase 1: Domain Core & Admin
+## Phase 2 Checklist Status: COMPLETED
+- [x] **Public Layout & Navigation (`resources/js/Layouts/PublicLayout.vue`):**
+  - Solemn, dignified trauma-informed UI in Tailwind CSS and Hind Siliguri typography.
+  - Emergency helpline banner on top: National Emergency 999, Women & Child Abuse Helpline 109, Child Helpline 1098.
+  - Reactive language switcher toggle (`বাংলা` / `English`) with localStorage persistence (`useLanguage.ts`).
+  - Mobile responsive drawer and clean, comprehensive footer with legal hygiene statements, methodology links, and emergency helplines.
+- [x] **District Map Component (`resources/js/Components/DistrictMap.vue`):**
+  - Interactive SVG choropleth of Bangladesh's 64 districts using `d3-geo` Mercator projection fitted to Bangladesh bounds.
+  - 64-district GeoJSON prepared from BBS / UN OCHA boundary data (`resources/js/data/bangladesh-districts.json`), optimized with geometry decimation, 4-decimal precision, and embedded BBS geocodes.
+  - Mode toggle: "ঘটনার অবস্থান" (Incident Location) vs "মন্তব্যকারীর অবস্থান" (Commenter Self-Declared Location) with clear disclaimer.
+  - Hover tooltips displaying district name (Bangla/English), division, verified record count, rate per 100k population (BBS 2022 Census), and click-through navigation to district details.
+- [x] **Public API (v1) Endpoints & Controllers:**
+  - Dedicated route file `routes/api.php` registered in `bootstrap/app.php` with 60 req/min rate limiting:
+    - `GET /api/v1/stats`: National aggregate counters.
+    - `GET /api/v1/stats/districts?mode=incident|commenter`: District rates and counts.
+    - `GET /api/v1/reports/featured`: Published verified reports with redacted evidence URL.
+    - `GET /api/v1/reports/{uuid}`: Single verified public report with strict 404 for unverified/hidden records.
+    - `GET /api/v1/search?q=`: URL normalization search + PostgreSQL trigram fuzzy name search with mandatory same-name warning banner.
+    - `GET /api/v1/profiles/{id}`: Documented profile details and verified comments; zero private avatar/photos exposed.
+    - `GET /api/v1/incidents` & `GET /api/v1/incidents/{slug}`: Incidents list and detail.
+    - `GET /api/v1/districts` & `GET /api/v1/districts/{slug}`: Districts list and detail.
+- [x] **Search Page with Same-Name Warning (`resources/js/Pages/Search.vue`):**
+  - Full Facebook URL normalizer integration and trigram fuzzy name search.
+  - Prominent ethical and legal warning banner: "সতর্কতা: বাংলাদেশে একই নামে বহু মানুষ থাকতে পারেন। প্রোফাইলের সুনির্দিষ্ট লিঙ্ক ও আইডি নিশ্চিত না হয়ে কাউকে দোষারোপ করবেন না।"
+- [x] **Public Detail Pages:**
+  - `Profiles/Show.vue`: Canonical URL, display name, self-declared district, verification history, `<meta name="robots" content="noindex, nofollow">` to reduce algorithmic harassment, and Right of Reply / Appeal notice.
+  - `Incidents/Index.vue` & `Incidents/Show.vue`: Incident directory, date, district, verified comments, and OpenGraph metadata.
+  - `Districts/Index.vue` & `Districts/Show.vue`: Interactive map, searchable table of 64 districts with Census 2022 population figures and incident breakdown.
+- [x] **Static Policy & Informational Pages (`resources/js/Pages/Pages/`):**
+  - `About.vue`: Mission, history, principles, and NGO governance transition roadmap.
+  - `Methodology.vue`: Complete 8-point verification standard, two-person rule, black-box redaction, and perceptual hashing.
+  - `SafetyResources.vue`: 24/7 toll-free helplines (109, 999, 1098), legal aid organizations (ASK, BLAST, BNWLA), mental health support (Kaan Pete Roi), and digital safety guidelines.
+  - `Terms.vue`: Terms of service under Bangladeshi cyber and survivor protection laws.
+  - `Privacy.vue`: Zero-tracker policy, HMAC IP hashing with 30-day auto-purge, anonymous submissions, and search engine noindex.
+- [x] **Stats Snapshot Scheduled Job & Caching Layer:**
+  - `App\Services\StatsService`: High-performance cached aggregation for national and district metrics.
+  - `App\Console\Commands\GenerateStatsSnapshots` (`stats:snapshot`): Daily aggregation command scheduled in `routes/console.php` at `00:05`.
+  - Migration `2026_10_15_000001_add_trgm_extension_and_indexes.php` adding PostgreSQL `pg_trgm` extension and GIN trigram index.
+
+---
+
+## Verification & Test Metrics
+- **Pest Test Suite:** 99 passing tests (438 assertions) across unit, feature, policy, and integration test suites (`./vendor/bin/sail test`).
+- **Larastan Static Analysis:** Level 6 passed with 0 errors (`./vendor/bin/sail bin phpstan analyse`).
+- **Laravel Pint:** 100% formatted and passed (`./vendor/bin/sail bin pint --dirty --format agent`).
+- **ESLint:** 0 errors, 0 warnings (`npm run lint`).
+- **Frontend Assets:** `vue-tsc`, Vite client build, and Vite SSR build compiled cleanly (`npm run build`).
+
+---
+
+## Ready for Phase 3: Submissions, API & Appeals (Weeks 7–8)
 Next phase items to implement:
-- Finalize and wire all Filament admin panel resources (Reports, Profiles, Incidents, Reporters, Appeals, ActivityLog).
-- Complete Review Queue page with checklist and locking mechanism.
-- Implement server-side redaction tool with client UI integration.
-- Enforce two-person publishing rule and self-review policy checks.
-- Manual report creation flow for moderators to import and re-verify historical records.
+- Public submission wizard (multi-step mobile-first form with client-side image compression, Turnstile captcha, and copyable tracking code).
+- Tracking page (`/track/{code}`) for reporters to check submission status anonymously.
+- Reporter magic-link authentication (`/auth/magic-link`, `/auth/verify`) and "My Submissions" dashboard.
+- Public appeals submission form (`/appeals/submit`) with proof upload for account compromise/impersonation.
+- Admin appeal review workflow and Right-of-Reply public display on profile pages.
+- OpenAPI auto-generated documentation via Scramble (`dedoc/scramble`).
+- Evidence package PDF export for cyber crime units / BTRC / legal reporting.

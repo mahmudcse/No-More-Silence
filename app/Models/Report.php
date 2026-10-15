@@ -10,6 +10,7 @@ use App\Enums\ReportCategory;
 use App\Enums\SubmittedVia;
 use App\Enums\Visibility;
 use App\Enums\WorkflowStatus;
+use Carbon\CarbonInterface;
 use Database\Factories\ReportFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -27,6 +28,9 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  * @property Platform $platform
  * @property ReportCategory|null $category
  * @property SubmittedVia $submitted_via
+ * @property CarbonInterface|null $comment_posted_at
+ * @property CarbonInterface|null $verified_at
+ * @property CarbonInterface|null $published_at
  */
 #[Fillable(['tracking_code_hash', 'reporter_id', 'facebook_profile_id', 'incident_id', 'submitted_profile_url', 'submitted_comment_url', 'comment_text', 'comment_text_translation', 'comment_posted_at', 'category', 'severity', 'workflow_status', 'visibility', 'platform', 'submitted_via', 'submitted_by', 'duplicate_of_id', 'rejected_reason', 'verified_at', 'verified_by', 'published_at', 'published_by', 'submitter_ip_hash'])]
 class Report extends Model implements HasMedia

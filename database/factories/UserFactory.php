@@ -42,4 +42,14 @@ class UserFactory extends Factory
             'email_verified_at' => null,
         ]);
     }
+
+    /**
+     * Indicate that the user has configured MFA (app authentication).
+     */
+    public function withMfa(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'app_authentication_secret' => 'test-mfa-secret',
+        ]);
+    }
 }

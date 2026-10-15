@@ -65,14 +65,14 @@ class ReportsTable
                     ->label('Verify')
                     ->color('success')
                     ->form([
-                        Checkbox::make('checklist.permalink_exists')->label('Permalink exists'),
+                        Checkbox::make('checklist.permalink_or_corroborated')->label('Permalink exists / corroborated'),
                         Checkbox::make('checklist.profile_match')->label('Profile matches'),
                         Checkbox::make('checklist.text_match')->label('Text matches verbatim'),
-                        Checkbox::make('checklist.context_clear')->label('Context is clear'),
+                        Checkbox::make('checklist.context')->label('Context is clear'),
                         Checkbox::make('checklist.category_assigned')->label('Category assigned'),
                         Checkbox::make('checklist.snapshot_captured')->label('Snapshot captured'),
                         Checkbox::make('checklist.redaction_done')->label('Redaction done'),
-                        Checkbox::make('checklist.not_a_minor')->label('Not a minor'),
+                        Checkbox::make('checklist.not_minor')->label('Not a minor'),
                     ])
                     ->visible(fn (Report $record): bool => $record->workflow_status === WorkflowStatus::InVerification)
                     ->action(function (array $data, Report $record): void {

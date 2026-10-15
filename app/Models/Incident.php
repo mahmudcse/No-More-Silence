@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\IncidentStatus;
+use Carbon\CarbonInterface;
 use Database\Factories\IncidentFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property IncidentStatus $status
+ * @property CarbonInterface|null $occurred_on
  */
 #[Fillable(['title_en', 'title_bn', 'slug', 'district_id', 'occurred_on', 'summary', 'source_urls', 'status', 'created_by'])]
 class Incident extends Model
