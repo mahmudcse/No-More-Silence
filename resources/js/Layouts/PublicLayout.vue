@@ -512,6 +512,30 @@ const mobileMenuOpen = ref(false);
                                 </Link>
                             </div>
                             <div>
+                                <Link
+                                    href="/open-data"
+                                    class="text-slate-400 transition-colors hover:text-slate-200"
+                                >
+                                    {{
+                                        isBn
+                                            ? 'উন্মুক্ত উপাত্ত ভাণ্ডার (Open Data)'
+                                            : 'Open Research Data'
+                                    }}
+                                </Link>
+                            </div>
+                            <div>
+                                <Link
+                                    href="/transparency"
+                                    class="text-slate-400 transition-colors hover:text-slate-200"
+                                >
+                                    {{
+                                        isBn
+                                            ? 'স্বচ্ছতা প্রতিবেদন (Transparency)'
+                                            : 'Transparency Reports'
+                                    }}
+                                </Link>
+                            </div>
+                            <div>
                                 <a
                                     href="/docs/api"
                                     target="_blank"

@@ -15,7 +15,7 @@ class StatsController extends Controller
     {
         return response()->json([
             'data' => $statsService->getNationalStats(),
-        ]);
+        ])->setSharedMaxAge(300);
     }
 
     public function districts(Request $request, StatsService $statsService): JsonResponse
@@ -28,6 +28,6 @@ class StatsController extends Controller
         return response()->json([
             'mode' => $mode,
             'data' => $statsService->getDistrictStats($mode),
-        ]);
+        ])->setSharedMaxAge(300);
     }
 }

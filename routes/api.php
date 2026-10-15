@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Api\V1\AppealController;
+use App\Http\Controllers\Api\V1\OpenDataController;
 use App\Http\Controllers\Api\V1\PublicDistrictController;
 use App\Http\Controllers\Api\V1\PublicIncidentController;
 use App\Http\Controllers\Api\V1\PublicProfileController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\Api\V1\ReporterAuthController;
 use App\Http\Controllers\Api\V1\SearchController;
 use App\Http\Controllers\Api\V1\StatsController;
 use App\Http\Controllers\Api\V1\SubmissionController;
+use App\Http\Controllers\Api\V1\TransparencyController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->middleware(['throttle:60,1'])->group(function (): void {
@@ -50,4 +52,14 @@ Route::prefix('v1')->middleware(['throttle:60,1'])->group(function (): void {
     Route::post('/auth/magic-link', [ReporterAuthController::class, 'magicLink'])->name('api.v1.auth.magic-link');
     Route::get('/auth/verify/{id}', [ReporterAuthController::class, 'verify'])->name('api.v1.auth.verify');
     Route::get('/me/submissions', [ReporterAuthController::class, 'submissions'])->name('api.v1.me.submissions');
+
+    // Open Data (Anonymized Aggregate Exports for Researchers & Journalists)
+    Route::get('/open-data/summary', [OpenDataController::class, 'summary'])->name('api.v1.open-data.summary');
+    Route::get('/open-data/districts.csv', [OpenDataController::class, 'districtsCsv'])->name('api.v1.open-data.districts-csv');
+    Route::get('/open-data/categories.csv', [OpenDataController::class, 'categoriesCsv'])->name('api.v1.open-data.categories-csv');
+    Route::get('/open-data/monthly.csv', [OpenDataController::class, 'monthlyCsv'])->name('api.v1.open-data.monthly-csv');
+
+    // Transparency Reports
+    Route::get('/transparency', [TransparencyController::class, 'index'])->name('api.v1.transparency.index');
+    Route::get('/transparency/{year}/{month}', [TransparencyController::class, 'show'])->name('api.v1.transparency.show');
 });

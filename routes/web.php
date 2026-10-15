@@ -6,11 +6,13 @@ use App\Http\Controllers\AppealViewController;
 use App\Http\Controllers\DistrictViewController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\IncidentViewController;
+use App\Http\Controllers\OpenDataViewController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProfileViewController;
 use App\Http\Controllers\ReporterViewController;
 use App\Http\Controllers\SubmissionViewController;
+use App\Http\Controllers\TransparencyViewController;
 use App\Http\Controllers\WebSearchController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -32,6 +34,8 @@ Route::get('/methodology', [PageController::class, 'methodology'])->name('method
 Route::get('/safety-resources', [PageController::class, 'safetyResources'])->name('safety-resources');
 Route::get('/terms', [PageController::class, 'terms'])->name('terms');
 Route::get('/privacy', [PageController::class, 'privacy'])->name('privacy');
+Route::get('/open-data', [OpenDataViewController::class, 'index'])->name('open-data');
+Route::get('/transparency', [TransparencyViewController::class, 'index'])->name('transparency');
 
 // Submissions, Tracking, Appeals & Reporter Portal
 Route::get('/submit', [SubmissionViewController::class, 'create'])->name('submit');
