@@ -98,4 +98,17 @@ class ReportPolicy
     {
         return $authUser->can('request_info_report');
     }
+
+    /**
+     * Triage covers: accept into the queue, mark spam, mark duplicate.
+     */
+    public function triage(AuthUser $authUser, Report $report): bool
+    {
+        return $authUser->can('triage_report') && $report->submitted_by !== $authUser->id;
+    }
+
+    public function redact(AuthUser $authUser, Report $report): bool
+    {
+        return $authUser->can('redact_evidence') && $report->submitted_by !== $authUser->id;
+    }
 }

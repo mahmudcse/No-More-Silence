@@ -8,12 +8,12 @@ use App\Actions\Reports\SubmitReport;
 use App\Actions\Reports\VerifyReport;
 use App\Data\NewReportData;
 use App\Enums\ReportCategory;
+use App\Enums\VerificationCheck;
 use App\Enums\Visibility;
 use App\Enums\WorkflowStatus;
 use App\Models\FacebookProfile;
 use App\Models\Report;
 use App\Models\User;
-use DomainException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -33,9 +33,13 @@ it('submits a report with a hashed tracking code', function (): void {
 
 it('verifies a report and records a review with the checklist', function (): void {
     $admin = User::factory()->create();
-    $report = Report::factory()->create(['workflow_status' => WorkflowStatus::InVerification]);
+    $report = Report::factory()->create([
+        'workflow_status' => WorkflowStatus::InVerification,
+        'facebook_profile_id' => FacebookProfile::factory(),
+    ]);
+    $checklist = completeChecklist();
 
-    app(VerifyReport::class)->handle($report, $admin, ['permalink_exists' => true, 'text_match' => true]);
+    app(VerifyReport::class)->handle($report, $admin, $checklist);
 
     $report->refresh();
 
@@ -43,8 +47,52 @@ it('verifies a report and records a review with the checklist', function (): voi
     expect($report->verified_by)->toBe($admin->id);
     expect($report->reviews)->toHaveCount(1);
     expect($report->reviews->first()->to_status)->toBe('verified');
-    expect($report->reviews->first()->checklist)->toBe(['permalink_exists' => true, 'text_match' => true]);
+    expect($report->reviews->first()->checklist)->toBe($checklist);
 });
+
+it('refuses verification when a checklist item is not ticked', function (): void {
+    $report = Report::factory()->create([
+        'workflow_status' => WorkflowStatus::InVerification,
+        'facebook_profile_id' => FacebookProfile::factory(),
+    ]);
+
+    expect(fn () => app(VerifyReport::class)->handle(
+        $report,
+        User::factory()->create(),
+        [...completeChecklist(), VerificationCheck::RedactionDone->value => false],
+    ))->toThrow(DomainException::class, 'redaction_done');
+
+    expect($report->fresh()->workflow_status)->toBe(WorkflowStatus::InVerification);
+});
+
+it('refuses verification of a report not linked to a profile', function (): void {
+    $report = Report::factory()->create(['workflow_status' => WorkflowStatus::InVerification]);
+
+    expect(fn () => app(VerifyReport::class)->handle($report, User::factory()->create(), completeChecklist()))
+        ->toThrow(DomainException::class, 'linked to a profile');
+});
+
+it('refuses verification by the admin who submitted the report', function (): void {
+    $admin = User::factory()->create();
+    $report = Report::factory()->create([
+        'workflow_status' => WorkflowStatus::InVerification,
+        'facebook_profile_id' => FacebookProfile::factory(),
+        'submitted_by' => $admin->id,
+    ]);
+
+    expect(fn () => app(VerifyReport::class)->handle($report, $admin, completeChecklist()))
+        ->toThrow(DomainException::class, 'they submitted');
+});
+
+/**
+ * @return array<string, bool>
+ */
+function completeChecklist(): array
+{
+    return collect(VerificationCheck::cases())
+        ->mapWithKeys(fn (VerificationCheck $check): array => [$check->value => true])
+        ->all();
+}
 
 it('publishes a verified report and increments the profile counter', function (): void {
     $profile = FacebookProfile::factory()->create(['public_reports_count' => 0]);

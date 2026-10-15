@@ -16,8 +16,10 @@ use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class ReportsTable
@@ -34,7 +36,12 @@ class ReportsTable
                 TextColumn::make('created_at')->dateTime()->sortable(),
             ])
             ->filters([
-                //
+                SelectFilter::make('workflow_status')
+                    ->label('Status')
+                    ->options(self::enumOptions(WorkflowStatus::cases())),
+                SelectFilter::make('visibility')
+                    ->label('Visibility')
+                    ->options(self::enumOptions(Visibility::cases())),
             ])
             ->recordActions([
                 EditAction::make(),
@@ -57,9 +64,20 @@ class ReportsTable
                 Action::make('verify')
                     ->label('Verify')
                     ->color('success')
-                    ->requiresConfirmation()
+                    ->form([
+                        Checkbox::make('checklist.permalink_exists')->label('Permalink exists'),
+                        Checkbox::make('checklist.profile_match')->label('Profile matches'),
+                        Checkbox::make('checklist.text_match')->label('Text matches verbatim'),
+                        Checkbox::make('checklist.context_clear')->label('Context is clear'),
+                        Checkbox::make('checklist.category_assigned')->label('Category assigned'),
+                        Checkbox::make('checklist.snapshot_captured')->label('Snapshot captured'),
+                        Checkbox::make('checklist.redaction_done')->label('Redaction done'),
+                        Checkbox::make('checklist.not_a_minor')->label('Not a minor'),
+                    ])
                     ->visible(fn (Report $record): bool => $record->workflow_status === WorkflowStatus::InVerification)
-                    ->action(fn (Report $record) => app(VerifyReport::class)->handle($record, auth()->user(), [])),
+                    ->action(function (array $data, Report $record): void {
+                        app(VerifyReport::class)->handle($record, auth()->user(), $data['checklist']);
+                    }),
                 Action::make('publish')
                     ->label('Publish')
                     ->color('primary')
@@ -78,5 +96,16 @@ class ReportsTable
                     DeleteBulkAction::make(),
                 ]),
             ]);
+    }
+
+    /**
+     * @param  array<int, WorkflowStatus|Visibility>  $cases
+     * @return array<string, string>
+     */
+    private static function enumOptions(array $cases): array
+    {
+        return collect($cases)
+            ->mapWithKeys(fn (object $case): array => [$case->value => $case->label()])
+            ->all();
     }
 }

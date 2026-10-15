@@ -5,11 +5,16 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Concerns\HasPublicUuid;
+use App\Enums\AliasType;
 use App\Enums\DistrictSource;
 use App\Enums\Platform;
 use App\Enums\ProfileStatus;
+use App\Support\FacebookUrlNormalizer;
+use App\Support\NameNormalizer;
 use Database\Factories\FacebookProfileFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -38,6 +43,46 @@ class FacebookProfile extends Model
             'first_recorded_at' => 'datetime',
             'last_recorded_at' => 'datetime',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::saving(function (FacebookProfile $profile): void {
+            $profile->display_name_normalized = app(NameNormalizer::class)->normalize($profile->current_display_name);
+
+            $canonical = app(FacebookUrlNormalizer::class)->normalize((string) $profile->canonical_url);
+
+            if ($canonical !== null) {
+                $profile->canonical_url = $canonical;
+
+                if ($profile->fb_numeric_id === null && preg_match('/profile\.php\?id=(\d+)$/', $canonical, $matches) === 1) {
+                    $profile->fb_numeric_id = $matches[1];
+                }
+            }
+        });
+    }
+
+    /**
+     * Matches profiles whose canonical URL, or any previously seen URL alias, equals the normalised URL.
+     *
+     * @param  Builder<FacebookProfile>  $query
+     */
+    #[Scope]
+    protected function matchingUrl(Builder $query, string $url): void
+    {
+        $canonical = app(FacebookUrlNormalizer::class)->normalize($url);
+
+        if ($canonical === null) {
+            $query->whereRaw('1 = 0');
+
+            return;
+        }
+
+        $query->where(fn (Builder $query) => $query
+            ->where('canonical_url', $canonical)
+            ->orWhereHas('aliases', fn (Builder $alias) => $alias
+                ->where('type', AliasType::Url)
+                ->where('value_normalized', $canonical)));
     }
 
     /** @return BelongsTo<District, $this> */

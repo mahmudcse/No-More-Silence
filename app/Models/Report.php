@@ -16,6 +16,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\Activitylog\Models\Concerns\LogsActivity;
+use Spatie\Activitylog\Support\LogOptions;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
 /**
  * @property WorkflowStatus $workflow_status
@@ -25,12 +29,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property SubmittedVia $submitted_via
  */
 #[Fillable(['tracking_code_hash', 'reporter_id', 'facebook_profile_id', 'incident_id', 'submitted_profile_url', 'submitted_comment_url', 'comment_text', 'comment_text_translation', 'comment_posted_at', 'category', 'severity', 'workflow_status', 'visibility', 'platform', 'submitted_via', 'submitted_by', 'duplicate_of_id', 'rejected_reason', 'verified_at', 'verified_by', 'published_at', 'published_by', 'submitter_ip_hash'])]
-class Report extends Model
+class Report extends Model implements HasMedia
 {
     /** @use HasFactory<ReportFactory> */
     use HasFactory;
 
     use HasPublicUuid;
+    use InteractsWithMedia;
+    use LogsActivity;
 
     /** @return array<string, string> */
     protected function casts(): array
@@ -46,6 +52,28 @@ class Report extends Model
             'verified_at' => 'datetime',
             'published_at' => 'datetime',
         ];
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('original')
+            ->useDisk('local')
+            ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp']);
+
+        $this->addMediaCollection('redacted')
+            ->useDisk('public')
+            ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp']);
+
+        $this->addMediaCollection('archive')
+            ->useDisk('local');
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logAll()
+            ->logOnlyDirty()
+            ->useLogName('report');
     }
 
     /** @return BelongsTo<Reporter, $this> */

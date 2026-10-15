@@ -4,8 +4,10 @@
 /public/fonts/filament
 /public/hot
 /public/js/filament
+/public/storage
 /storage/*.key
 /vendor
+/build
 .env
 .env.backup
 .env.production
@@ -20,3 +22,6 @@ yarn-error.log
 /.idea
 /.vscode
 /.sail
+/.claude
+/.commandcode
+/.junie

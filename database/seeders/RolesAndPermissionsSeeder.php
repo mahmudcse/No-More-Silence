@@ -13,15 +13,18 @@ class RolesAndPermissionsSeeder extends Seeder
     public function run(): void
     {
         foreach ([
+            'triage_report',
             'verify_report',
             'publish_report',
             'retract_report',
             'reject_report',
             'request_info_report',
+            'redact_evidence',
             'view_reporter_identity',
             'ban_reporter',
             'handle_appeal',
             'merge_profile',
+            'view_activity_log',
         ] as $name) {
             Permission::findOrCreate($name);
         }
@@ -31,7 +34,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         $this->role('triage', [
             'ViewAny:Report', 'View:Report', 'Update:Report',
-            'request_info_report', 'reject_report',
+            'triage_report', 'request_info_report', 'reject_report',
             'ViewAny:FacebookProfile', 'View:FacebookProfile',
             'ViewAny:Incident', 'View:Incident', 'Create:Incident', 'Update:Incident',
         ]);
@@ -45,6 +48,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         $this->role('redactor', [
             'ViewAny:Report', 'View:Report', 'Update:Report',
+            'redact_evidence',
             'ViewAny:FacebookProfile', 'View:FacebookProfile',
         ]);
 
