@@ -2,12 +2,15 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\AppealViewController;
 use App\Http\Controllers\DistrictViewController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\IncidentViewController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProfileViewController;
+use App\Http\Controllers\ReporterViewController;
+use App\Http\Controllers\SubmissionViewController;
 use App\Http\Controllers\WebSearchController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -29,6 +32,33 @@ Route::get('/methodology', [PageController::class, 'methodology'])->name('method
 Route::get('/safety-resources', [PageController::class, 'safetyResources'])->name('safety-resources');
 Route::get('/terms', [PageController::class, 'terms'])->name('terms');
 Route::get('/privacy', [PageController::class, 'privacy'])->name('privacy');
+
+// Submissions, Tracking, Appeals & Reporter Portal
+Route::get('/submit', [SubmissionViewController::class, 'create'])->name('submit');
+Route::post('/submit/share-target', [SubmissionViewController::class, 'shareTarget'])->name('submit.share-target');
+Route::get('/submit/shared-file/{shareId}/{filename}', [SubmissionViewController::class, 'sharedFile'])->name('submissions.shared-file');
+Route::get('/track/{code?}', [SubmissionViewController::class, 'track'])->name('track');
+Route::get('/appeals', [AppealViewController::class, 'create'])->name('appeals.create');
+Route::get('/my-submissions', [ReporterViewController::class, 'dashboard'])->name('reporter.dashboard');
+
+// PWA & TWA Static Endpoints
+Route::get('/manifest.webmanifest', fn () => response()->file(public_path('manifest.webmanifest'), [
+    'Content-Type' => 'application/manifest+json',
+]))->name('pwa.manifest');
+
+Route::get('/manifest.json', fn () => response()->file(public_path('manifest.json'), [
+    'Content-Type' => 'application/manifest+json',
+]));
+
+Route::get('/sw.js', fn () => response()->file(public_path('sw.js'), [
+    'Content-Type' => 'application/javascript',
+]))->name('pwa.sw');
+
+Route::get('/offline.html', fn () => response()->file(public_path('offline.html')))->name('pwa.offline');
+
+Route::get('/.well-known/assetlinks.json', fn () => response()->file(public_path('.well-known/assetlinks.json'), [
+    'Content-Type' => 'application/json',
+]))->name('twa.assetlinks');
 
 // User Auth & Dashboard (Internal / Staff)
 Route::get('/dashboard', function () {

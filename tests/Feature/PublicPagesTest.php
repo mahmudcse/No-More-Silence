@@ -180,3 +180,26 @@ test('all static policy and informational pages render successfully', function (
         ->assertOk()
         ->assertInertia(fn ($page) => $page->component('Pages/Privacy'));
 });
+
+test('phase 3 public pages render successfully', function (): void {
+    get(route('submit'))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->component('Submissions/Create')
+            ->has('categories')
+            ->has('districts')
+            ->has('incidents')
+        );
+
+    get(route('track'))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page->component('Submissions/Track'));
+
+    get(route('appeals.create'))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page->component('Appeals/Create'));
+
+    get(route('reporter.dashboard'))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page->component('Reporter/Dashboard'));
+});

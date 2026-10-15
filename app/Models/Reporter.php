@@ -9,10 +9,13 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Laravel\Sanctum\HasApiTokens;
 
 #[Fillable(['email', 'display_handle', 'reputation', 'is_banned'])]
 class Reporter extends Model
 {
+    use HasApiTokens;
+
     /** @use HasFactory<ReporterFactory> */
     use HasFactory;
 

@@ -1,0 +1,74 @@
+{
+  "id": "/?source=pwa",
+  "name": "No More Silence — স্বাধীন প্রমাণ ও আর্কাইভ",
+  "short_name": "No More Silence",
+  "description": "নারী ও শিশুদের প্রতি যৌন নিপীড়ন ও সাইবার সহিংসতার প্রকাশ্যে সাফাই গাওয়ার বিরুদ্ধে স্বাধীন নাগরিক আর্কাইভ ও প্রমাণ ভান্ডার।",
+  "lang": "bn",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "orientation": "portrait",
+  "background_color": "#020617",
+  "theme_color": "#020617",
+  "categories": ["news", "social", "utilities"],
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "রিপোর্ট জমা দিন (Submit)",
+      "short_name": "Submit",
+      "description": "সহিংস মন্তব্যের স্ক্রিনশট ও প্রমাণ জমা দিন",
+      "url": "/submit?source=shortcut",
+      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "স্ট্যাটাস ট্র্যাকিং (Track)",
+      "short_name": "Track",
+      "description": "জমাকৃত রিপোর্টের বর্তমান অবস্থা দেখুন",
+      "url": "/track?source=shortcut",
+      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "জেলা মানচিত্র (Map)",
+      "short_name": "Map",
+      "description": "৬৪ জেলার পরিসংখ্যান ও মানচিত্র",
+      "url": "/districts?source=shortcut",
+      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
+    }
+  ],
+  "share_target": {
+    "action": "/submit/share-target",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url",
+      "files": [
+        {
+          "name": "evidence",
+          "accept": ["image/*", "image/png", "image/jpeg", "image/webp"]
+        }
+      ]
+    }
+  }
+}

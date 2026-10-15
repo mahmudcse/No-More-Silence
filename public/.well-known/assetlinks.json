@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "org.nomoresilence.twa",
+      "sha256_cert_fingerprints": [
+        "14:6D:E9:7D:0F:52:AB:FC:A4:44:03:7E:8E:B4:98:97:77:46:75:A8:86:16:B3:AC:70:92:DE:0D:39:69:2B:64"
+      ]
+    }
+  }
+]

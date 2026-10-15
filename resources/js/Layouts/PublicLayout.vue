@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import PwaInstallPrompt from '@/Components/PwaInstallPrompt.vue';
 import { useLanguage } from '@/composables/useLanguage';
 import { Head, Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
@@ -152,10 +153,38 @@ const mobileMenuOpen = ref(false);
                     >
                         {{ isBn ? 'নিরাপত্তা ও সহায়তা' : 'Safety' }}
                     </Link>
+                    <Link
+                        href="/track"
+                        class="rounded-md px-3 py-1.5 text-slate-300 transition-colors hover:bg-slate-800 hover:text-white"
+                    >
+                        {{ isBn ? 'ট্র্যাকিং' : 'Track' }}
+                    </Link>
                 </nav>
 
-                <!-- Right Actions: Language Switch & Mobile Toggle -->
+                <!-- Right Actions: Submit CTA, Language Switch & Mobile Toggle -->
                 <div class="flex items-center gap-3">
+                    <Link
+                        href="/submit"
+                        class="hidden items-center gap-1.5 rounded-md bg-rose-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-rose-500 sm:inline-flex"
+                    >
+                        <svg
+                            class="h-3.5 w-3.5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M12 4v16m8-8H4"
+                            />
+                        </svg>
+                        <span>{{
+                            isBn ? 'রিপোর্ট জমা দিন' : 'Submit Report'
+                        }}</span>
+                    </Link>
+
                     <!-- Language Toggle -->
                     <button
                         type="button"
@@ -260,6 +289,36 @@ const mobileMenuOpen = ref(false);
                 >
                     {{ isBn ? 'আমাদের সম্পর্কে' : 'About' }}
                 </Link>
+                <div class="border-t border-slate-800 pt-2">
+                    <Link
+                        href="/submit"
+                        class="block rounded-md bg-rose-600 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-rose-500"
+                        @click="mobileMenuOpen = false"
+                    >
+                        {{ isBn ? 'রিপোর্ট জমা দিন' : 'Submit Report' }}
+                    </Link>
+                    <Link
+                        href="/track"
+                        class="block rounded-md px-3 py-2 text-sm font-medium text-slate-300 hover:bg-slate-800"
+                        @click="mobileMenuOpen = false"
+                    >
+                        {{ isBn ? 'ট্র্যাকিং' : 'Track Status' }}
+                    </Link>
+                    <Link
+                        href="/appeals"
+                        class="block rounded-md px-3 py-2 text-sm font-medium text-slate-300 hover:bg-slate-800"
+                        @click="mobileMenuOpen = false"
+                    >
+                        {{ isBn ? 'আপিল আবেদন' : 'Submit Appeal' }}
+                    </Link>
+                    <Link
+                        href="/my-submissions"
+                        class="block rounded-md px-3 py-2 text-sm font-medium text-slate-300 hover:bg-slate-800"
+                        @click="mobileMenuOpen = false"
+                    >
+                        {{ isBn ? 'আমার জমাকৃত রিপোর্ট' : 'My Submissions' }}
+                    </Link>
+                </div>
             </div>
         </header>
 
@@ -416,7 +475,9 @@ const mobileMenuOpen = ref(false);
                         <h3
                             class="text-xs font-semibold uppercase tracking-wider text-white"
                         >
-                            {{ isBn ? 'আপিল ও অধিকার' : 'Right of Reply' }}
+                            {{
+                                isBn ? 'আপিল ও পোর্টাল' : 'Right of Reply & API'
+                            }}
                         </h3>
                         <p class="text-xs leading-relaxed text-slate-400">
                             {{
@@ -425,12 +486,52 @@ const mobileMenuOpen = ref(false);
                                     : 'We are committed to factual accuracy. If you believe any record contains an error or false attribution, you may submit an appeal.'
                             }}
                         </p>
+                        <div class="space-y-1 pt-1 text-xs">
+                            <div>
+                                <Link
+                                    href="/appeals"
+                                    class="text-rose-400 transition-colors hover:text-rose-300"
+                                >
+                                    {{
+                                        isBn
+                                            ? 'আপিল ফরম পূরণ করুন →'
+                                            : 'Submit an Appeal →'
+                                    }}
+                                </Link>
+                            </div>
+                            <div>
+                                <Link
+                                    href="/my-submissions"
+                                    class="text-slate-400 transition-colors hover:text-slate-200"
+                                >
+                                    {{
+                                        isBn
+                                            ? 'রিপোর্টার পোর্টাল'
+                                            : 'Reporter Portal'
+                                    }}
+                                </Link>
+                            </div>
+                            <div>
+                                <a
+                                    href="/docs/api"
+                                    target="_blank"
+                                    rel="noopener"
+                                    class="text-slate-400 transition-colors hover:text-slate-200"
+                                >
+                                    {{
+                                        isBn
+                                            ? 'ওপেন এপিআই নথিপত্র'
+                                            : 'Public API Docs'
+                                    }}
+                                </a>
+                            </div>
+                        </div>
                         <div class="pt-2">
                             <Link
                                 href="/login"
-                                class="text-[11px] text-slate-400 transition-colors hover:text-slate-300"
+                                class="text-[11px] text-slate-500 transition-colors hover:text-slate-400"
                             >
-                                {{ isBn ? 'মডারেটর লগইন' : 'Moderator Login' }}
+                                {{ isBn ? 'মডারেটর লগইন' : 'Staff Login' }}
                             </Link>
                         </div>
                     </div>
@@ -453,5 +554,8 @@ const mobileMenuOpen = ref(false);
                 </div>
             </div>
         </footer>
+
+        <!-- PWA Install Prompt Banner -->
+        <PwaInstallPrompt />
     </div>
 </template>

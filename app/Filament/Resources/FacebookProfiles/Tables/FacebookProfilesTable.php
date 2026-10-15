@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\FacebookProfiles\Tables;
 
+use App\Actions\Export\ExportEvidencePackage;
 use App\Actions\Profiles\MergeProfiles;
 use App\Models\FacebookProfile;
 use Filament\Actions\Action;
@@ -30,6 +31,11 @@ class FacebookProfilesTable
             ])
             ->recordActions([
                 EditAction::make(),
+                Action::make('evidence_package')
+                    ->label('Evidence PDF')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->color('info')
+                    ->action(fn (FacebookProfile $record) => app(ExportEvidencePackage::class)->download($record)),
                 Action::make('merge')
                     ->label('Merge into')
                     ->color('danger')

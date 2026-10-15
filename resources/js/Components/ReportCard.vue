@@ -207,12 +207,25 @@ function getCategoryColor(category?: string | null): string {
                 }}
             </span>
 
-            <Link
-                href="/methodology"
-                class="text-slate-400 transition-colors hover:text-slate-300"
-            >
-                {{ isBn ? 'কার্যপদ্ধতি →' : 'Methodology →' }}
-            </Link>
+            <div class="flex items-center gap-3">
+                <Link
+                    :href="`/appeals?report_uuid=${report.uuid}${report.profile ? '&profile_url=' + encodeURIComponent(report.profile.canonical_url) : ''}`"
+                    class="text-rose-400/80 transition-colors hover:text-rose-300"
+                    :title="
+                        isBn
+                            ? 'এই রেকর্ডের ব্যাপারে আপত্তি জানান'
+                            : 'Dispute or appeal this record'
+                    "
+                >
+                    {{ isBn ? 'আপত্তি / আপিল' : 'Dispute' }}
+                </Link>
+                <Link
+                    href="/methodology"
+                    class="text-slate-400 transition-colors hover:text-slate-300"
+                >
+                    {{ isBn ? 'কার্যপদ্ধতি →' : 'Methodology →' }}
+                </Link>
+            </div>
         </div>
 
         <!-- Redacted Evidence Modal -->

@@ -167,3 +167,8 @@ test('api profile show returns profile details without avatar', function (): voi
         ->assertJsonPath('data.display_name', 'Profile User')
         ->assertJsonMissing(['avatar', 'photo', 'avatar_url']);
 });
+
+test('openapi documentation endpoints render successfully', function (): void {
+    \Pest\Laravel\get('/docs/api')->assertOk();
+    getJson('/docs/api.json')->assertOk()->assertJsonStructure(['openapi', 'info', 'paths']);
+});

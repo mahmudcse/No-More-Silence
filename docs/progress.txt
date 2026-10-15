@@ -1,7 +1,7 @@
 # No More Silence — Implementation Progress
 
 Last Updated: 2026-10-15
-Current Phase: Phase 2 — Public Website (COMPLETED)
+Current Phase: Phase 4 — PWA & Android (COMPLETED)
 
 ---
 
@@ -95,8 +95,95 @@ Current Phase: Phase 2 — Public Website (COMPLETED)
 
 ---
 
+## Phase 3 Checklist Status: COMPLETED
+- [x] **Public Submission Wizard (`/submit` & `POST /api/v1/submissions`):**
+  - Multi-step mobile-first wizard (`resources/js/Pages/Submissions/Create.vue`):
+    - Step 1: Evidence upload with client-side image compression (HTML5 Canvas scaling & JPEG re-encode to max 1920px at 85% quality), live preview, and size display.
+    - Step 2: Facebook URL input (profile canonicalization via `FacebookUrlNormalizer`), comment permalink, and verbatim comment transcription.
+    - Step 3: Violation category selection (`ReportCategory` enum with Bangla and English descriptions), optional incident linking or new incident creation, and optional reporter email.
+  - Submission controller (`App\Http\Controllers\Api\V1\SubmissionController`):
+    - Anti-abuse IP rate-limiting: 10 submissions per day per HMAC IP-hash with Bengali warning response.
+    - Instant duplicate detection: checks matching `submitted_comment_url` and returns immediate confirmation without polluting review queue.
+    - Returns 32-character tracking code (`NMS-...`) for anonymous tracking.
+    - Attaches uploaded screenshot evidence directly to Spatie media library.
+- [x] **Anonymous Status Tracking (`/track/{code?}` & `GET /api/v1/submissions/track/{code}`):**
+  - Dedicated tracking page (`resources/js/Pages/Submissions/Track.vue`) supporting direct URL parameter lookup or search bar input.
+  - Visual 4-stage stepper pipeline:
+    1. জমা গ্রহণ (Submitted)
+    2. প্রাথমিক বাছাই (Triaged)
+    3. ৮-দফা যাচাই (In Verification)
+    4. চূড়ান্ত সিদ্ধান্ত (Final Outcome: Verified, Needs Info, Duplicate, Rejected, Retracted)
+  - Detailed metadata display with category, linked incident, dates, and direct link to public record when verified.
+- [x] **Appeals Submission & Right-of-Reply (`/appeals` & `POST /api/v1/appeals`):**
+  - Dedicated appeal page (`resources/js/Pages/Appeals/Create.vue`) with 72-hour review SLA notification.
+  - Form request validation with Bengali error messages (`SubmitAppealRequest`).
+  - Matches target `FacebookProfile` by canonical URL or URL alias, links optional report UUID, and encrypts `contact` in SQLite/Postgres.
+- [x] **Reporter Authentication & Portal (`/my-submissions` & `/api/v1/auth/`):**
+  - Passwordless magic-link generation (`POST /api/v1/auth/magic-link`) sending temporary signed URLs valid for 30 minutes.
+  - Signature verification (`GET /api/v1/auth/verify/{id}`) issuing Laravel Sanctum personal access tokens.
+  - Protected submissions endpoint (`GET /api/v1/me/submissions`) supporting both Sanctum Bearer tokens and web session authentication.
+  - Reporter dashboard (`resources/js/Pages/Reporter/Dashboard.vue`) displaying contributor score / reputation and real-time review status of all submissions.
+- [x] **Official Evidence Dossier PDF Export (`barryvdh/laravel-dompdf`):**
+  - Created `App\Actions\Export\ExportEvidencePackage` generating formal legal evidence packages formatted for Police Cyber Crime Unit, BTRC, and court proceedings.
+  - Blade template `resources/views/pdf/evidence-package.blade.php`:
+    - Full profile metadata (canonical URL, numeric ID, self-declared district).
+    - Chronological evidentiary records with SHA-256 and pHash checksums.
+    - Section 14 Nari o Shishu Nirjatan Daman Ain victim protection compliance notice.
+  - Export action added to Filament `FacebookProfileResource` table for one-click admin download.
+  - Public API route `GET /api/v1/profiles/{id}/evidence-package` for lawful evidence download.
+- [x] **OpenAPI Documentation (`dedoc/scramble`):**
+  - Installed `dedoc/scramble` and published configuration (`config/scramble.php`).
+  - Publicly accessible interactive API reference at `/docs/api` and raw specification at `/docs/api.json`.
+- [x] **Automated Testing Suite:**
+  - `tests/Feature/SubmissionTest.php`: Submissions creation, duplicate detection, IP rate limiting, and code tracking.
+  - `tests/Feature/AppealTest.php`: Appeal creation, profile association, and contact encryption.
+  - `tests/Feature/ReporterAuthTest.php`: Magic-link signing, signature verification, and submission history gating.
+  - `tests/Feature/EvidencePackagePdfTest.php`: PDF compilation and API download response.
+  - `tests/Feature/PublicPagesTest.php`: Verified rendering of all Phase 3 Inertia views (`/submit`, `/track`, `/appeals`, `/my-submissions`).
+
+---
+
+## Phase 4 Checklist Status: COMPLETED
+- [x] **W3C Web App Manifest (`public/manifest.webmanifest` & `public/manifest.json`):**
+  - Declared `id`, `name`, `short_name`, `theme_color` (`#020617`), `background_color` (`#020617`), `display: standalone`, `display_override`, and app shortcuts.
+  - Embedded **Web Share Target Level 2** specification:
+    - `action: /submit/share-target`
+    - `method: POST`
+    - `enctype: multipart/form-data`
+    - Accepts shared title, text, url, and image files (`evidence`).
+- [x] **App Icons & Apple Touch Icons (`public/icons/`):**
+  - Vector SVG icon (`icon.svg`) with dignified slate shield and glowing rose exclamation emblem.
+  - Generated PNG icon set: `icon-192x192.png`, `icon-512x512.png`, `icon-maskable-512x512.png`, `apple-touch-icon.png`, and updated `favicon.ico`.
+- [x] **Service Worker (`public/sw.js`):**
+  - Pre-caches core offline assets (`/offline.html`, manifest, app icons).
+  - Runtime Stale-While-Revalidate caching strategy for public statistics (`/api/v1/stats*`) and district map data (`/api/v1/districts*`).
+  - Cache-first strategy for Vite production build chunks, fonts, and static icons.
+  - Network-only passthrough for administrative, authentication, and report submission requests.
+  - Network-first navigation with graceful fallback to `/offline.html`.
+- [x] **Offline Fallback Shell (`public/offline.html`):**
+  - Beautiful, lightweight offline page styled with slate-950 dark theme.
+  - Displays instant dialable links to emergency hotlines: 109 (Women & Child Abuse), 999 (National Emergency), 1098 (Child Helpline).
+- [x] **Web Share Target Backend Pipeline:**
+  - Created `shareTarget` and `sharedFile` methods in `SubmissionViewController`.
+  - Added CSRF exemption for `/submit/share-target` in `bootstrap/app.php`.
+  - Extracts Facebook URL automatically from shared post text and stores temporary files in local storage.
+  - Updated `Submissions/Create.vue` with `onMounted` loader that imports shared screenshots and pre-fills links with an imported banner.
+- [x] **PWA Install Prompt Component (`resources/js/Components/PwaInstallPrompt.vue`):**
+  - Captures `beforeinstallprompt` event and shows a non-intrusive mobile banner.
+  - Allows one-tap native installation or 7-day dismissal.
+  - Integrated into `resources/js/Layouts/PublicLayout.vue`.
+- [x] **Digital Asset Links & TWA Configuration:**
+  - `public/.well-known/assetlinks.json` configured for Android TWA verification (`org.nomoresilence.twa`).
+  - Created comprehensive setup guide in `docs/android-twa-setup.md` detailing Bubblewrap CLI steps, Google Play Console UGC compliance, IARC content ratings, and data safety disclosures.
+- [x] **UGC Policy & Safety Enforcement:**
+  - Added direct "আপত্তি / আপিল (Dispute)" link on every public report card in `ReportCard.vue` pre-filling the appeal form with report UUID and canonical profile URL.
+- [x] **Automated Testing Suite:**
+  - Created `tests/Feature/PwaAndShareTargetTest.php` covering manifest structure, assetlinks verification, service worker, offline shell, and Web Share Target multi-part ingestion.
+
+---
+
 ## Verification & Test Metrics
-- **Pest Test Suite:** 99 passing tests (438 assertions) across unit, feature, policy, and integration test suites (`./vendor/bin/sail test`).
+- **Pest Test Suite:** 119 passing tests (577 assertions) across unit, feature, policy, and integration test suites (`./vendor/bin/sail test`).
 - **Larastan Static Analysis:** Level 6 passed with 0 errors (`./vendor/bin/sail bin phpstan analyse`).
 - **Laravel Pint:** 100% formatted and passed (`./vendor/bin/sail bin pint --dirty --format agent`).
 - **ESLint:** 0 errors, 0 warnings (`npm run lint`).
@@ -104,12 +191,10 @@ Current Phase: Phase 2 — Public Website (COMPLETED)
 
 ---
 
-## Ready for Phase 3: Submissions, API & Appeals (Weeks 7–8)
+## Ready for Phase 5: Hardening & Launch (Weeks 11–12)
 Next phase items to implement:
-- Public submission wizard (multi-step mobile-first form with client-side image compression, Turnstile captcha, and copyable tracking code).
-- Tracking page (`/track/{code}`) for reporters to check submission status anonymously.
-- Reporter magic-link authentication (`/auth/magic-link`, `/auth/verify`) and "My Submissions" dashboard.
-- Public appeals submission form (`/appeals/submit`) with proof upload for account compromise/impersonation.
-- Admin appeal review workflow and Right-of-Reply public display on profile pages.
-- OpenAPI auto-generated documentation via Scramble (`dedoc/scramble`).
-- Evidence package PDF export for cyber crime units / BTRC / legal reporting.
+- Security review: authorization tests on all endpoints, upload MIME validation, Content Security Policy (CSP) headers, Cloudflare WAF rules.
+- Load testing and cache hit ratio validation on public API endpoints.
+- Database backup and restore verification runbook (`spatie/laravel-backup`).
+- Moderator handbook documentation (verification standards, redaction procedures, self-care guidelines).
+- Soft launch with moderator team and seed data verification.
