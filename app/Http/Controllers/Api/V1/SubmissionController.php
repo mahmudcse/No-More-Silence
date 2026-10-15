@@ -109,11 +109,28 @@ class SubmissionController extends Controller
 
         $report = $submittedReport->report;
 
-        // Attach uploaded screenshot evidence
-        /** @var array<UploadedFile> $files */
-        $files = $request->file('evidence', []);
-        foreach ($files as $file) {
-            $report->addMedia($file)->toMediaCollection('original');
+        // Attach uploaded screenshot evidence by section with custom properties
+        /** @var array<string, array<mixed>> $evidenceSections */
+        $evidenceSections = [
+            'post' => (array) $request->file('evidence_post', []),
+            'comment' => array_merge(
+                (array) $request->file('evidence_comment', []),
+                (array) $request->file('evidence', []) // legacy fallback
+            ),
+            'profile' => (array) $request->file('evidence_profile', []),
+            'other' => (array) $request->file('evidence_other', []),
+        ];
+
+        foreach ($evidenceSections as $type => $files) {
+            foreach ($files as $file) {
+                if ($file instanceof UploadedFile) {
+                    $report->addMedia($file)
+                        ->withCustomProperties([
+                            'evidence_type' => $type,
+                        ])
+                        ->toMediaCollection('original');
+                }
+            }
         }
 
         return response()->json([

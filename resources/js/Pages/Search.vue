@@ -47,7 +47,7 @@ function handleSearch() {
             <!-- Header -->
             <div class="space-y-2 text-center">
                 <h1
-                    class="text-2xl font-extrabold tracking-tight text-white sm:text-4xl"
+                    class="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl"
                 >
                     {{
                         isBn
@@ -55,7 +55,9 @@ function handleSearch() {
                             : 'Search Records & Profiles'
                     }}
                 </h1>
-                <p class="text-xs text-slate-400 sm:text-sm">
+                <p
+                    class="text-xs text-slate-600 dark:text-slate-400 sm:text-sm"
+                >
                     {{
                         isBn
                             ? 'ফেসবুক প্রোফাইল URL দিয়ে সরাসরি অথবা নাম দিয়ে পাবলিক মন্তব্যের রেকর্ড খুঁজুন।'
@@ -67,10 +69,10 @@ function handleSearch() {
             <!-- Search Form -->
             <form
                 @submit.prevent="handleSearch"
-                class="relative flex items-center shadow-lg"
+                class="relative flex items-center rounded-2xl p-1 apple-glass-card shadow-glass transition-all focus-within:shadow-glass-lg focus-within:border-black/20 dark:focus-within:border-white/20"
             >
                 <div
-                    class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400"
+                    class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 dark:text-slate-500"
                 >
                     <svg
                         class="h-5 w-5"
@@ -94,11 +96,11 @@ function handleSearch() {
                             ? 'ফেসবুক প্রোফাইল লিঙ্ক (URL) অথবা নাম লিখুন...'
                             : 'Enter Facebook URL or profile name...'
                     "
-                    class="w-full rounded-xl border border-slate-700 bg-slate-900 py-4 pl-12 pr-28 text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                    class="w-full bg-transparent py-4 pl-12 pr-28 text-sm text-slate-900 placeholder-slate-400 focus:outline-none dark:text-white dark:placeholder-slate-400"
                 />
                 <button
                     type="submit"
-                    class="absolute right-2 rounded-lg bg-rose-600 px-5 py-2.5 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-rose-500"
+                    class="absolute right-1.5 rounded-xl bg-rose-600 px-5 py-2.5 text-xs font-semibold text-white shadow-sm transition-all hover:bg-rose-500 active:scale-95"
                 >
                     {{ isBn ? 'অনুসন্ধান' : 'Search' }}
                 </button>
@@ -107,12 +109,24 @@ function handleSearch() {
             <!-- MANDATORY SAME-NAME WARNING BANNER -->
             <div
                 v-if="warning || searchType === 'name'"
-                class="space-y-2 rounded-xl border border-amber-800/80 bg-amber-950/40 p-4 text-amber-200 sm:p-5"
+                class="space-y-2 rounded-2xl border border-amber-500/20 bg-amber-500/10 p-5 text-amber-900 apple-glass-subtle dark:bg-amber-500/15 dark:text-amber-200"
             >
                 <div
-                    class="flex items-center gap-2 text-sm font-bold text-amber-300"
+                    class="flex items-center gap-2 text-sm font-bold text-amber-800 dark:text-amber-300"
                 >
-                    <span class="text-lg">⚠️</span>
+                    <svg
+                        class="h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="2"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
+                        />
+                    </svg>
                     <span>{{
                         isBn
                             ? 'জরুরি আইনি ও নৈতিক সতর্কতা'
@@ -120,7 +134,7 @@ function handleSearch() {
                     }}</span>
                 </div>
                 <p
-                    class="text-xs font-medium leading-relaxed text-amber-200/90 sm:text-sm"
+                    class="text-xs font-medium leading-relaxed text-amber-800 dark:text-amber-200/90 sm:text-sm"
                 >
                     {{
                         isBn
@@ -128,7 +142,7 @@ function handleSearch() {
                             : 'Warning: Multiple individuals may share the same name in Bangladesh. Do not attribute comments to any person without confirming their specific profile link and numeric ID.'
                     }}
                 </p>
-                <p class="text-[11px] text-amber-300/70">
+                <p class="text-[11px] text-amber-700 dark:text-amber-300/70">
                     {{
                         isBn
                             ? 'কারো প্রতি অন্যায্য হয়রানি বা মিথ্যা অপবাদ আইনত ও নৈতিকভাবে দণ্ডনীয় অপরাধ।'
@@ -141,17 +155,17 @@ function handleSearch() {
             <div class="space-y-4">
                 <div
                     v-if="initialQuery"
-                    class="flex items-center justify-between border-b border-slate-800 pb-3 text-xs text-slate-400"
+                    class="flex items-center justify-between border-b border-black/[0.06] pb-3 text-xs text-slate-600 dark:border-white/[0.08] dark:text-slate-400"
                 >
                     <div>
                         {{ isBn ? 'অনুসন্ধানের ফলাফল:' : 'Results for:' }}
-                        <strong class="text-slate-200"
+                        <strong class="text-slate-900 dark:text-slate-200"
                             >"{{ initialQuery }}"</strong
                         >
                     </div>
                     <div>
                         {{ isBn ? 'পাওয়া গেছে:' : 'Found:' }}
-                        <strong class="text-white">{{
+                        <strong class="text-slate-900 dark:text-white">{{
                             formatNumberByLocale(results.length, locale)
                         }}</strong>
                         {{ isBn ? 'টি প্রোফাইল' : 'profile(s)' }}
@@ -163,12 +177,12 @@ function handleSearch() {
                     <div
                         v-for="profile in results"
                         :key="profile.uuid"
-                        class="flex flex-col items-start justify-between gap-4 rounded-xl border border-slate-800 bg-slate-900/80 p-5 transition-colors hover:border-slate-700 sm:flex-row sm:items-center"
+                        class="flex flex-col items-start justify-between gap-4 rounded-2xl p-5 apple-glass-card shadow-glass transition-all duration-300 hover:-translate-y-0.5 hover:shadow-glass-lg sm:flex-row sm:items-center"
                     >
                         <div class="space-y-1.5">
                             <div class="flex items-center gap-2">
                                 <h3
-                                    class="text-base font-bold text-white transition-colors hover:text-rose-400"
+                                    class="text-base font-bold text-slate-900 transition-colors hover:text-rose-600 dark:text-white dark:hover:text-rose-400"
                                 >
                                     <Link :href="`/profiles/${profile.uuid}`">
                                         {{
@@ -180,30 +194,43 @@ function handleSearch() {
                                     </Link>
                                 </h3>
                                 <span
-                                    class="rounded border border-slate-700 bg-slate-800 px-2 py-0.5 text-[10px] text-slate-400"
+                                    class="rounded-full border border-black/[0.08] bg-black/[0.03] px-2.5 py-0.5 text-[10px] font-medium text-slate-600 dark:border-white/[0.1] dark:bg-white/[0.08] dark:text-slate-400"
                                 >
                                     Facebook
                                 </span>
                             </div>
 
                             <div
-                                class="break-all font-mono text-xs text-slate-400"
+                                class="break-all font-mono text-xs text-slate-500 dark:text-slate-400"
                             >
                                 <a
                                     :href="profile.canonical_url"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    class="text-slate-400 hover:text-slate-300 hover:underline"
+                                    class="inline-flex items-center gap-1 text-slate-500 hover:text-slate-700 hover:underline dark:text-slate-400 dark:hover:text-slate-300"
                                 >
-                                    {{ profile.canonical_url }} ↗
+                                    <span>{{ profile.canonical_url }}</span>
+                                    <svg
+                                        class="h-3 w-3 shrink-0"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
+                                        />
+                                    </svg>
                                 </a>
                             </div>
 
                             <div
-                                class="flex flex-wrap items-center gap-x-4 gap-y-1 pt-1 text-xs text-slate-400"
+                                class="flex flex-wrap items-center gap-x-4 gap-y-1 pt-1 text-xs text-slate-500 dark:text-slate-400"
                             >
                                 <span
-                                    class="flex items-center gap-1 font-semibold text-rose-400"
+                                    class="flex items-center gap-1 font-semibold text-rose-600 dark:text-rose-400"
                                 >
                                     <span
                                         class="h-1.5 w-1.5 rounded-full bg-rose-500"
@@ -225,7 +252,7 @@ function handleSearch() {
 
                                 <span
                                     v-if="profile.district"
-                                    class="text-slate-400"
+                                    class="text-slate-500 dark:text-slate-400"
                                 >
                                     {{
                                         isBn ? 'জেলা (দাবি করা):' : 'District:'
@@ -239,7 +266,7 @@ function handleSearch() {
 
                                 <span
                                     v-if="profile.first_recorded_at"
-                                    class="text-slate-400"
+                                    class="text-slate-500 dark:text-slate-400"
                                 >
                                     {{
                                         isBn
@@ -258,13 +285,24 @@ function handleSearch() {
 
                         <Link
                             :href="`/profiles/${profile.uuid}`"
-                            class="shrink-0 rounded-lg bg-slate-800 px-4 py-2 text-xs font-semibold text-slate-200 transition-colors hover:bg-slate-700 hover:text-white"
+                            class="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-black/[0.08] bg-black/[0.03] px-4 py-2 text-xs font-semibold text-slate-700 shadow-sm transition-all hover:bg-black/[0.06] active:scale-95 dark:border-white/[0.12] dark:bg-white/[0.08] dark:text-slate-200 dark:hover:bg-white/[0.14]"
                         >
-                            {{
-                                isBn
-                                    ? 'বিস্তারিত রেকর্ড দেখুন →'
-                                    : 'View Records →'
-                            }}
+                            <span>{{
+                                isBn ? 'বিস্তারিত রেকর্ড দেখুন' : 'View Records'
+                            }}</span>
+                            <svg
+                                class="h-3.5 w-3.5"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+                                />
+                            </svg>
                         </Link>
                     </div>
                 </div>
@@ -272,17 +310,37 @@ function handleSearch() {
                 <!-- Empty State -->
                 <div
                     v-else-if="initialQuery"
-                    class="space-y-3 rounded-xl border border-slate-800 bg-slate-900/50 py-12 text-center"
+                    class="space-y-3 rounded-2xl py-12 text-center apple-glass-card shadow-glass"
                 >
-                    <div class="text-3xl text-slate-400">🔍</div>
-                    <div class="text-base font-bold text-white">
+                    <div
+                        class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-black/[0.04] text-slate-400 dark:bg-white/[0.08] dark:text-slate-400"
+                    >
+                        <svg
+                            class="h-6 w-6"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+                            />
+                        </svg>
+                    </div>
+                    <div
+                        class="text-base font-bold text-slate-900 dark:text-white"
+                    >
                         {{
                             isBn
                                 ? 'কোনো যাচাইকৃত রেকর্ড পাওয়া যায়নি'
                                 : 'No Verified Records Found'
                         }}
                     </div>
-                    <p class="mx-auto max-w-md text-xs text-slate-400">
+                    <p
+                        class="mx-auto max-w-md text-xs text-slate-600 dark:text-slate-400"
+                    >
                         {{
                             isBn
                                 ? 'এই নাম বা প্রোফাইল লিঙ্কের অধীনে আমাদের সংরক্ষণাগারে কোনো প্রকাশিত রেকর্ড নেই। সঠিক ইউআরএল ব্যবহার করার চেষ্টা করুন।'

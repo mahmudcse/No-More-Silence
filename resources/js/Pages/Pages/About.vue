@@ -14,15 +14,15 @@ const { isBn } = useLanguage();
                 :content="
                     isBn
                         ? 'নো মোর সাইলেন্স সংরক্ষণাগারের লক্ষ্য, প্রেক্ষাপট ও পরিচালনা কাঠামো।'
-                        : 'About No More Silence — mission, history and governance.'
+                        : 'About No More Silence: mission, methodology, and governance.'
                 "
             />
         </Head>
 
         <div class="mx-auto max-w-4xl space-y-8 px-4 py-10 sm:px-6 lg:px-8">
-            <div class="border-b border-slate-800 pb-4">
+            <div class="border-b border-slate-200 pb-4 dark:border-slate-800">
                 <h1
-                    class="text-3xl font-extrabold tracking-tight text-white sm:text-4xl"
+                    class="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl"
                 >
                     {{
                         isBn
@@ -30,7 +30,9 @@ const { isBn } = useLanguage();
                             : 'About No More Silence'
                     }}
                 </h1>
-                <p class="mt-1 text-xs text-slate-400 sm:text-sm">
+                <p
+                    class="mt-1 text-xs text-slate-600 dark:text-slate-400 sm:text-sm"
+                >
                     {{
                         isBn
                             ? 'একটি স্বাধীন, নিরপেক্ষ ও জনস্বার্থমূলক ডিজিটাল সংরক্ষণাগার।'
@@ -40,10 +42,12 @@ const { isBn } = useLanguage();
             </div>
 
             <div
-                class="prose prose-invert prose-slate max-w-none space-y-6 text-sm leading-relaxed text-slate-300"
+                class="prose prose-slate dark:prose-invert max-w-none space-y-6 text-sm leading-relaxed text-slate-700 dark:text-slate-300"
             >
                 <section class="space-y-3">
-                    <h2 class="text-xl font-bold text-white">
+                    <h2
+                        class="text-xl font-bold text-slate-900 dark:text-white"
+                    >
                         {{ isBn ? 'আমাদের লক্ষ্য ও দর্শন' : 'Our Mission' }}
                     </h2>
                     <p>
@@ -63,18 +67,22 @@ const { isBn } = useLanguage();
                 </section>
 
                 <section
-                    class="space-y-3 rounded-xl border border-slate-800 bg-slate-900/60 p-6"
+                    class="space-y-3 rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/60"
                 >
-                    <h2 class="text-xl font-bold text-white">
+                    <h2
+                        class="text-xl font-bold text-slate-900 dark:text-white"
+                    >
                         {{
                             isBn
                                 ? 'মূল পরিচালন নীতিসমূহ'
                                 : 'Core Operating Principles'
                         }}
                     </h2>
-                    <ul class="list-disc space-y-2 pl-5 text-slate-300">
+                    <ul
+                        class="list-disc space-y-2 pl-5 text-slate-700 dark:text-slate-300"
+                    >
                         <li>
-                            <strong class="text-white">{{
+                            <strong class="text-slate-900 dark:text-white">{{
                                 isBn
                                     ? 'ভিকটিম সুরক্ষা (Victim Privacy):'
                                     : 'Victim Privacy:'
@@ -86,7 +94,7 @@ const { isBn } = useLanguage();
                             }}
                         </li>
                         <li>
-                            <strong class="text-white">{{
+                            <strong class="text-slate-900 dark:text-white">{{
                                 isBn
                                     ? 'দুই-ব্যক্তি যাচাইকরণ (Two-Person Rule):'
                                     : 'Two-Person Rule:'
@@ -98,7 +106,7 @@ const { isBn } = useLanguage();
                             }}
                         </li>
                         <li>
-                            <strong class="text-white">{{
+                            <strong class="text-slate-900 dark:text-white">{{
                                 isBn
                                     ? 'অপ্রাপ্তবয়স্কদের সুরক্ষা:'
                                     : 'Protection of Minors:'
@@ -110,7 +118,7 @@ const { isBn } = useLanguage();
                             }}
                         </li>
                         <li>
-                            <strong class="text-white">{{
+                            <strong class="text-slate-900 dark:text-white">{{
                                 isBn
                                     ? 'আপিল ও আত্মপক্ষ সমর্থনের অধিকার:'
                                     : 'Right of Reply & Appeals:'
@@ -125,7 +133,9 @@ const { isBn } = useLanguage();
                 </section>
 
                 <section class="space-y-3">
-                    <h2 class="text-xl font-bold text-white">
+                    <h2
+                        class="text-xl font-bold text-slate-900 dark:text-white"
+                    >
                         {{
                             isBn
                                 ? 'আইনি ও প্রাতিষ্ঠানিক রূপান্তর'

@@ -7,3 +7,5 @@ I am particularly good at, laravel, filament. I want to make the website with la
 people can search a name and see how many occurances are recorded under this facebook id. on the home page the recent verified reports will be shown. With his facebook profile, name and what he did, mainly screenshots.
 
 Admin can login to filament panel and see all the reports and can remove, or publish it to homepage. There should be layers of admins with roles. admin can make a role, and assign that role to a admin to work with.
+
+Show every report, just show if it's verified or not.

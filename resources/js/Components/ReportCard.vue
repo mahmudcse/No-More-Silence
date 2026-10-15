@@ -37,32 +37,38 @@ const { isBn, locale } = useLanguage();
 const showEvidenceModal = ref(false);
 
 const categoryColors: Record<string, string> = {
-    victim_blaming: 'bg-amber-950/70 text-amber-300 border-amber-800/60',
-    justifying_violence: 'bg-rose-950/70 text-rose-300 border-rose-800/60',
-    trivialising: 'bg-blue-950/70 text-blue-300 border-blue-800/60',
-    incitement: 'bg-red-950/70 text-red-300 border-red-800/60',
-    harassment: 'bg-purple-950/70 text-purple-300 border-purple-800/60',
+    victim_blaming:
+        'bg-amber-500/10 text-amber-700 border-amber-500/20 dark:bg-amber-500/15 dark:text-amber-300 dark:border-amber-400/20',
+    justifying_violence:
+        'bg-rose-500/10 text-rose-700 border-rose-500/20 dark:bg-rose-500/15 dark:text-rose-300 dark:border-rose-400/20',
+    trivialising:
+        'bg-blue-500/10 text-blue-700 border-blue-500/20 dark:bg-blue-500/15 dark:text-blue-300 dark:border-blue-400/20',
+    incitement:
+        'bg-red-500/10 text-red-700 border-red-500/20 dark:bg-red-500/15 dark:text-red-300 dark:border-red-400/20',
+    harassment:
+        'bg-purple-500/10 text-purple-700 border-purple-500/20 dark:bg-purple-500/15 dark:text-purple-300 dark:border-purple-400/20',
 };
 
 function getCategoryColor(category?: string | null): string {
-    if (!category) return 'bg-slate-800 text-slate-300 border-slate-700';
+    if (!category)
+        return 'bg-black/[0.04] text-slate-700 border-black/[0.08] dark:bg-white/[0.08] dark:text-slate-300 dark:border-white/[0.1]';
     return (
         categoryColors[category] ??
-        'bg-slate-800 text-slate-300 border-slate-700'
+        'bg-black/[0.04] text-slate-700 border-black/[0.08] dark:bg-white/[0.08] dark:text-slate-300 dark:border-white/[0.1]'
     );
 }
 </script>
 
 <template>
     <div
-        class="flex flex-col justify-between rounded-xl border border-slate-800 bg-slate-900/70 p-5 shadow-sm transition-colors hover:border-slate-700"
+        class="flex flex-col justify-between rounded-2xl p-5 apple-glass-card shadow-glass transition-all duration-300 hover:shadow-glass-lg hover:-translate-y-0.5"
     >
         <div class="space-y-3">
             <!-- Header: Category & Verification Date -->
             <div class="flex flex-wrap items-center justify-between gap-2">
                 <span
                     :class="[
-                        'rounded-full border px-2.5 py-1 text-xs font-semibold',
+                        'rounded-full border px-2.5 py-1 text-xs font-medium',
                         getCategoryColor(report.category),
                     ]"
                 >
@@ -78,10 +84,10 @@ function getCategoryColor(category?: string | null): string {
                 </span>
 
                 <span
-                    class="flex items-center gap-1 text-[11px] text-slate-400"
+                    class="flex items-center gap-1 text-[11px] text-slate-500 dark:text-slate-400"
                 >
                     <svg
-                        class="h-3.5 w-3.5 text-emerald-400"
+                        class="h-3.5 w-3.5 text-emerald-500 dark:text-emerald-400"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                     >
@@ -99,13 +105,15 @@ function getCategoryColor(category?: string | null): string {
             <!-- Profile Info (Display Name only, No Avatar) -->
             <div
                 v-if="report.profile"
-                class="flex items-center justify-between gap-2 border-t border-slate-800/60 pt-1"
+                class="flex items-center justify-between gap-2 border-t border-black/[0.04] pt-2 dark:border-white/[0.06]"
             >
                 <Link
                     :href="`/profiles/${report.profile.uuid}`"
-                    class="flex items-center gap-1.5 text-sm font-semibold text-slate-200 transition-colors hover:text-rose-400"
+                    class="flex items-center gap-1.5 text-sm font-semibold text-slate-800 transition-colors hover:text-rose-600 dark:text-slate-200 dark:hover:text-rose-400"
                 >
-                    <span class="h-2 w-2 rounded-full bg-slate-600"></span>
+                    <span
+                        class="h-2 w-2 rounded-full bg-slate-400 dark:bg-slate-500"
+                    ></span>
                     <span>{{
                         report.profile.display_name ??
                         (isBn ? 'নামবিহীন ফেসবুক ব্যবহারকারী' : 'Facebook User')
@@ -115,16 +123,29 @@ function getCategoryColor(category?: string | null): string {
                     :href="report.profile.canonical_url"
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="flex items-center gap-1 text-[11px] text-slate-400 underline underline-offset-2 hover:text-slate-300"
+                    class="flex items-center gap-1 text-[11px] text-slate-500 transition-colors hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
                     title="View Facebook profile"
                 >
-                    {{ isBn ? 'মূল লিংক ↗' : 'Source Link ↗' }}
+                    <span>{{ isBn ? 'মূল লিংক' : 'Source' }}</span>
+                    <svg
+                        class="h-3 w-3 text-slate-400 dark:text-slate-500"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                        />
+                    </svg>
                 </a>
             </div>
 
             <!-- Verbatim Comment Quote -->
             <div
-                class="relative rounded-lg border border-slate-800 bg-slate-950/60 p-3.5 font-sans text-sm leading-relaxed text-slate-200"
+                class="relative rounded-xl border border-black/[0.05] bg-black/[0.02] p-3.5 font-sans text-sm leading-relaxed text-slate-800 dark:border-white/[0.08] dark:bg-white/[0.04] dark:text-slate-200"
             >
                 <span class="mr-1 select-none font-serif text-xl text-rose-500"
                     >“</span
@@ -139,7 +160,7 @@ function getCategoryColor(category?: string | null): string {
 
                 <div
                     v-if="report.comment_text_translation"
-                    class="mt-2 border-t border-slate-800/60 pt-2 text-xs italic text-slate-400"
+                    class="mt-2 border-t border-black/[0.04] pt-2 text-xs italic text-slate-500 dark:border-white/[0.06] dark:text-slate-400"
                 >
                     {{ report.comment_text_translation }}
                 </div>
@@ -148,14 +169,15 @@ function getCategoryColor(category?: string | null): string {
             <!-- Context: Linked Incident -->
             <div
                 v-if="report.incident"
-                class="flex items-start gap-1.5 text-xs text-slate-400"
+                class="flex items-start gap-1.5 text-xs text-slate-500 dark:text-slate-400"
             >
-                <span class="shrink-0 font-medium text-slate-400">{{
-                    isBn ? 'ঘটনা:' : 'Incident:'
-                }}</span>
+                <span
+                    class="shrink-0 font-medium text-slate-600 dark:text-slate-400"
+                    >{{ isBn ? 'ঘটনা:' : 'Incident:' }}</span
+                >
                 <Link
                     :href="`/incidents/${report.incident.slug}`"
-                    class="truncate text-slate-300 underline underline-offset-2 hover:text-white"
+                    class="truncate text-slate-700 underline underline-offset-2 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"
                 >
                     {{
                         isBn
@@ -174,13 +196,13 @@ function getCategoryColor(category?: string | null): string {
 
         <!-- Footer Actions -->
         <div
-            class="mt-4 flex items-center justify-between border-t border-slate-800/80 pt-3 text-xs"
+            class="mt-4 flex items-center justify-between border-t border-black/[0.05] pt-3 text-xs dark:border-white/[0.06]"
         >
             <button
                 v-if="report.evidence_url"
                 type="button"
                 @click="showEvidenceModal = true"
-                class="flex items-center gap-1.5 rounded bg-slate-800 px-2.5 py-1 font-medium text-slate-300 transition-colors hover:bg-slate-700 hover:text-white"
+                class="flex items-center gap-1.5 rounded-full border border-black/[0.06] bg-black/[0.03] px-3 py-1 font-medium text-slate-700 transition-all hover:bg-black/[0.06] active:scale-95 dark:border-white/[0.08] dark:bg-white/[0.08] dark:text-slate-300 dark:hover:bg-white/[0.14]"
             >
                 <svg
                     class="h-3.5 w-3.5 text-slate-400"
@@ -210,7 +232,7 @@ function getCategoryColor(category?: string | null): string {
             <div class="flex items-center gap-3">
                 <Link
                     :href="`/appeals?report_uuid=${report.uuid}${report.profile ? '&profile_url=' + encodeURIComponent(report.profile.canonical_url) : ''}`"
-                    class="text-rose-400/80 transition-colors hover:text-rose-300"
+                    class="text-rose-600 transition-colors hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300"
                     :title="
                         isBn
                             ? 'এই রেকর্ডের ব্যাপারে আপত্তি জানান'
@@ -221,9 +243,22 @@ function getCategoryColor(category?: string | null): string {
                 </Link>
                 <Link
                     href="/methodology"
-                    class="text-slate-400 transition-colors hover:text-slate-300"
+                    class="inline-flex items-center gap-1 text-slate-500 transition-colors hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300"
                 >
-                    {{ isBn ? 'কার্যপদ্ধতি →' : 'Methodology →' }}
+                    <span>{{ isBn ? 'কার্যপদ্ধতি' : 'Methodology' }}</span>
+                    <svg
+                        class="h-3 w-3"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="2"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+                        />
+                    </svg>
                 </Link>
             </div>
         </div>
@@ -231,17 +266,17 @@ function getCategoryColor(category?: string | null): string {
         <!-- Redacted Evidence Modal -->
         <div
             v-if="showEvidenceModal && report.evidence_url"
-            class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xl"
             @click.self="showEvidenceModal = false"
         >
             <div
-                class="flex max-h-[90vh] w-full max-w-2xl flex-col space-y-3 rounded-xl border border-slate-800 bg-slate-900 p-4"
+                class="flex max-h-[90vh] w-full max-w-2xl flex-col space-y-3 rounded-3xl apple-glass-card p-5 shadow-2xl"
             >
                 <div
-                    class="flex items-center justify-between border-b border-slate-800 pb-2"
+                    class="flex items-center justify-between border-b border-black/[0.06] pb-3 dark:border-white/[0.08]"
                 >
                     <h4
-                        class="flex items-center gap-2 text-sm font-semibold text-white"
+                        class="flex items-center gap-2 text-sm font-semibold text-slate-900 dark:text-white"
                     >
                         <span>{{
                             isBn
@@ -249,7 +284,7 @@ function getCategoryColor(category?: string | null): string {
                                 : 'Verified & Redacted Evidence'
                         }}</span>
                         <span
-                            class="rounded border border-rose-800 bg-rose-950 px-2 py-0.5 text-[10px] text-rose-300"
+                            class="rounded-full border border-rose-500/20 bg-rose-500/10 px-2.5 py-0.5 text-[10px] font-medium text-rose-700 dark:border-rose-400/20 dark:bg-rose-500/15 dark:text-rose-300"
                         >
                             {{
                                 isBn
@@ -261,23 +296,38 @@ function getCategoryColor(category?: string | null): string {
                     <button
                         type="button"
                         @click="showEvidenceModal = false"
-                        class="p-1 text-lg font-bold text-slate-400 hover:text-white"
+                        class="rounded-full p-1.5 text-slate-500 hover:bg-black/[0.05] hover:text-slate-800 dark:text-slate-400 dark:hover:bg-white/[0.1] dark:hover:text-white"
+                        aria-label="Close"
                     >
-                        ✕
+                        <svg
+                            class="h-5 w-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M6 18L18 6M6 6l12 12"
+                            />
+                        </svg>
                     </button>
                 </div>
 
                 <div
-                    class="flex flex-1 items-center justify-center overflow-auto rounded-lg bg-black/50 p-2"
+                    class="flex flex-1 items-center justify-center overflow-auto rounded-2xl apple-glass-subtle p-3"
                 >
                     <img
                         :src="report.evidence_url"
                         :alt="report.comment_text ?? 'Redacted Evidence'"
-                        class="max-h-[70vh] rounded object-contain"
+                        class="max-h-[70vh] rounded-xl object-contain"
                     />
                 </div>
 
-                <div class="text-center text-[11px] text-slate-400">
+                <div
+                    class="text-center text-[11px] text-slate-500 dark:text-slate-400"
+                >
                     {{
                         isBn
                             ? 'আমাদের যাচাইকরণ নীতি অনুযায়ী ভিকটিম, অন্যান্য নির্দোষ ব্যক্তি এবং সংবেদনশীল তথ্য সার্ভারে স্থায়ীভাবে কালো বক্সে ঢেকে দেওয়া হয়েছে।'

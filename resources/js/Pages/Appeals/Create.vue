@@ -65,9 +65,11 @@ async function submitAppeal() {
             <!-- Header -->
             <div class="mb-8 text-center">
                 <span
-                    class="inline-flex items-center gap-1.5 rounded-full border border-rose-500/30 bg-rose-950/40 px-3 py-1 text-xs font-semibold text-rose-300"
+                    class="inline-flex items-center gap-1.5 rounded-full border border-rose-200 bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-700 dark:border-rose-500/30 dark:bg-rose-950/40 dark:text-rose-300"
                 >
-                    <span class="h-1.5 w-1.5 rounded-full bg-rose-400"></span>
+                    <span
+                        class="h-1.5 w-1.5 rounded-full bg-rose-600 dark:bg-rose-400"
+                    ></span>
                     {{
                         isBn
                             ? 'অধিকার ও নিরপেক্ষ পর্যালোচনা'
@@ -75,7 +77,7 @@ async function submitAppeal() {
                     }}
                 </span>
                 <h1
-                    class="mt-3 text-3xl font-extrabold tracking-tight text-white sm:text-4xl"
+                    class="mt-3 text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl"
                 >
                     {{
                         isBn
@@ -83,10 +85,12 @@ async function submitAppeal() {
                             : 'Submit an Appeal or Correction'
                     }}
                 </h1>
-                <p class="mx-auto mt-2 max-w-xl text-sm text-slate-400">
+                <p
+                    class="mx-auto mt-2 max-w-xl text-sm text-slate-600 dark:text-slate-400"
+                >
                     {{
                         isBn
-                            ? 'যদি আপনার বিশ্বাস হয় যে কোনো রেকর্ড ভুলবশত তৈরি হয়েছে, প্রোফাইল হ্যাকড হয়েছিল, ফেক অ্যাকাউন্ট দ্বারা অপব্যবহার হয়েছে, বা আপনার বক্তব্য অপ্রাসঙ্গিকভাবে তুলে ধরা হয়েছে—তবে বিস্তারিত জানিয়ে আপিল করুন।'
+                            ? 'যদি আপনার বিশ্বাস হয় যে কোনো রেকর্ড ভুলবশত তৈরি হয়েছে, প্রোফাইল হ্যাকড হয়েছিল, ফেক অ্যাকাউন্ট দ্বারা অপব্যবহার হয়েছে, বা বক্তব্য অপ্রাসঙ্গিকভাবে উপস্থাপিত হয়েছে, তবে বিস্তারিত প্রমাণসহ আপিল করুন।'
                             : 'If you believe a record was made in error, your account was compromised, impersonated, or context was missing, please submit an appeal with corroborating details.'
                     }}
                 </p>
@@ -94,19 +98,36 @@ async function submitAppeal() {
 
             <!-- Standard Procedure Notice -->
             <div
-                class="mb-8 rounded-xl border border-slate-700 bg-slate-900/60 p-4 text-xs text-slate-300"
+                class="mb-8 rounded-xl border border-slate-200 bg-white p-4 text-xs text-slate-700 shadow-sm dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-300"
             >
                 <div class="flex items-start gap-3">
-                    <span class="text-base text-rose-400">ℹ️</span>
+                    <svg
+                        class="mt-0.5 h-4 w-4 shrink-0 text-rose-600 dark:text-rose-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                    </svg>
+
                     <div class="space-y-1">
-                        <strong class="font-semibold text-white">
+                        <strong
+                            class="font-semibold text-slate-900 dark:text-white"
+                        >
                             {{
                                 isBn
                                     ? 'আপিল প্রক্রিয়ার নীতিমালা:'
                                     : 'Appeals Protocol & SLA:'
                             }}
                         </strong>
-                        <p class="leading-relaxed text-slate-400">
+                        <p
+                            class="leading-relaxed text-slate-600 dark:text-slate-400"
+                        >
                             {{
                                 isBn
                                     ? 'প্রতিটি আপিল আমাদের নিরপেক্ষ রিভিউয়ার বোর্ড দ্বারা ৭২ ঘণ্টার মধ্যে স্বতন্ত্রভাবে যাচাই করা হয়। প্রাথমিক সত্যতা মিললে তদন্তকালীন সময়ে রেকর্ডটি সাময়িকভাবে অপ্রকাশিত রাখা হয়।'
@@ -120,24 +141,40 @@ async function submitAppeal() {
             <!-- Success State -->
             <div
                 v-if="successData"
-                class="rounded-2xl border border-emerald-500/40 bg-emerald-950/20 p-8 text-center shadow-xl"
+                class="rounded-2xl border border-emerald-200 bg-emerald-50/70 p-8 text-center shadow-sm dark:border-emerald-500/40 dark:bg-emerald-950/20"
             >
                 <div
-                    class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/20 text-2xl text-emerald-400"
+                    class="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-emerald-200 bg-emerald-100 text-emerald-600 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-400"
                 >
-                    ✓
+                    <svg
+                        class="h-7 w-7"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="2"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M4.5 12.75l6 6 9-13.5"
+                        />
+                    </svg>
                 </div>
-                <h2 class="mt-4 text-2xl font-bold text-white">
+                <h2
+                    class="mt-4 text-2xl font-bold text-slate-900 dark:text-white"
+                >
                     {{
                         isBn
                             ? 'আপিল আবেদন গৃহীত হয়েছে'
                             : 'Appeal Successfully Received'
                     }}
                 </h2>
-                <p class="mt-2 text-sm text-slate-300">
+                <p class="mt-2 text-sm text-slate-700 dark:text-slate-300">
                     {{ successData.message }}
                 </p>
-                <div class="mt-4 font-mono text-xs text-slate-400">
+                <div
+                    class="mt-4 font-mono text-xs text-slate-500 dark:text-slate-400"
+                >
                     {{ isBn ? 'রেফারেন্স আইডি:' : 'Reference ID:' }} #{{
                         successData.appeal_id
                     }}
@@ -155,11 +192,11 @@ async function submitAppeal() {
             <!-- Form -->
             <div
                 v-else
-                class="rounded-2xl border border-slate-800 bg-slate-900/70 p-6 shadow-xl sm:p-8"
+                class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/70 sm:p-8"
             >
                 <div
                     v-if="errorMessage"
-                    class="mb-6 rounded-lg border border-rose-500/40 bg-rose-950/30 p-4 text-xs text-rose-300"
+                    class="mb-6 rounded-lg border border-rose-200 bg-rose-50 p-4 text-xs text-rose-800 dark:border-rose-500/40 dark:bg-rose-950/30 dark:text-rose-300"
                 >
                     {{ errorMessage }}
                 </div>
@@ -167,7 +204,7 @@ async function submitAppeal() {
                 <form @submit.prevent="submitAppeal" class="space-y-6">
                     <div>
                         <label
-                            class="block text-xs font-semibold text-slate-300"
+                            class="block text-xs font-semibold text-slate-700 dark:text-slate-300"
                         >
                             {{
                                 isBn
@@ -180,13 +217,13 @@ async function submitAppeal() {
                             type="url"
                             required
                             placeholder="https://www.facebook.com/..."
-                            class="mt-1.5 w-full rounded-lg border border-slate-700 bg-slate-800 px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:border-rose-500"
+                            class="mt-1.5 w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 shadow-sm focus:border-rose-500 focus:outline-none focus:ring-1 focus:ring-rose-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500"
                         />
                     </div>
 
                     <div>
                         <label
-                            class="block text-xs font-semibold text-slate-300"
+                            class="block text-xs font-semibold text-slate-700 dark:text-slate-300"
                         >
                             {{
                                 isBn
@@ -198,13 +235,13 @@ async function submitAppeal() {
                             v-model="form.report_uuid"
                             type="text"
                             placeholder="যেমন: 550e8400-e29b-41d4-a716-446655440000"
-                            class="mt-1.5 w-full rounded-lg border border-slate-700 bg-slate-800 px-3.5 py-2.5 font-mono text-sm text-white placeholder-slate-500 focus:border-rose-500"
+                            class="mt-1.5 w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 font-mono text-sm text-slate-900 placeholder-slate-400 shadow-sm focus:border-rose-500 focus:outline-none focus:ring-1 focus:ring-rose-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500"
                         />
                     </div>
 
                     <div>
                         <label
-                            class="block text-xs font-semibold text-slate-300"
+                            class="block text-xs font-semibold text-slate-700 dark:text-slate-300"
                         >
                             {{
                                 isBn
@@ -217,13 +254,13 @@ async function submitAppeal() {
                             type="text"
                             required
                             placeholder="আপিলের সিদ্ধান্ত ও যোগাযোগের জন্য..."
-                            class="mt-1.5 w-full rounded-lg border border-slate-700 bg-slate-800 px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:border-rose-500"
+                            class="mt-1.5 w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 shadow-sm focus:border-rose-500 focus:outline-none focus:ring-1 focus:ring-rose-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500"
                         />
                     </div>
 
                     <div>
                         <label
-                            class="block text-xs font-semibold text-slate-300"
+                            class="block text-xs font-semibold text-slate-700 dark:text-slate-300"
                         >
                             {{
                                 isBn
@@ -236,13 +273,13 @@ async function submitAppeal() {
                             required
                             rows="4"
                             placeholder="কেন এই রেকর্ডটি ভুল বা বিভ্রান্তিকর, অথবা কোনো ব্যাখ্যা থাকলে বিস্তারিত লিখুন..."
-                            class="mt-1.5 w-full rounded-lg border border-slate-700 bg-slate-800 px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:border-rose-500"
+                            class="mt-1.5 w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 shadow-sm focus:border-rose-500 focus:outline-none focus:ring-1 focus:ring-rose-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500"
                         ></textarea>
                     </div>
 
                     <div>
                         <label
-                            class="block text-xs font-semibold text-slate-300"
+                            class="block text-xs font-semibold text-slate-700 dark:text-slate-300"
                         >
                             {{
                                 isBn
@@ -254,7 +291,7 @@ async function submitAppeal() {
                             v-model="form.ownership_proof"
                             rows="2"
                             placeholder="ফেসবুক আইডি ভেরিফিকেশন, জিডি নম্বর বা অন্য কোনো প্রামাণ্য তথ্য..."
-                            class="mt-1.5 w-full rounded-lg border border-slate-700 bg-slate-800 px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:border-rose-500"
+                            class="mt-1.5 w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 shadow-sm focus:border-rose-500 focus:outline-none focus:ring-1 focus:ring-rose-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500"
                         ></textarea>
                     </div>
 

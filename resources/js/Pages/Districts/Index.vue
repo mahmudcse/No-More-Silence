@@ -83,7 +83,7 @@ function handleModeChange(mode: 'incident' | 'commenter') {
             <!-- Header -->
             <div class="space-y-3 text-center">
                 <h1
-                    class="text-2xl font-extrabold tracking-tight text-white sm:text-4xl"
+                    class="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl"
                 >
                     {{
                         isBn
@@ -91,7 +91,9 @@ function handleModeChange(mode: 'incident' | 'commenter') {
                             : '64 District Map & Statistics'
                     }}
                 </h1>
-                <p class="mx-auto max-w-2xl text-xs text-slate-400 sm:text-sm">
+                <p
+                    class="mx-auto max-w-2xl text-xs text-slate-600 dark:text-slate-400 sm:text-sm"
+                >
                     {{
                         isBn
                             ? '২০২২ সালের বাংলাদেশ পরিসংখ্যান ব্যুরো (BBS) জনশুমারি অনুযায়ী প্রতি ১ লাখ জনসংখ্যায় সহিংসতা ও সহিংসতার সমর্থক মন্তব্যের তুলনামূলক হার।'
@@ -112,17 +114,19 @@ function handleModeChange(mode: 'incident' | 'commenter') {
             <!-- District Table Filter & Search -->
             <div class="space-y-4">
                 <div
-                    class="flex flex-col justify-between gap-4 border-b border-slate-800 pb-4 sm:flex-row sm:items-center"
+                    class="flex flex-col justify-between gap-4 border-b border-slate-200 pb-4 dark:border-slate-800 sm:flex-row sm:items-center"
                 >
                     <div>
-                        <h2 class="text-xl font-bold tracking-tight text-white">
+                        <h2
+                            class="text-xl font-bold tracking-tight text-slate-900 dark:text-white"
+                        >
                             {{
                                 isBn
                                     ? 'সকল জেলার পরিসংখ্যান তালিকা'
                                     : 'District Table View'
                             }}
                         </h2>
-                        <p class="text-xs text-slate-400">
+                        <p class="text-xs text-slate-600 dark:text-slate-400">
                             {{
                                 isBn
                                     ? 'জেলা অনুযায়ী বিস্তারিত দেখতে নামের উপর ক্লিক করুন।'
@@ -140,18 +144,20 @@ function handleModeChange(mode: 'incident' | 'commenter') {
                                     ? 'জেলা বা বিভাগ খুঁজুন...'
                                     : 'Filter districts or division...'
                             "
-                            class="w-full rounded-lg border border-slate-700 bg-slate-900 px-3.5 py-2 text-xs text-white placeholder-slate-400 focus:ring-1 focus:ring-rose-500"
+                            class="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 shadow-sm focus:border-rose-500 focus:ring-1 focus:ring-rose-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder-slate-400"
                         />
                     </div>
                 </div>
 
                 <!-- Districts Table -->
                 <div
-                    class="overflow-x-auto rounded-xl border border-slate-800 bg-slate-900/60 shadow-lg"
+                    class="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900/60"
                 >
-                    <table class="w-full text-left text-xs text-slate-300">
+                    <table
+                        class="w-full text-left text-xs text-slate-700 dark:text-slate-300"
+                    >
                         <thead
-                            class="border-b border-slate-800 bg-slate-950 text-[11px] uppercase tracking-wider text-slate-400"
+                            class="border-b border-slate-200 bg-slate-50 text-[11px] uppercase tracking-wider text-slate-600 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-400"
                         >
                             <tr>
                                 <th class="px-4 py-3">
@@ -182,26 +188,32 @@ function handleModeChange(mode: 'incident' | 'commenter') {
                                 </th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-800/80">
+                        <tbody
+                            class="divide-y divide-slate-200 dark:divide-slate-800/80"
+                        >
                             <tr
                                 v-for="d in filteredDistricts"
                                 :key="d.code"
-                                class="transition-colors hover:bg-slate-800/40"
+                                class="transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/40"
                             >
-                                <td class="px-4 py-3 font-semibold text-white">
+                                <td
+                                    class="px-4 py-3 font-semibold text-slate-900 dark:text-white"
+                                >
                                     <Link
                                         :href="`/districts/${d.slug}`"
-                                        class="transition-colors hover:text-rose-400"
+                                        class="transition-colors hover:text-rose-600 dark:hover:text-rose-400"
                                     >
                                         {{ isBn ? d.name_bn : d.name_en }}
                                     </Link>
                                     <span
-                                        class="block text-[10px] font-normal text-slate-400"
+                                        class="block text-[10px] font-normal text-slate-500 dark:text-slate-400"
                                         >{{ d.name_en }}</span
                                     >
                                 </td>
 
-                                <td class="px-4 py-3 text-slate-400">
+                                <td
+                                    class="px-4 py-3 text-slate-600 dark:text-slate-400"
+                                >
                                     {{
                                         isBn
                                             ? (d.division?.name_bn ??
@@ -210,7 +222,9 @@ function handleModeChange(mode: 'incident' | 'commenter') {
                                     }}
                                 </td>
 
-                                <td class="px-4 py-3 text-right font-mono">
+                                <td
+                                    class="px-4 py-3 text-right font-mono text-slate-700 dark:text-slate-300"
+                                >
                                     {{
                                         formatNumberByLocale(
                                             d.population,
@@ -220,7 +234,7 @@ function handleModeChange(mode: 'incident' | 'commenter') {
                                 </td>
 
                                 <td
-                                    class="px-4 py-3 text-right font-bold text-rose-400"
+                                    class="px-4 py-3 text-right font-bold text-rose-600 dark:text-rose-400"
                                 >
                                     {{
                                         formatNumberByLocale(
@@ -231,7 +245,7 @@ function handleModeChange(mode: 'incident' | 'commenter') {
                                 </td>
 
                                 <td
-                                    class="px-4 py-3 text-right font-medium text-slate-200"
+                                    class="px-4 py-3 text-right font-medium text-slate-700 dark:text-slate-200"
                                 >
                                     {{
                                         formatNumberByLocale(
@@ -245,7 +259,7 @@ function handleModeChange(mode: 'incident' | 'commenter') {
                                 <td class="px-4 py-3 text-center">
                                     <Link
                                         :href="`/districts/${d.slug}`"
-                                        class="rounded bg-slate-800 px-2.5 py-1 text-[11px] text-slate-200 transition-colors hover:bg-slate-700 hover:text-white"
+                                        class="rounded border border-slate-300 bg-white px-2.5 py-1 text-[11px] text-slate-700 shadow-sm transition-colors hover:bg-slate-50 dark:border-transparent dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 dark:hover:text-white"
                                     >
                                         {{ isBn ? 'দেখুন' : 'View' }}
                                     </Link>

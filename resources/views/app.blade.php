@@ -6,9 +6,23 @@
 
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
+        <!-- Theme Initialization (Light mode by default, Prevents FOUC) -->
+        <script>
+            (function() {
+                try {
+                    const theme = localStorage.getItem('nms_theme');
+                    if (theme === 'dark') {
+                        document.documentElement.classList.add('dark');
+                    } else {
+                        document.documentElement.classList.remove('dark');
+                    }
+                } catch (e) {}
+            })();
+        </script>
+
         <!-- PWA & Mobile Web App -->
         <link rel="manifest" href="/manifest.webmanifest">
-        <meta name="theme-color" content="#020617">
+        <meta name="theme-color" content="#f8fafc">
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
         <meta name="apple-mobile-web-app-title" content="No More Silence">

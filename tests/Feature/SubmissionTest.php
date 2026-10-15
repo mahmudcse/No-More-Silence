@@ -125,3 +125,57 @@ test('tracking endpoint returns 404 for nonexistent code', function (): void {
     getJson(route('api.v1.submissions.track', ['code' => 'NMS-NONEXISTENT']))
         ->assertNotFound();
 });
+
+test('public submission accepts multiple photos across post, comment, profile, and other sections', function (): void {
+    $post1 = UploadedFile::fake()->image('post_context_1.jpg');
+    $post2 = UploadedFile::fake()->image('post_context_2.jpg');
+    $comment1 = UploadedFile::fake()->image('comment_evidence_1.jpg');
+    $comment2 = UploadedFile::fake()->image('comment_evidence_2.jpg');
+    $profile1 = UploadedFile::fake()->image('profile_bio.jpg');
+    $other1 = UploadedFile::fake()->image('inbox_proof.jpg');
+
+    $response = postJson(route('api.v1.submissions.store'), [
+        'submitted_profile_url' => 'https://www.facebook.com/violator.999',
+        'submitted_comment_url' => 'https://www.facebook.com/permalink/777',
+        'comment_text' => 'Direct apologia proof with multi-section screenshots',
+        'category' => ReportCategory::Incitement->value,
+        'evidence_post' => [$post1, $post2],
+        'evidence_comment' => [$comment1, $comment2],
+        'evidence_profile' => [$profile1],
+        'evidence_other' => [$other1],
+    ]);
+
+    $response->assertCreated()
+        ->assertJson([
+            'success' => true,
+            'already_reported' => false,
+        ]);
+
+    $uuid = $response->json('uuid');
+    $report = Report::query()->where('uuid', $uuid)->firstOrFail();
+
+    // Verify all 6 files are attached to 'original' collection
+    $media = $report->getMedia('original');
+    expect($media)->toHaveCount(6);
+
+    // Verify custom properties per section
+    $postMedia = $media->filter(fn ($m) => $m->getCustomProperty('evidence_type') === 'post');
+    $commentMedia = $media->filter(fn ($m) => $m->getCustomProperty('evidence_type') === 'comment');
+    $profileMedia = $media->filter(fn ($m) => $m->getCustomProperty('evidence_type') === 'profile');
+    $otherMedia = $media->filter(fn ($m) => $m->getCustomProperty('evidence_type') === 'other');
+
+    expect($postMedia)->toHaveCount(2)
+        ->and($commentMedia)->toHaveCount(2)
+        ->and($profileMedia)->toHaveCount(1)
+        ->and($otherMedia)->toHaveCount(1);
+});
+
+test('submission fails validation when no evidence screenshot is attached in any section', function (): void {
+    $response = postJson(route('api.v1.submissions.store'), [
+        'submitted_profile_url' => 'https://www.facebook.com/violator.999',
+        'comment_text' => 'No files attached',
+    ]);
+
+    $response->assertStatus(422)
+        ->assertJsonValidationErrors(['evidence']);
+});

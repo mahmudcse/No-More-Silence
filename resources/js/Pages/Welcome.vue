@@ -59,20 +59,30 @@ async function handleModeChange(mode: 'incident' | 'commenter') {
                 class="mx-auto max-w-5xl space-y-6 px-4 text-center sm:px-6 lg:px-8"
             >
                 <div
-                    class="inline-flex items-center gap-2 rounded-full border border-rose-900/60 bg-rose-950/40 px-3 py-1 text-xs font-medium text-rose-300"
+                    class="inline-flex items-center gap-2 rounded-full border border-black/[0.08] bg-white/70 px-3.5 py-1 text-xs font-medium text-slate-700 shadow-sm backdrop-blur-md dark:border-white/[0.12] dark:bg-white/[0.08] dark:text-slate-300"
                 >
-                    <span
-                        class="h-2 w-2 animate-pulse rounded-full bg-rose-500"
-                    ></span>
+                    <svg
+                        class="h-3.5 w-3.5 text-rose-500 dark:text-rose-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                        />
+                    </svg>
                     <span>{{
                         isBn
-                            ? '৮-দফা কঠোর যাচাইকরণ নীতি অনুসৃত'
-                            : 'Strict 8-Point Verification Standard'
+                            ? '৮-দফা প্রমাণ যাচাইকরণ মানদণ্ড'
+                            : '8-Point Evidence Verification Standard'
                     }}</span>
                 </div>
 
                 <h1
-                    class="text-3xl font-black leading-tight tracking-tight text-white sm:text-5xl"
+                    class="text-3xl font-extrabold leading-tight tracking-tight text-slate-900 dark:text-white sm:text-5xl lg:text-6xl"
                 >
                     {{
                         isBn
@@ -82,7 +92,7 @@ async function handleModeChange(mode: 'incident' | 'commenter') {
                 </h1>
 
                 <p
-                    class="mx-auto max-w-3xl text-base font-normal leading-relaxed text-slate-300 sm:text-lg"
+                    class="mx-auto max-w-3xl text-base font-normal leading-relaxed text-slate-600 dark:text-slate-300 sm:text-lg"
                 >
                     {{
                         isBn
@@ -95,10 +105,10 @@ async function handleModeChange(mode: 'incident' | 'commenter') {
                 <div class="mx-auto max-w-2xl pt-2">
                     <form
                         @submit.prevent="handleSearch"
-                        class="relative flex items-center"
+                        class="relative flex items-center rounded-2xl p-1 apple-glass-card shadow-glass transition-all focus-within:shadow-glass-lg focus-within:border-black/20 dark:focus-within:border-white/20"
                     >
                         <div
-                            class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400"
+                            class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 dark:text-slate-500"
                         >
                             <svg
                                 class="h-5 w-5"
@@ -122,21 +132,26 @@ async function handleModeChange(mode: 'incident' | 'commenter') {
                                     ? 'ফেসবুক প্রোফাইল লিঙ্ক অথবা নাম দিয়ে অনুসন্ধান করুন...'
                                     : 'Search by Facebook URL or name...'
                             "
-                            class="w-full rounded-xl border border-slate-700 bg-slate-900 py-3.5 pl-12 pr-28 text-sm text-white placeholder-slate-400 shadow-inner focus:border-rose-500 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                            class="w-full bg-transparent py-3 pl-11 pr-28 text-sm text-slate-900 placeholder-slate-400 focus:outline-none dark:text-white dark:placeholder-slate-500"
                         />
                         <button
                             type="submit"
-                            class="absolute right-2 rounded-lg bg-rose-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-rose-500"
+                            class="absolute right-1.5 rounded-xl bg-rose-600 px-5 py-2.5 text-xs font-semibold text-white shadow-sm transition-all hover:bg-rose-500 active:scale-95"
                         >
                             {{ isBn ? 'খুঁজুন' : 'Search' }}
                         </button>
                     </form>
-                    <div class="mt-2 px-2 text-left text-[11px] text-slate-400">
-                        💡
+                    <div
+                        class="mt-2 px-2 text-left text-[11px] text-slate-500 dark:text-slate-400"
+                    >
+                        <span
+                            class="font-semibold text-slate-700 dark:text-slate-300"
+                            >{{ isBn ? 'নির্দেশিকা:' : 'Format:' }}</span
+                        >
                         {{
                             isBn
-                                ? 'উদাহরণ: facebook.com/profile.php?id=... অথবা সুনির্দিষ্ট ব্যবহারকারীর নাম'
-                                : 'Example: full Facebook profile link or name'
+                                ? 'পূর্ণ ফেসবুক লিঙ্ক (যেমন facebook.com/profile.php?id=...) অথবা সুনির্দিষ্ট ব্যবহারকারীর নাম'
+                                : 'Full Facebook URL or exact display name'
                         }}
                     </div>
                 </div>
@@ -146,10 +161,10 @@ async function handleModeChange(mode: 'incident' | 'commenter') {
             <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div class="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
                     <div
-                        class="space-y-1 rounded-xl border border-slate-800 bg-slate-900/90 p-5 text-center"
+                        class="space-y-1.5 rounded-2xl p-6 text-center apple-glass-card shadow-glass transition-all duration-300 hover:-translate-y-0.5 hover:shadow-glass-lg"
                     >
                         <div
-                            class="text-2xl font-extrabold tracking-tight text-white sm:text-4xl"
+                            class="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl"
                         >
                             {{
                                 isBn
@@ -161,11 +176,13 @@ async function handleModeChange(mode: 'incident' | 'commenter') {
                             }}
                         </div>
                         <div
-                            class="text-xs font-semibold text-slate-400 sm:text-sm"
+                            class="text-xs font-semibold text-slate-600 dark:text-slate-300 sm:text-sm"
                         >
                             {{ isBn ? 'প্রাপ্ত রিপোর্ট' : 'Reports Received' }}
                         </div>
-                        <div class="text-[10px] text-slate-400">
+                        <div
+                            class="text-[10px] text-slate-400 dark:text-slate-500"
+                        >
                             {{
                                 isBn
                                     ? 'নাগরিকদের দ্বারা জমাকৃত'
@@ -175,10 +192,10 @@ async function handleModeChange(mode: 'incident' | 'commenter') {
                     </div>
 
                     <div
-                        class="space-y-1 rounded-xl border border-rose-900/40 bg-slate-900/90 p-5 text-center"
+                        class="space-y-1.5 rounded-2xl border-rose-500/20 bg-rose-50/40 p-6 text-center apple-glass-card shadow-glass transition-all duration-300 hover:-translate-y-0.5 hover:shadow-glass-lg dark:bg-rose-950/20"
                     >
                         <div
-                            class="text-2xl font-extrabold tracking-tight text-rose-400 sm:text-4xl"
+                            class="text-2xl font-extrabold tracking-tight text-rose-600 dark:text-rose-400 sm:text-4xl"
                         >
                             {{
                                 isBn
@@ -190,11 +207,13 @@ async function handleModeChange(mode: 'incident' | 'commenter') {
                             }}
                         </div>
                         <div
-                            class="text-xs font-semibold text-rose-200 sm:text-sm"
+                            class="text-xs font-semibold text-rose-900 dark:text-rose-200 sm:text-sm"
                         >
                             {{ isBn ? 'যাচাইকৃত রেকর্ড' : 'Verified Records' }}
                         </div>
-                        <div class="text-[10px] text-rose-300/70">
+                        <div
+                            class="text-[10px] text-rose-700/80 dark:text-rose-300/70"
+                        >
                             {{
                                 isBn
                                     ? '৮-দফা নিয়মে প্রমাণিত'
@@ -204,10 +223,10 @@ async function handleModeChange(mode: 'incident' | 'commenter') {
                     </div>
 
                     <div
-                        class="space-y-1 rounded-xl border border-slate-800 bg-slate-900/90 p-5 text-center"
+                        class="space-y-1.5 rounded-2xl p-6 text-center apple-glass-card shadow-glass transition-all duration-300 hover:-translate-y-0.5 hover:shadow-glass-lg"
                     >
                         <div
-                            class="text-2xl font-extrabold tracking-tight text-white sm:text-4xl"
+                            class="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl"
                         >
                             {{
                                 isBn
@@ -219,7 +238,7 @@ async function handleModeChange(mode: 'incident' | 'commenter') {
                             }}
                         </div>
                         <div
-                            class="text-xs font-semibold text-slate-400 sm:text-sm"
+                            class="text-xs font-semibold text-slate-600 dark:text-slate-300 sm:text-sm"
                         >
                             {{
                                 isBn
@@ -227,7 +246,9 @@ async function handleModeChange(mode: 'incident' | 'commenter') {
                                     : 'Profiles Documented'
                             }}
                         </div>
-                        <div class="text-[10px] text-slate-400">
+                        <div
+                            class="text-[10px] text-slate-400 dark:text-slate-500"
+                        >
                             {{
                                 isBn
                                     ? 'অনন্য ফেসবুক একাউন্ট'
@@ -237,10 +258,10 @@ async function handleModeChange(mode: 'incident' | 'commenter') {
                     </div>
 
                     <div
-                        class="space-y-1 rounded-xl border border-slate-800 bg-slate-900/90 p-5 text-center"
+                        class="space-y-1.5 rounded-2xl p-6 text-center apple-glass-card shadow-glass transition-all duration-300 hover:-translate-y-0.5 hover:shadow-glass-lg"
                     >
                         <div
-                            class="text-2xl font-extrabold tracking-tight text-white sm:text-4xl"
+                            class="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl"
                         >
                             {{
                                 isBn
@@ -250,12 +271,13 @@ async function handleModeChange(mode: 'incident' | 'commenter') {
                                           locale,
                                       )
                             }}
-                            <span class="text-sm font-normal text-slate-400"
+                            <span
+                                class="text-sm font-normal text-slate-500 dark:text-slate-400"
                                 >/ {{ isBn ? '৬৪' : '64' }}</span
                             >
                         </div>
                         <div
-                            class="text-xs font-semibold text-slate-400 sm:text-sm"
+                            class="text-xs font-semibold text-slate-600 dark:text-slate-300 sm:text-sm"
                         >
                             {{
                                 isBn
@@ -263,7 +285,9 @@ async function handleModeChange(mode: 'incident' | 'commenter') {
                                     : 'Districts Covered'
                             }}
                         </div>
-                        <div class="text-[10px] text-slate-400">
+                        <div
+                            class="text-[10px] text-slate-400 dark:text-slate-500"
+                        >
                             {{
                                 isBn
                                     ? '৬৪ জেলার ঘটনা মনিটরিং'
@@ -278,7 +302,7 @@ async function handleModeChange(mode: 'incident' | 'commenter') {
             <section class="mx-auto max-w-5xl space-y-4 px-4 sm:px-6 lg:px-8">
                 <div class="space-y-2 text-center">
                     <h2
-                        class="text-2xl font-bold tracking-tight text-white sm:text-3xl"
+                        class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl"
                     >
                         {{
                             isBn
@@ -287,7 +311,7 @@ async function handleModeChange(mode: 'incident' | 'commenter') {
                         }}
                     </h2>
                     <p
-                        class="mx-auto max-w-2xl text-xs text-slate-400 sm:text-sm"
+                        class="mx-auto max-w-2xl text-xs text-slate-600 dark:text-slate-400 sm:text-sm"
                     >
                         {{
                             isBn
@@ -307,11 +331,11 @@ async function handleModeChange(mode: 'incident' | 'commenter') {
             <!-- Featured Verified Reports Feed -->
             <section class="mx-auto max-w-7xl space-y-6 px-4 sm:px-6 lg:px-8">
                 <div
-                    class="flex flex-col justify-between gap-4 border-b border-slate-800 pb-4 sm:flex-row sm:items-end"
+                    class="flex flex-col justify-between gap-4 border-b border-black/[0.06] pb-4 dark:border-white/[0.08] sm:flex-row sm:items-end"
                 >
                     <div>
                         <h2
-                            class="text-xl font-bold tracking-tight text-white sm:text-2xl"
+                            class="text-xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-2xl"
                         >
                             {{
                                 isBn
@@ -319,7 +343,7 @@ async function handleModeChange(mode: 'incident' | 'commenter') {
                                     : 'Recent Verified Records'
                             }}
                         </h2>
-                        <p class="text-xs text-slate-400">
+                        <p class="text-xs text-slate-600 dark:text-slate-400">
                             {{
                                 isBn
                                     ? 'দুই স্তরবিশিষ্ট নিরপেক্ষ পর্যালোচনার পর উন্মুক্ত করা সর্বজনীন মন্তব্য।'
@@ -330,13 +354,26 @@ async function handleModeChange(mode: 'incident' | 'commenter') {
 
                     <Link
                         href="/search"
-                        class="flex items-center gap-1 text-xs font-semibold text-rose-400 transition-colors hover:text-rose-300"
+                        class="flex items-center gap-1.5 text-xs font-semibold text-rose-600 transition-colors hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300"
                     >
                         <span>{{
                             isBn
-                                ? 'সকল রেকর্ড ও প্রোফাইল অনুসন্ধান করুন →'
-                                : 'Search all records & profiles →'
+                                ? 'সকল রেকর্ড ও প্রোফাইল অনুসন্ধান করুন'
+                                : 'Search all records & profiles'
                         }}</span>
+                        <svg
+                            class="h-3.5 w-3.5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+                            />
+                        </svg>
                     </Link>
                 </div>
 
@@ -352,7 +389,7 @@ async function handleModeChange(mode: 'incident' | 'commenter') {
                 </div>
                 <div
                     v-else
-                    class="rounded-xl border border-slate-800 bg-slate-900/50 py-12 text-center text-sm text-slate-400"
+                    class="rounded-2xl py-12 text-center text-sm text-slate-500 apple-glass-card shadow-glass dark:text-slate-400"
                 >
                     {{
                         isBn
@@ -365,23 +402,39 @@ async function handleModeChange(mode: 'incident' | 'commenter') {
             <!-- Methodology & Safety Callout Banner -->
             <section class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
                 <div
-                    class="space-y-4 rounded-2xl border border-slate-800 bg-gradient-to-br from-slate-900 to-slate-950 p-6 shadow-xl sm:p-8"
+                    class="space-y-6 rounded-3xl p-6 sm:p-8 apple-glass-card shadow-glass-lg"
                 >
                     <div class="flex items-center gap-3">
                         <div
-                            class="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-700 bg-slate-800 text-slate-200"
+                            class="flex h-11 w-11 items-center justify-center rounded-2xl border border-black/[0.06] bg-black/[0.03] text-slate-800 dark:border-white/[0.1] dark:bg-white/[0.08] dark:text-white"
                         >
-                            ⚖️
+                            <svg
+                                class="h-5 w-5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"
+                                />
+                            </svg>
                         </div>
                         <div>
-                            <h3 class="text-base font-bold text-white">
+                            <h3
+                                class="text-base font-bold text-slate-900 dark:text-white"
+                            >
                                 {{
                                     isBn
                                         ? 'স্বচ্ছতা, সততা এবং আইনি সুরক্ষা'
                                         : 'Transparency, Integrity & Legal Safeguards'
                                 }}
                             </h3>
-                            <p class="text-xs text-slate-400">
+                            <p
+                                class="text-xs text-slate-600 dark:text-slate-400"
+                            >
                                 {{
                                     isBn
                                         ? 'আমরা ব্যক্তিগত মতামত বা অপবাদের স্থান নই; কেবল প্রমাণিত সর্বজনীন বক্তব্য সংরক্ষণ করি।'
@@ -392,17 +445,22 @@ async function handleModeChange(mode: 'incident' | 'commenter') {
                     </div>
 
                     <div
-                        class="grid grid-cols-1 gap-4 pt-2 text-xs text-slate-300 md:grid-cols-3"
+                        class="grid grid-cols-1 gap-4 pt-1 text-xs text-slate-600 dark:text-slate-300 md:grid-cols-3"
                     >
                         <div
-                            class="space-y-1 rounded-lg border border-slate-800 bg-slate-950/60 p-3"
+                            class="space-y-1.5 rounded-2xl p-4 apple-glass-subtle"
                         >
-                            <strong class="block text-white">{{
-                                isBn
-                                    ? '১. দুই-ব্যক্তি নীতি (Two-Person Rule)'
-                                    : '1. Two-Person Rule'
-                            }}</strong>
-                            <p class="text-[11px] text-slate-400">
+                            <strong
+                                class="block font-semibold text-slate-900 dark:text-white"
+                                >{{
+                                    isBn
+                                        ? '১. দুই-ব্যক্তি নীতি (Two-Person Rule)'
+                                        : '1. Two-Person Rule'
+                                }}</strong
+                            >
+                            <p
+                                class="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400"
+                            >
                                 {{
                                     isBn
                                         ? 'যে মডারেটর প্রমাণ যাচাই করবেন, তিনি কখনোই একা প্রকাশ করতে পারবেন না।'
@@ -411,14 +469,19 @@ async function handleModeChange(mode: 'incident' | 'commenter') {
                             </p>
                         </div>
                         <div
-                            class="space-y-1 rounded-lg border border-slate-800 bg-slate-950/60 p-3"
+                            class="space-y-1.5 rounded-2xl p-4 apple-glass-subtle"
                         >
-                            <strong class="block text-white">{{
-                                isBn
-                                    ? '২. ভিকটিমের শতভাগ গোপনীয়তা'
-                                    : '2. 100% Victim Privacy'
-                            }}</strong>
-                            <p class="text-[11px] text-slate-400">
+                            <strong
+                                class="block font-semibold text-slate-900 dark:text-white"
+                                >{{
+                                    isBn
+                                        ? '২. ভিকটিমের শতভাগ গোপনীয়তা'
+                                        : '2. 100% Victim Privacy'
+                                }}</strong
+                            >
+                            <p
+                                class="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400"
+                            >
                                 {{
                                     isBn
                                         ? 'ভিকটিম বা সংশ্লিষ্ট অপ্রাপ্তবয়স্কদের কোনো নাম, ছবি বা পরিচয় সংরক্ষণ বা প্রকাশ করা হয় না।'
@@ -427,14 +490,19 @@ async function handleModeChange(mode: 'incident' | 'commenter') {
                             </p>
                         </div>
                         <div
-                            class="space-y-1 rounded-lg border border-slate-800 bg-slate-950/60 p-3"
+                            class="space-y-1.5 rounded-2xl p-4 apple-glass-subtle"
                         >
-                            <strong class="block text-white">{{
-                                isBn
-                                    ? '৩. স্বাধীন আপিল অধিকার'
-                                    : '3. Right of Reply'
-                            }}</strong>
-                            <p class="text-[11px] text-slate-400">
+                            <strong
+                                class="block font-semibold text-slate-900 dark:text-white"
+                                >{{
+                                    isBn
+                                        ? '৩. স্বাধীন আপিল অধিকার'
+                                        : '3. Right of Reply'
+                                }}</strong
+                            >
+                            <p
+                                class="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400"
+                            >
                                 {{
                                     isBn
                                         ? 'হ্যাক হওয়া আইডি বা ভুল পরিচয়ের ক্ষেত্রে যে কেউ প্রমাণের ভিত্তিতে আপিল করতে পারেন।'

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import PwaInstallPrompt from '@/Components/PwaInstallPrompt.vue';
 import { useLanguage } from '@/composables/useLanguage';
+import { useTheme } from '@/composables/useTheme';
 import { Head, Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
@@ -9,66 +10,93 @@ defineProps<{
 }>();
 
 const { isBn, toggleLocale } = useLanguage();
+const { isDark, toggleTheme } = useTheme();
 const mobileMenuOpen = ref(false);
 </script>
 
 <template>
     <div
-        class="flex min-h-screen flex-col bg-slate-950 font-sans text-slate-100 selection:bg-rose-500 selection:text-white"
+        class="relative flex min-h-screen flex-col bg-[#fbfbfd] font-sans text-[#1d1d1f] antialiased transition-colors duration-200 selection:bg-rose-500 selection:text-white dark:bg-[#000000] dark:text-[#f5f5f7]"
     >
         <Head
             :title="
                 title
-                    ? `${title} — No More Silence`
-                    : 'No More Silence — সহিসংতার সমর্থনে পাবলিক মন্তব্যের স্বাধীন প্রমাণ ও আর্কাইভ'
+                    ? `${title} | No More Silence`
+                    : isBn
+                      ? 'No More Silence: সহিংসতার সমর্থনে মন্তব্যের স্বাধীন আর্কাইভ'
+                      : 'No More Silence | Public Record Archive'
             "
         />
 
+        <!-- Apple-style Ambient Aura Lighting (reveals frosted glass depth) -->
+        <div
+            class="pointer-events-none fixed inset-0 -z-10 overflow-hidden"
+            aria-hidden="true"
+        >
+            <div
+                class="absolute -top-40 left-1/2 h-[500px] w-[1000px] -translate-x-1/2 rounded-full bg-gradient-to-tr from-rose-200/30 via-slate-200/40 to-sky-200/25 blur-3xl dark:from-rose-950/20 dark:via-slate-900/30 dark:to-sky-950/15"
+            ></div>
+            <div
+                class="absolute -left-40 top-[35%] h-[500px] w-[500px] rounded-full bg-gradient-to-br from-rose-100/30 to-transparent blur-3xl dark:from-rose-950/15"
+            ></div>
+            <div
+                class="absolute -right-40 top-[60%] h-[600px] w-[600px] rounded-full bg-gradient-to-bl from-slate-200/40 via-sky-100/20 to-transparent blur-3xl dark:from-slate-900/30"
+            ></div>
+        </div>
+
         <!-- Emergency Helpline Top Ribbon -->
         <div
-            class="border-b border-rose-900/40 bg-rose-950/90 px-4 py-2 text-center text-xs text-rose-200"
+            class="border-b border-rose-200/60 bg-rose-50/70 px-4 py-1.5 text-center text-xs text-rose-950 backdrop-blur-md transition-colors dark:border-rose-900/40 dark:bg-rose-950/40 dark:text-rose-200"
         >
             <div
                 class="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-6 gap-y-1"
             >
-                <span class="font-medium text-rose-300">
+                <span class="font-medium text-rose-900 dark:text-rose-300">
                     {{
                         isBn ? 'জরুরি সহায়তা প্রয়োজন?' : 'Need Emergency Help?'
                     }}
                 </span>
                 <span class="inline-flex items-center gap-1.5">
                     <span
-                        class="h-1.5 w-1.5 animate-pulse rounded-full bg-rose-400"
+                        class="h-1.5 w-1.5 rounded-full bg-rose-500 dark:bg-rose-400"
                     ></span>
                     {{ isBn ? 'জাতীয় জরুরি সেবা:' : 'National Emergency:' }}
-                    <strong class="font-bold tracking-wider text-white"
+                    <strong
+                        class="font-semibold tracking-wider text-rose-950 dark:text-white"
                         >৯৯৯ (999)</strong
                     >
                 </span>
+
                 <span class="inline-flex items-center gap-1.5">
-                    <span class="h-1.5 w-1.5 rounded-full bg-rose-400"></span>
+                    <span
+                        class="h-1.5 w-1.5 rounded-full bg-rose-500 dark:bg-rose-400"
+                    ></span>
                     {{
                         isBn
                             ? 'নারী ও শিশু নির্যাতন প্রতিরোধ:'
                             : 'Women & Child Abuse Helpline:'
                     }}
-                    <strong class="font-bold tracking-wider text-white"
+                    <strong
+                        class="font-semibold tracking-wider text-rose-950 dark:text-white"
                         >১০৯ (109)</strong
                     >
                 </span>
                 <span class="inline-flex items-center gap-1.5">
-                    <span class="h-1.5 w-1.5 rounded-full bg-rose-400"></span>
+                    <span
+                        class="h-1.5 w-1.5 rounded-full bg-rose-500 dark:bg-rose-400"
+                    ></span>
                     {{ isBn ? 'শিশু হেল্পলাইন:' : 'Child Helpline:' }}
-                    <strong class="font-bold tracking-wider text-white"
+                    <strong
+                        class="font-semibold tracking-wider text-rose-950 dark:text-white"
                         >১০৯৮ (1098)</strong
                     >
                 </span>
             </div>
         </div>
 
-        <!-- Main Header -->
+        <!-- Main Header (Apple Glass Navbar) -->
         <header
-            class="sticky top-0 z-40 border-b border-slate-800 bg-slate-900/90 backdrop-blur"
+            class="sticky top-0 z-40 border-b border-black/[0.06] bg-white/75 backdrop-blur-2xl transition-colors dark:border-white/[0.08] dark:bg-black/75"
         >
             <div
                 class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8"
@@ -76,21 +104,36 @@ const mobileMenuOpen = ref(false);
                 <!-- Brand / Logo -->
                 <Link href="/" class="group flex items-center gap-3">
                     <div
-                        class="flex h-9 w-9 items-center justify-center rounded-lg border border-rose-500/40 bg-rose-600/20 text-xl font-black text-rose-400 transition-colors group-hover:bg-rose-600/30"
+                        class="flex h-9 w-9 items-center justify-center rounded-xl border border-rose-200/80 bg-rose-50/80 text-rose-600 shadow-sm backdrop-blur-md transition-all group-hover:scale-105 group-hover:border-rose-300 dark:border-rose-900/60 dark:bg-rose-950/60 dark:text-rose-400"
                     >
-                        !
+                        <svg
+                            class="h-5 w-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                            />
+                        </svg>
                     </div>
+
                     <div>
                         <div
-                            class="flex items-center gap-2 text-base font-bold tracking-tight text-white"
+                            class="flex items-center gap-2 text-sm font-bold tracking-tight text-slate-900 sm:text-base dark:text-white"
                         >
                             <span>NO MORE SILENCE</span>
                             <span
-                                class="rounded border border-slate-700 bg-slate-800 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-slate-400"
+                                class="rounded-full border border-black/[0.06] bg-black/[0.03] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-slate-600 backdrop-blur-md dark:border-white/[0.08] dark:bg-white/[0.06] dark:text-slate-400"
                                 >Archive</span
                             >
                         </div>
-                        <div class="text-xs font-medium text-slate-400">
+                        <div
+                            class="text-xs font-normal text-slate-500 dark:text-slate-400"
+                        >
                             {{
                                 isBn
                                     ? 'সহিংসতার সমর্থনে মন্তব্যের স্বাধীন প্রমাণ'
@@ -100,22 +143,22 @@ const mobileMenuOpen = ref(false);
                     </div>
                 </Link>
 
-                <!-- Desktop Nav -->
+                <!-- Desktop Nav (Apple Pill Links) -->
                 <nav
-                    class="hidden items-center gap-1 text-sm font-medium md:flex lg:gap-2"
+                    class="hidden items-center gap-0.5 text-[13px] font-medium md:flex lg:gap-1"
                 >
                     <Link
                         href="/"
-                        class="rounded-md px-3 py-1.5 text-slate-300 transition-colors hover:bg-slate-800 hover:text-white"
+                        class="rounded-full px-3 py-1.5 text-slate-600 transition-all hover:bg-black/[0.04] hover:text-slate-900 dark:text-slate-300 dark:hover:bg-white/[0.08] dark:hover:text-white"
                     >
                         {{ isBn ? 'হোম' : 'Home' }}
                     </Link>
                     <Link
                         href="/search"
-                        class="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-slate-300 transition-colors hover:bg-slate-800 hover:text-white"
+                        class="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-slate-600 transition-all hover:bg-black/[0.04] hover:text-slate-900 dark:text-slate-300 dark:hover:bg-white/[0.08] dark:hover:text-white"
                     >
                         <svg
-                            class="h-4 w-4 text-slate-400"
+                            class="h-3.5 w-3.5 text-slate-400 dark:text-slate-500"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -131,41 +174,41 @@ const mobileMenuOpen = ref(false);
                     </Link>
                     <Link
                         href="/districts"
-                        class="rounded-md px-3 py-1.5 text-slate-300 transition-colors hover:bg-slate-800 hover:text-white"
+                        class="rounded-full px-3 py-1.5 text-slate-600 transition-all hover:bg-black/[0.04] hover:text-slate-900 dark:text-slate-300 dark:hover:bg-white/[0.08] dark:hover:text-white"
                     >
                         {{ isBn ? 'জেলা মানচিত্র' : 'Map' }}
                     </Link>
                     <Link
                         href="/incidents"
-                        class="rounded-md px-3 py-1.5 text-slate-300 transition-colors hover:bg-slate-800 hover:text-white"
+                        class="rounded-full px-3 py-1.5 text-slate-600 transition-all hover:bg-black/[0.04] hover:text-slate-900 dark:text-slate-300 dark:hover:bg-white/[0.08] dark:hover:text-white"
                     >
                         {{ isBn ? 'ঘটনাসমূহ' : 'Incidents' }}
                     </Link>
                     <Link
                         href="/methodology"
-                        class="rounded-md px-3 py-1.5 text-slate-300 transition-colors hover:bg-slate-800 hover:text-white"
+                        class="rounded-full px-3 py-1.5 text-slate-600 transition-all hover:bg-black/[0.04] hover:text-slate-900 dark:text-slate-300 dark:hover:bg-white/[0.08] dark:hover:text-white"
                     >
                         {{ isBn ? 'কার্যপদ্ধতি' : 'Methodology' }}
                     </Link>
                     <Link
                         href="/safety-resources"
-                        class="rounded-md px-3 py-1.5 text-rose-300 transition-colors hover:bg-slate-800 hover:text-rose-200"
+                        class="rounded-full px-3 py-1.5 text-rose-700 transition-all hover:bg-rose-50 hover:text-rose-800 dark:text-rose-300 dark:hover:bg-white/[0.08] dark:hover:text-rose-200"
                     >
-                        {{ isBn ? 'নিরাপত্তা ও সহায়তা' : 'Safety' }}
+                        {{ isBn ? 'নিরাপত্তা' : 'Safety' }}
                     </Link>
                     <Link
                         href="/track"
-                        class="rounded-md px-3 py-1.5 text-slate-300 transition-colors hover:bg-slate-800 hover:text-white"
+                        class="rounded-full px-3 py-1.5 text-slate-600 transition-all hover:bg-black/[0.04] hover:text-slate-900 dark:text-slate-300 dark:hover:bg-white/[0.08] dark:hover:text-white"
                     >
                         {{ isBn ? 'ট্র্যাকিং' : 'Track' }}
                     </Link>
                 </nav>
 
-                <!-- Right Actions: Submit CTA, Language Switch & Mobile Toggle -->
-                <div class="flex items-center gap-3">
+                <!-- Right Actions: Submit CTA, Theme Switch, Language Switch & Mobile Toggle -->
+                <div class="flex items-center gap-2 sm:gap-2.5">
                     <Link
                         href="/submit"
-                        class="hidden items-center gap-1.5 rounded-md bg-rose-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-rose-500 sm:inline-flex"
+                        class="hidden items-center gap-1.5 rounded-full bg-rose-600 px-3.5 py-1.5 text-xs font-medium text-white shadow-sm transition-all hover:bg-rose-500 active:scale-95 sm:inline-flex"
                     >
                         <svg
                             class="h-3.5 w-3.5"
@@ -185,14 +228,85 @@ const mobileMenuOpen = ref(false);
                         }}</span>
                     </Link>
 
+                    <!-- Theme Toggle (Light / Dark) -->
+                    <button
+                        type="button"
+                        @click="toggleTheme"
+                        class="flex items-center gap-1.5 rounded-full border border-black/[0.08] bg-black/[0.03] px-3 py-1.5 text-xs font-medium text-slate-700 transition-all hover:bg-black/[0.06] active:scale-95 dark:border-white/[0.12] dark:bg-white/[0.08] dark:text-slate-200 dark:hover:bg-white/[0.14]"
+                        :title="
+                            isDark
+                                ? isBn
+                                    ? 'লাইট মোড চালু করুন'
+                                    : 'Switch to Light Mode'
+                                : isBn
+                                  ? 'ডার্ক মোড চালু করুন'
+                                  : 'Switch to Dark Mode'
+                        "
+                        :aria-label="
+                            isDark
+                                ? 'Switch to Light Mode'
+                                : 'Switch to Dark Mode'
+                        "
+                    >
+                        <svg
+                            v-if="isDark"
+                            class="h-3.5 w-3.5 text-amber-400"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                            />
+                        </svg>
+                        <svg
+                            v-else
+                            class="h-3.5 w-3.5 text-slate-600"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                            />
+                        </svg>
+                        <span class="hidden sm:inline">{{
+                            isDark
+                                ? isBn
+                                    ? 'লাইট'
+                                    : 'Light'
+                                : isBn
+                                  ? 'ডার্ক'
+                                  : 'Dark'
+                        }}</span>
+                    </button>
+
                     <!-- Language Toggle -->
                     <button
                         type="button"
                         @click="toggleLocale"
-                        class="flex items-center gap-1.5 rounded-md border border-slate-700 bg-slate-800/80 px-2.5 py-1 text-xs font-semibold text-slate-200 transition-colors hover:bg-slate-700"
+                        class="flex items-center gap-1.5 rounded-full border border-black/[0.08] bg-black/[0.03] px-3 py-1.5 text-xs font-medium text-slate-700 transition-all hover:bg-black/[0.06] active:scale-95 dark:border-white/[0.12] dark:bg-white/[0.08] dark:text-slate-200 dark:hover:bg-white/[0.14]"
                         title="Change Language"
                     >
-                        <span class="text-slate-400">🌐</span>
+                        <svg
+                            class="h-3.5 w-3.5 text-slate-500 dark:text-slate-400"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                        </svg>
                         <span>{{ isBn ? 'English' : 'বাংলা' }}</span>
                     </button>
 
@@ -200,12 +314,12 @@ const mobileMenuOpen = ref(false);
                     <button
                         type="button"
                         @click="mobileMenuOpen = !mobileMenuOpen"
-                        class="rounded-md p-2 text-slate-400 hover:bg-slate-800 hover:text-white md:hidden"
+                        class="rounded-full p-2 text-slate-600 hover:bg-black/[0.05] dark:text-slate-400 dark:hover:bg-white/[0.08] dark:hover:text-white md:hidden"
                         aria-label="Toggle menu"
                     >
                         <svg
                             v-if="!mobileMenuOpen"
-                            class="h-6 w-6"
+                            class="h-5 w-5"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -219,7 +333,7 @@ const mobileMenuOpen = ref(false);
                         </svg>
                         <svg
                             v-else
-                            class="h-6 w-6"
+                            class="h-5 w-5"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -238,89 +352,91 @@ const mobileMenuOpen = ref(false);
             <!-- Mobile Drawer -->
             <div
                 v-show="mobileMenuOpen"
-                class="space-y-1 border-b border-slate-800 bg-slate-900 px-4 pb-4 pt-2 md:hidden"
+                class="space-y-1 border-b border-black/[0.06] bg-white/90 px-4 pb-4 pt-2 backdrop-blur-2xl transition-colors dark:border-white/[0.08] dark:bg-black/90 md:hidden"
             >
                 <Link
                     href="/"
-                    class="block rounded-md px-3 py-2 text-base font-medium text-slate-200 hover:bg-slate-800"
+                    class="block rounded-xl px-3 py-2 text-sm font-medium text-slate-800 hover:bg-black/[0.04] dark:text-slate-200 dark:hover:bg-white/[0.08]"
                     @click="mobileMenuOpen = false"
                 >
                     {{ isBn ? 'হোম' : 'Home' }}
                 </Link>
                 <Link
                     href="/search"
-                    class="block rounded-md px-3 py-2 text-base font-medium text-slate-200 hover:bg-slate-800"
+                    class="block rounded-xl px-3 py-2 text-sm font-medium text-slate-800 hover:bg-black/[0.04] dark:text-slate-200 dark:hover:bg-white/[0.08]"
                     @click="mobileMenuOpen = false"
                 >
                     {{ isBn ? 'অনুসন্ধান' : 'Search' }}
                 </Link>
                 <Link
                     href="/districts"
-                    class="block rounded-md px-3 py-2 text-base font-medium text-slate-200 hover:bg-slate-800"
+                    class="block rounded-xl px-3 py-2 text-sm font-medium text-slate-800 hover:bg-black/[0.04] dark:text-slate-200 dark:hover:bg-white/[0.08]"
                     @click="mobileMenuOpen = false"
                 >
                     {{ isBn ? 'জেলা মানচিত্র' : 'Map' }}
                 </Link>
                 <Link
                     href="/incidents"
-                    class="block rounded-md px-3 py-2 text-base font-medium text-slate-200 hover:bg-slate-800"
+                    class="block rounded-xl px-3 py-2 text-sm font-medium text-slate-800 hover:bg-black/[0.04] dark:text-slate-200 dark:hover:bg-white/[0.08]"
                     @click="mobileMenuOpen = false"
                 >
                     {{ isBn ? 'ঘটনাসমূহ' : 'Incidents' }}
                 </Link>
                 <Link
                     href="/methodology"
-                    class="block rounded-md px-3 py-2 text-base font-medium text-slate-200 hover:bg-slate-800"
+                    class="block rounded-xl px-3 py-2 text-sm font-medium text-slate-800 hover:bg-black/[0.04] dark:text-slate-200 dark:hover:bg-white/[0.08]"
                     @click="mobileMenuOpen = false"
                 >
                     {{ isBn ? 'কার্যপদ্ধতি ও নীতি' : 'Methodology' }}
                 </Link>
                 <Link
                     href="/safety-resources"
-                    class="block rounded-md px-3 py-2 text-base font-medium text-rose-300 hover:bg-slate-800"
+                    class="block rounded-xl px-3 py-2 text-sm font-medium text-rose-700 hover:bg-rose-50/80 dark:text-rose-300 dark:hover:bg-white/[0.08]"
                     @click="mobileMenuOpen = false"
                 >
                     {{ isBn ? 'নিরাপত্তা ও সহায়তা' : 'Safety' }}
                 </Link>
                 <Link
                     href="/about"
-                    class="block rounded-md px-3 py-2 text-base font-medium text-slate-200 hover:bg-slate-800"
+                    class="block rounded-xl px-3 py-2 text-sm font-medium text-slate-800 hover:bg-black/[0.04] dark:text-slate-200 dark:hover:bg-white/[0.08]"
                     @click="mobileMenuOpen = false"
                 >
                     {{ isBn ? 'আমাদের সম্পর্কে' : 'About' }}
                 </Link>
-                <div class="border-t border-slate-800 pt-2">
+                <div
+                    class="space-y-1.5 border-t border-black/[0.06] pt-2 dark:border-white/[0.08]"
+                >
                     <Link
                         href="/submit"
-                        class="block rounded-md bg-rose-600 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-rose-500"
+                        class="block rounded-full bg-rose-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-rose-500"
                         @click="mobileMenuOpen = false"
                     >
                         {{ isBn ? 'রিপোর্ট জমা দিন' : 'Submit Report' }}
                     </Link>
                     <Link
                         href="/track"
-                        class="block rounded-md px-3 py-2 text-sm font-medium text-slate-300 hover:bg-slate-800"
+                        class="block rounded-xl px-3 py-2 text-sm font-medium text-slate-600 hover:bg-black/[0.04] dark:text-slate-300 dark:hover:bg-white/[0.08]"
                         @click="mobileMenuOpen = false"
                     >
                         {{ isBn ? 'ট্র্যাকিং' : 'Track Status' }}
                     </Link>
                     <Link
                         href="/appeals"
-                        class="block rounded-md px-3 py-2 text-sm font-medium text-slate-300 hover:bg-slate-800"
+                        class="block rounded-xl px-3 py-2 text-sm font-medium text-slate-600 hover:bg-black/[0.04] dark:text-slate-300 dark:hover:bg-white/[0.08]"
                         @click="mobileMenuOpen = false"
                     >
                         {{ isBn ? 'আপিল আবেদন' : 'Submit Appeal' }}
                     </Link>
                     <Link
                         href="/my-submissions"
-                        class="block rounded-md px-3 py-2 text-sm font-medium text-slate-300 hover:bg-slate-800"
+                        class="block rounded-xl px-3 py-2 text-sm font-medium text-slate-600 hover:bg-black/[0.04] dark:text-slate-300 dark:hover:bg-white/[0.08]"
                         @click="mobileMenuOpen = false"
                     >
                         {{ isBn ? 'আমার জমাকৃত রিপোর্ট' : 'My Submissions' }}
                     </Link>
                     <Link
                         href="/feedback"
-                        class="block rounded-md px-3 py-2 text-sm font-medium text-sky-400 hover:bg-slate-800"
+                        class="block rounded-xl px-3 py-2 text-sm font-medium text-sky-600 hover:bg-sky-50 dark:text-sky-400 dark:hover:bg-white/[0.08]"
                         @click="mobileMenuOpen = false"
                     >
                         {{
@@ -340,25 +456,29 @@ const mobileMenuOpen = ref(false);
 
         <!-- Dignified Footer -->
         <footer
-            class="mt-16 border-t border-slate-800 bg-slate-900 text-sm text-slate-400"
+            class="mt-16 border-t border-black/[0.06] bg-white/40 text-sm text-slate-600 backdrop-blur-xl transition-colors dark:border-white/[0.08] dark:bg-black/40 dark:text-slate-400"
         >
             <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
                 <div class="mb-10 grid grid-cols-1 gap-8 md:grid-cols-4">
                     <!-- Column 1: Mission & Principles -->
                     <div class="space-y-3 md:col-span-1">
                         <div
-                            class="flex items-center gap-2 text-base font-bold tracking-tight text-white"
+                            class="flex items-center gap-2 text-base font-bold tracking-tight text-slate-900 dark:text-white"
                         >
                             <span>NO MORE SILENCE</span>
                         </div>
-                        <p class="text-xs leading-relaxed text-slate-400">
+                        <p
+                            class="text-xs leading-relaxed text-slate-600 dark:text-slate-400"
+                        >
                             {{
                                 isBn
                                     ? 'সহিংসতার পক্ষে অবস্থান, ভিকটিম-ব্লেমিং এবং যৌন নির্যাতনের ন্যায্যতা প্রমাণের উদ্দেশ্যে সামাজিক মাধ্যমে প্রকাশিত সর্বজনীন মন্তব্যের স্বাধীন প্রমাণভিত্তিক ডিজিটাল সংরক্ষণাগার।'
                                     : 'An independent digital archive documenting verified public comments that justify sexual violence, blame victims, or incite hate.'
                             }}
                         </p>
-                        <p class="text-[11px] text-slate-400">
+                        <p
+                            class="text-[11px] text-slate-500 dark:text-slate-400"
+                        >
                             {{
                                 isBn
                                     ? 'আমরা কখনোই ভিকটিম বা সংশ্লিষ্ট অপ্রাপ্তবয়স্কদের পরিচয় প্রকাশ করি না।'
@@ -370,7 +490,7 @@ const mobileMenuOpen = ref(false);
                     <!-- Column 2: Quick Links -->
                     <div class="space-y-2">
                         <h3
-                            class="text-xs font-semibold uppercase tracking-wider text-white"
+                            class="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white"
                         >
                             {{
                                 isBn
@@ -382,7 +502,7 @@ const mobileMenuOpen = ref(false);
                             <li>
                                 <Link
                                     href="/methodology"
-                                    class="transition-colors hover:text-white"
+                                    class="transition-colors hover:text-slate-900 dark:hover:text-white"
                                     >{{
                                         isBn
                                             ? '৮-দফা যাচাইকরণ মানদণ্ড'
@@ -393,7 +513,7 @@ const mobileMenuOpen = ref(false);
                             <li>
                                 <Link
                                     href="/about"
-                                    class="transition-colors hover:text-white"
+                                    class="transition-colors hover:text-slate-900 dark:hover:text-white"
                                     >{{
                                         isBn
                                             ? 'আমাদের উদ্দেশ্য ও পরিচালনা'
@@ -404,7 +524,7 @@ const mobileMenuOpen = ref(false);
                             <li>
                                 <Link
                                     href="/terms"
-                                    class="transition-colors hover:text-white"
+                                    class="transition-colors hover:text-slate-900 dark:hover:text-white"
                                     >{{
                                         isBn
                                             ? 'ব্যবহারের শর্তাবলি (Terms)'
@@ -415,7 +535,7 @@ const mobileMenuOpen = ref(false);
                             <li>
                                 <Link
                                     href="/privacy"
-                                    class="transition-colors hover:text-white"
+                                    class="transition-colors hover:text-slate-900 dark:hover:text-white"
                                     >{{
                                         isBn
                                             ? 'গোপনীয়তা নীতি (Privacy)'
@@ -429,7 +549,7 @@ const mobileMenuOpen = ref(false);
                     <!-- Column 3: Emergency & Legal Aid -->
                     <div class="space-y-2">
                         <h3
-                            class="text-xs font-semibold uppercase tracking-wider text-white"
+                            class="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white"
                         >
                             {{
                                 isBn
@@ -439,42 +559,55 @@ const mobileMenuOpen = ref(false);
                         </h3>
                         <ul class="space-y-1.5 text-xs">
                             <li>
-                                <span class="font-medium text-slate-300"
+                                <span
+                                    class="font-semibold text-slate-800 dark:text-slate-200"
                                     >১০৯</span
                                 >
-                                —
-                                {{
-                                    isBn
-                                        ? 'নারী ও শিশু নির্যাতন হেল্পলাইন'
-                                        : 'Women & Children Hotline'
-                                }}
+                                <span class="text-slate-500 dark:text-slate-400"
+                                    >:
+                                    {{
+                                        isBn
+                                            ? 'নারী ও শিশু নির্যাতন হেল্পলাইন'
+                                            : 'Women & Children Hotline'
+                                    }}</span
+                                >
                             </li>
                             <li>
-                                <span class="font-medium text-slate-300"
+                                <span
+                                    class="font-semibold text-slate-800 dark:text-slate-200"
                                     >৯৯৯</span
                                 >
-                                —
-                                {{
-                                    isBn
-                                        ? 'জাতীয় জরুরি সেবা'
-                                        : 'National Emergency'
-                                }}
+                                <span class="text-slate-500 dark:text-slate-400"
+                                    >:
+                                    {{
+                                        isBn
+                                            ? 'জাতীয় জরুরি সেবা'
+                                            : 'National Emergency'
+                                    }}</span
+                                >
                             </li>
                             <li>
-                                <span class="font-medium text-slate-300"
+                                <span
+                                    class="font-semibold text-slate-800 dark:text-slate-200"
                                     >১০৯৮</span
                                 >
-                                —
-                                {{ isBn ? 'শিশু হেল্পলাইন' : 'Child Helpline' }}
+                                <span class="text-slate-500 dark:text-slate-400"
+                                    >:
+                                    {{
+                                        isBn
+                                            ? 'শিশু হেল্পলাইন'
+                                            : 'Child Helpline'
+                                    }}</span
+                                >
                             </li>
-                            <li>
+                            <li class="pt-1">
                                 <Link
                                     href="/safety-resources"
-                                    class="font-medium text-rose-400 transition-colors hover:text-rose-300"
+                                    class="font-medium text-rose-600 transition-colors hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300"
                                     >{{
                                         isBn
-                                            ? 'সবগুলো সহায়তাকেন্দ্র দেখুন →'
-                                            : 'View All Resources →'
+                                            ? 'সবগুলো সহায়তাকেন্দ্রের তালিকা'
+                                            : 'All Support Resources'
                                     }}</Link
                                 >
                             </li>
@@ -484,13 +617,15 @@ const mobileMenuOpen = ref(false);
                     <!-- Column 4: Ethics & Right of Reply -->
                     <div class="space-y-2">
                         <h3
-                            class="text-xs font-semibold uppercase tracking-wider text-white"
+                            class="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white"
                         >
                             {{
                                 isBn ? 'আপিল ও পোর্টাল' : 'Right of Reply & API'
                             }}
                         </h3>
-                        <p class="text-xs leading-relaxed text-slate-400">
+                        <p
+                            class="text-xs leading-relaxed text-slate-600 dark:text-slate-400"
+                        >
                             {{
                                 isBn
                                     ? 'আমরা ভুল সংশোধনে দায়বদ্ধ। কোনো রেকর্ডের ব্যাপারে আপত্তি থাকলে বা ভুল দাবি চিহ্নিত করতে চাইলে প্রমাণসহ আপিল করতে পারেন।'
@@ -501,19 +636,20 @@ const mobileMenuOpen = ref(false);
                             <div>
                                 <Link
                                     href="/appeals"
-                                    class="text-rose-400 transition-colors hover:text-rose-300"
+                                    class="text-rose-600 transition-colors hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300"
                                 >
                                     {{
                                         isBn
-                                            ? 'আপিল ফরম পূরণ করুন →'
-                                            : 'Submit an Appeal →'
+                                            ? 'আপিল আবেদন ফরম'
+                                            : 'Submit an Appeal'
                                     }}
                                 </Link>
                             </div>
+
                             <div>
                                 <Link
                                     href="/my-submissions"
-                                    class="text-slate-400 transition-colors hover:text-slate-200"
+                                    class="text-slate-600 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
                                 >
                                     {{
                                         isBn
@@ -525,7 +661,7 @@ const mobileMenuOpen = ref(false);
                             <div>
                                 <Link
                                     href="/open-data"
-                                    class="text-slate-400 transition-colors hover:text-slate-200"
+                                    class="text-slate-600 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
                                 >
                                     {{
                                         isBn
@@ -537,7 +673,7 @@ const mobileMenuOpen = ref(false);
                             <div>
                                 <Link
                                     href="/transparency"
-                                    class="text-slate-400 transition-colors hover:text-slate-200"
+                                    class="text-slate-600 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
                                 >
                                     {{
                                         isBn
@@ -549,7 +685,7 @@ const mobileMenuOpen = ref(false);
                             <div>
                                 <Link
                                     href="/feedback"
-                                    class="text-slate-400 transition-colors hover:text-slate-200"
+                                    class="text-slate-600 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
                                 >
                                     {{
                                         isBn
@@ -563,7 +699,7 @@ const mobileMenuOpen = ref(false);
                                     href="/docs/api"
                                     target="_blank"
                                     rel="noopener"
-                                    class="text-slate-400 transition-colors hover:text-slate-200"
+                                    class="text-slate-600 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
                                 >
                                     {{
                                         isBn
@@ -576,7 +712,7 @@ const mobileMenuOpen = ref(false);
                         <div class="pt-2">
                             <Link
                                 href="/login"
-                                class="text-[11px] text-slate-500 transition-colors hover:text-slate-400"
+                                class="text-[11px] text-slate-500 transition-colors hover:text-slate-700 dark:text-slate-500 dark:hover:text-slate-400"
                             >
                                 {{ isBn ? 'মডারেটর লগইন' : 'Staff Login' }}
                             </Link>
@@ -585,7 +721,7 @@ const mobileMenuOpen = ref(false);
                 </div>
 
                 <div
-                    class="flex flex-col items-center justify-between gap-4 border-t border-slate-800/80 pt-6 text-xs text-slate-400 sm:flex-row"
+                    class="flex flex-col items-center justify-between gap-4 border-t border-black/[0.06] pt-6 text-xs text-slate-500 transition-colors dark:border-white/[0.08] dark:text-slate-400 sm:flex-row"
                 >
                     <p>
                         © {{ new Date().getFullYear() }} No More Silence.
@@ -595,7 +731,7 @@ const mobileMenuOpen = ref(false);
                                 : 'Open public record for justice and research.'
                         }}
                     </p>
-                    <p class="text-[11px] text-slate-400">
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400">
                         Map Data: BBS / UN OCHA (CC BY-IGO 3.0)
                     </p>
                 </div>

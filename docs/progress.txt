@@ -1,7 +1,20 @@
 # No More Silence — Implementation Progress
 
 Last Updated: 2026-10-15
-Current Phase: Phase 4 — PWA & Android (COMPLETED)
+Current Phase: Phase 4 — PWA & Android (COMPLETED) + Apple-Style Glass Design & Typography Update (COMPLETED)
+
+---
+
+## Design Modernization & Apple Aesthetics: COMPLETED
+- [x] **Apple Typography System:** Configured `-apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "SF Pro", "Helvetica Neue", Helvetica, Arial, Hind Siliguri, sans-serif` in Tailwind with subpixel antialiasing and tight tracking.
+- [x] **Frosted Glassmorphism Architecture:** Added `.apple-glass`, `.apple-glass-card`, `.apple-glass-subtle`, `.apple-glass-input` with `backdrop-filter: blur(20px) saturate(180%)`, soft borders `border-black/[0.06]` (light) / `border-white/[0.08]` (dark), and Apple off-white `#fbfbfd` base canvas.
+- [x] **Ambient Depth Lighting:** Implemented ambient blurred gradient orbs in `PublicLayout.vue` background to create realistic optical refraction through frosted translucent cards.
+- [x] **Apple Glass UI Across Core Pages:**
+  - `PublicLayout.vue`: Frosted navigation bar, pill action toggles (Theme, Language, CTA), translucent mobile drawer, and blurred footer.
+  - `Welcome.vue`: Apple grand scale hero typography, frosted search input card, glass stat counters, and subtle callout banners.
+  - `ReportCard.vue`: Translucent category badges, frosted glass cards with subtle border depth, and backdrop-blurred evidence modal.
+  - `Search.vue`: Glass search form bar, pill tags, and translucent profile result cards.
+  - `Submissions/Create.vue`: Apple glass intake wizard container, frosted alert banners, and rounded pill navigation controls.
 
 ---
 
@@ -306,10 +319,83 @@ Current Phase: Phase 4 — PWA & Android (COMPLETED)
 - [x] **Automated Testing Suite (`tests/Feature/FeedbackTest.php`):**
   - Verifies web route, API store, anonymous vs authenticated submission, input validation, rate limiting, and admin updates.
 
+
+### 3. Editorial Archive Design & De-AI Overhaul
+- [x] **Color Palette & Visual Tone (`tailwind.config.js`):**
+  - Replaced generic AI-style dark mode (Tailwind default dark slate + neon rose `#020617` / `#0f172a` / `#f43f5e`) with an authoritative, bespoke investigative archive palette.
+  - Deep archival ink background (`#090a0f`), subtle matte cards (`#11131b`), razor borders (`#1d2230`), high-contrast readable typography (`#c5cee0`), and restrained human-editorial crimson (`#b91c1c` / `#dc2626`).
+  - Removed flashing animation gimmicks (`animate-pulse`) from emergency helpline bars and hero sections.
+- [x] **Complete Em-Dash (`—`) Eradication:**
+  - Globally scanned and removed all generic AI em-dashes (`—`) across all Vue frontend pages, layouts, PDF templates, and Blade views.
+  - Replaced with clear typographic colons, pipes, or natural phrasing.
+- [x] **Unicode Emoji & Glyphs Purge:**
+  - Replaced all raw emojis (`🐞`, `💡`, `⚡`, `💬`, `📊`, `⚖️`, `🌐`, `ℹ️`, `✉️`, `📱`, `⚠️`, `📍`, `🔍`) and ASCII glyphs (`→`, `↗`, `←`, `✓`, `✕`) with sharp, accessible SVG stroke icons and clean textual labels across the entire application.
+- [x] **Verification & Builds:**
+  - Vite client & SSR build succeeded without errors (`npm run build`).
+  - ESLint verified with 0 errors (`npm run lint`).
+  - Pint verified with 0 issues (`./vendor/bin/sail bin pint --format agent`).
+  - Pest test suite verified: 143 tests passing, 804 assertions (`./vendor/bin/sail test --compact`).
+
+### 4. Filament Admin Panel English Default & Bangla Language Switcher
+- [x] **Default English Locale (`SetFilamentLocale` Middleware):**
+  - Filament admin panel explicitly defaults to English (`en`) for all routes, while preserving Bengali as the default for the citizen-facing public portal.
+- [x] **Session-Based Language Switching (`/admin/locale/{locale}`):**
+  - Seamless route switching between English (`en`) and Bangla (`bn`) stored in session `filament_locale`.
+- [x] **Dual Language Switcher UI Components:**
+  - Sleek topbar language toggle (`[EN] | [বাং]`) rendered via `PanelsRenderHook::USER_MENU_BEFORE`.
+  - Auth page language toggle rendered via `PanelsRenderHook::AUTH_LOGIN_FORM_BEFORE` on the login screen.
+  - User menu dropdown item (`userMenuItems`) to easily toggle languages.
+- [x] **Automated Feature Coverage (`tests/Feature/FilamentLocaleTest.php`):**
+  - 5 tests covering English default, switching to Bangla, switching back, invalid locale rejection, and topbar switcher rendering for authenticated admins.
+
+### 5. Multi-Section Evidence Screenshot Architecture
+- [x] **Discrete Evidence Upload Sections (`resources/js/Pages/Submissions/Create.vue`):**
+  - Divided Step 1 evidence upload into 4 dedicated, clearly labeled sections with multi-photo support:
+    1. **Offensive Comment Screenshots (`evidence_comment[]`):** Primary evidence showing the abusive comment or violence apologia.
+    2. **Original Post Screenshots (`evidence_post[]`):** Post context or news report under which the comment was posted.
+    3. **Commenter Profile Screenshots (`evidence_profile[]`):** Commenter profile page, bio, and account details.
+    4. **Other Supporting Screenshots (`evidence_other[]`):** Secondary context, inbox messages, or additional proof.
+  - Client-side auto-compression before upload, individual section dropzones, photo count badges, file size preview, and removal controls.
+- [x] **Backend Validation & Ingestion (`SubmitReportRequest` & `SubmissionController`):**
+  - Validates `evidence_post`, `evidence_comment`, `evidence_profile`, and `evidence_other` (up to 10 photos per section, max 10MB each) alongside legacy `evidence` fallback.
+  - Custom validator guarantees at least one photo is supplied across all sections.
+  - Stores all images in the `'original'` media collection with typed custom properties (`evidence_type: 'post' | 'comment' | 'profile' | 'other'`).
+- [x] **Review Queue Visual Categorization (`review-queue.blade.php`):**
+  - Displays color-coded badges on every screenshot in the moderation queue (Blue for Original Post, Rose for Offensive Comment, Purple for Commenter Profile, Gray for Other Evidence).
+- [x] **Automated Testing Suite (`tests/Feature/SubmissionTest.php`):**
+  - Feature test verifying multi-photo uploads across all 4 sections simultaneously and verifying custom properties.
+  - Feature test verifying empty evidence rejection.
+
+### 6. Light / Dark Mode Switcher & Responsive Theme Support
+- [x] **Tailwind CSS Configuration:**
+  - Configured `darkMode: 'class'` in `tailwind.config.js` to enable explicit toggle between light and dark themes.
+- [x] **Zero-Flicker (FOUC) Theme Initialization (Light by Default):**
+  - Added early head script in `resources/views/app.blade.php` to default to light mode unless `localStorage.getItem('nms_theme') === 'dark'`.
+- [x] **`useTheme` Composable (`resources/js/composables/useTheme.ts`):**
+  - Defaults to `'light'` mode, manages reactive state (`theme`, `isDark`), persistent `localStorage` synchronization (`nms_theme`), `<meta name="theme-color">` updates, and `.dark` class management on `document.documentElement`.
+- [x] **Public Layout Theme Toggle (`PublicLayout.vue`):**
+  - Integrated theme toggle button with sun/moon SVG icons in both desktop navigation bar and mobile drawer.
+  - Converted PublicLayout containers, top emergency ribbon, navigation links, and 4-column footer to support crisp light theme alongside dark mode.
+- [x] **Homepage & Component Theming (`Welcome.vue`, `ReportCard.vue`, `DistrictMap.vue`):**
+  - Supported sober editorial light palette (`bg-white`, `border-slate-200`, `text-slate-900`, `text-slate-600`) across Hero section, Search input, 4 Headline Counters, District Map, Featured Verified Reports, and Methodology callout.
+  - Dynamic D3 map district fills and stroke borders responding reactively to theme switches.
+
+- [x] **Submission & Tracking Pages Theming (`Submissions/Create.vue`, `Submissions/Track.vue`):**
+  - Resolved white-on-white text, invisible titles, low-contrast legal notices, and dark container blocks on light mode.
+  - Added clean light mode styles alongside dark mode equivalents for page headers, intake badges, Section 14 legal notice banner, mobile share notification, 3-step wizard card, stepper numbers and connecting lines, 4 evidence upload dropzones, image preview thumbnails, form inputs, category selector radio cards, incident dropdowns, success tracking modal, and tracking status pipeline.
+
+- [x] **Universal Light Mode Overhaul Across All Remaining Public Pages:**
+  - `/search` (`Search.vue`): Filter search input, legal warning banner, verified profile cards, category badges, count pills, and empty states fully themed.
+  - `/districts` (`Districts/Index.vue` & `Districts/Show.vue`): District ranking table, sort headers, filter inputs, breadcrumbs, division badges, census 2022 population metrics cards, and district incidents cards themed with light and dark mode variants.
+  - `/incidents` (`Incidents/Index.vue` & `Incidents/Show.vue`): Incident summary grid cards, district location tags, comment count indicators, pagination buttons, overview cards, and report card grids fully styled for high-contrast light mode.
+  - `/methodology` (`Pages/Methodology.vue`): 8-point verification standard cards, step badge numbering, context explanation boxes, and two-person rule editorial sections converted to crisp light mode with dark equivalents.
+  - `/safety-resources` (`Pages/SafetyResources.vue`): Emergency hotline cards (109 Women & Children helpline in soft rose, 999 Police in emerald, 1098 Childline in amber), legal aid NGO cards (ASK, BLAST, BNWLA, Kaan Pete Roi), and digital security guidelines box updated.
+  - Additional public routes (`Profiles/Show.vue`, `Pages/About.vue`, `Transparency/Index.vue`, `OpenData/Index.vue`, `Appeals/Create.vue`): All hardcoded dark containers, typography, citation blocks, statutory compliance alerts, and submission forms converted to clean, dignified light mode with dark mode variants.
+
 ---
 
 ## Verification & Test Metrics
-- **Pest Test Suite:** 138 passing tests (786 assertions) across unit, feature, policy, and integration test suites (`./vendor/bin/sail test`).
+- **Pest Test Suite:** 145 passing tests (814 assertions) across unit, feature, policy, and integration test suites (`./vendor/bin/sail test`).
 - **Larastan Static Analysis:** Level 6 passed with 0 errors (`./vendor/bin/sail bin phpstan analyse`).
 - **Laravel Pint:** 100% formatted and passed (`./vendor/bin/sail bin pint --dirty --format agent`).
 - **ESLint:** 0 errors, 0 warnings (`npm run lint`).
@@ -318,7 +404,4 @@ Current Phase: Phase 4 — PWA & Android (COMPLETED)
 ---
 
 ## Project Status: 100% Complete & Production-Ready
-All foundational phases (0–5), post-launch backlog features (Phase 6), and new architectural enhancements (Phase 7: Laravel Octane FrankenPHP + Community Feedback System) are fully implemented, verified with end-to-end automated tests, and ready for deployment.
-
-
-
+All foundational phases (0–5), post-launch backlog features (Phase 6), new architectural enhancements (Phase 7: Laravel Octane FrankenPHP + Community Feedback System), Design & De-AI Overhaul, Filament Admin English Default + Language Switcher, Multi-Section Evidence Screenshot Architecture, and Light / Dark Mode Switcher are fully implemented, verified with end-to-end automated tests, and ready for deployment.

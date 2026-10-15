@@ -2,7 +2,7 @@
 <html lang="bn">
 <head>
     <meta charset="utf-8">
-    <title>Evidence Package — {{ $profile->current_display_name }}</title>
+    <title>Evidence Package: {{ $profile->current_display_name }}</title>
     <style>
         body {
             font-family: 'DejaVu Sans', sans-serif;
@@ -104,7 +104,7 @@
 </head>
 <body>
     <div class="header">
-        <div class="title">NO MORE SILENCE — OFFICIAL EVIDENCE DOSSIER</div>
+        <div class="title">NO MORE SILENCE: OFFICIAL EVIDENCE DOSSIER</div>
         <div class="subtitle">
             Document Reference: NMS-EV-{{ substr($profile->uuid, 0, 8) }} | Generated: {{ now()->toDateTimeString() }} UTC
         </div>

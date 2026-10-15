@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useLanguage } from '@/composables/useLanguage';
+import { useTheme } from '@/composables/useTheme';
 import bangladeshGeoData from '@/data/bangladesh-districts.json';
 import { formatNumberByLocale } from '@/utils/bangla';
 import { router } from '@inertiajs/vue3';
@@ -36,6 +37,7 @@ const emit = defineEmits<{
 }>();
 
 const { isBn, locale } = useLanguage();
+const { isDark } = useTheme();
 const currentMode = ref<'incident' | 'commenter'>(props.initialMode);
 const hoveredDistrict = ref<{
     name_en: string;
@@ -97,7 +99,7 @@ const districtPaths = computed(() => {
 });
 
 function getColor(count: number): string {
-    if (count === 0) return '#1e293b'; // slate-800
+    if (count === 0) return isDark.value ? '#1e293b' : '#e2e8f0';
     if (count <= 2) return '#881337'; // rose-950
     if (count <= 5) return '#9f1239'; // rose-900
     if (count <= 10) return '#be123c'; // rose-800
@@ -144,15 +146,15 @@ function switchMode(newMode: 'incident' | 'commenter') {
 
 <template>
     <div
-        class="relative flex flex-col items-center rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-xl"
+        class="relative flex flex-col items-center rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900"
     >
         <!-- Header & Mode Switcher -->
         <div
-            class="flex w-full flex-col items-center justify-between gap-4 border-b border-slate-800 pb-4 sm:flex-row"
+            class="flex w-full flex-col items-center justify-between gap-4 border-b border-slate-200 pb-4 dark:border-slate-800 sm:flex-row"
         >
             <div>
                 <h3
-                    class="flex items-center gap-2 text-base font-bold text-white"
+                    class="flex items-center gap-2 text-base font-bold text-slate-900 dark:text-white"
                 >
                     <span>{{
                         isBn
@@ -160,7 +162,7 @@ function switchMode(newMode: 'incident' | 'commenter') {
                             : '64 District Geographic Map'
                     }}</span>
                 </h3>
-                <p class="text-xs text-slate-400">
+                <p class="text-xs text-slate-500 dark:text-slate-400">
                     {{
                         isBn
                             ? 'জেলায় ক্লিক করে বিস্তারিত রেকর্ড ও ঘটনা দেখুন'
@@ -171,7 +173,7 @@ function switchMode(newMode: 'incident' | 'commenter') {
 
             <!-- Mode Switch Tabs -->
             <div
-                class="flex items-center rounded-lg border border-slate-800 bg-slate-950 p-1 text-xs"
+                class="flex items-center rounded-lg border border-slate-200 bg-slate-100 p-1 text-xs dark:border-slate-800 dark:bg-slate-950"
             >
                 <button
                     type="button"
@@ -180,7 +182,7 @@ function switchMode(newMode: 'incident' | 'commenter') {
                         'rounded-md px-3 py-1.5 font-medium transition-colors',
                         currentMode === 'incident'
                             ? 'bg-rose-600 text-white shadow-sm'
-                            : 'text-slate-400 hover:text-slate-200',
+                            : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200',
                     ]"
                 >
                     {{ isBn ? 'ঘটনার অবস্থান' : 'Incident Location' }}
@@ -192,7 +194,7 @@ function switchMode(newMode: 'incident' | 'commenter') {
                         'rounded-md px-3 py-1.5 font-medium transition-colors',
                         currentMode === 'commenter'
                             ? 'bg-rose-600 text-white shadow-sm'
-                            : 'text-slate-400 hover:text-slate-200',
+                            : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200',
                     ]"
                 >
                     {{ isBn ? 'মন্তব্যকারীর অবস্থান' : 'Commenter Location' }}
@@ -202,7 +204,7 @@ function switchMode(newMode: 'incident' | 'commenter') {
 
         <!-- Disclaimer Banner for Mode -->
         <div
-            class="mt-3 w-full rounded-lg border border-slate-800 bg-slate-950/60 px-3.5 py-2 text-[11px] text-slate-300"
+            class="mt-3 w-full rounded-lg border border-slate-200 bg-slate-50 px-3.5 py-2 text-[11px] text-slate-600 dark:border-slate-800 dark:bg-slate-950/60 dark:text-slate-300"
         >
             <span v-if="currentMode === 'incident'">
                 <strong>{{
@@ -215,7 +217,7 @@ function switchMode(newMode: 'incident' | 'commenter') {
                 }}
             </span>
             <span v-else>
-                <strong class="text-amber-400">{{
+                <strong class="text-amber-600 dark:text-amber-400">{{
                     isBn
                         ? 'মন্তব্যকারীর অবস্থান (দাবি করা):'
                         : 'Commenter Location (Self-Declared):'
@@ -243,7 +245,7 @@ function switchMode(newMode: 'incident' | 'commenter') {
                         :key="district.slug"
                         :d="district.d"
                         :fill="getColor(district.count)"
-                        stroke="#0f172a"
+                        :stroke="isDark ? '#0f172a' : '#f8fafc'"
                         stroke-width="0.8"
                         class="cursor-pointer transition-all duration-200 hover:stroke-rose-400 hover:stroke-[1.5] hover:brightness-125"
                         @mouseenter="handleMouseEnter(district, $event)"
@@ -256,40 +258,51 @@ function switchMode(newMode: 'incident' | 'commenter') {
             <!-- Floating Tooltip -->
             <div
                 v-if="hoveredDistrict"
-                class="pointer-events-none absolute z-30 w-52 space-y-1 rounded-xl border border-slate-700 bg-slate-950/95 p-3 text-xs shadow-2xl backdrop-blur-sm"
+                class="pointer-events-none absolute z-30 w-52 space-y-1 rounded-xl border border-slate-200 bg-white/95 p-3 text-xs shadow-xl backdrop-blur-sm dark:border-slate-700 dark:bg-slate-950/95"
                 :style="{
                     left: `${tooltipPosition.x}px`,
                     top: `${tooltipPosition.y}px`,
                 }"
             >
                 <div
-                    class="flex items-center justify-between border-b border-slate-800 pb-1 font-bold text-white"
+                    class="flex items-center justify-between border-b border-slate-200 pb-1 font-bold text-slate-900 dark:border-slate-800 dark:text-white"
                 >
                     <span>{{
                         isBn ? hoveredDistrict.name_bn : hoveredDistrict.name_en
                     }}</span>
-                    <span class="text-[10px] font-normal text-slate-400">{{
-                        hoveredDistrict.division
-                    }}</span>
-                </div>
-                <div class="flex items-center justify-between text-slate-300">
-                    <span class="text-slate-400">{{
-                        isBn ? 'যাচাইকৃত রেকর্ড:' : 'Verified Records:'
-                    }}</span>
-                    <strong class="font-bold text-rose-400">{{
-                        formatNumberByLocale(hoveredDistrict.count, locale)
-                    }}</strong>
-                </div>
-                <div class="flex items-center justify-between text-slate-300">
-                    <span class="text-slate-400">{{
-                        isBn ? 'প্রতি লাখে হার:' : 'Rate / 100k:'
-                    }}</span>
-                    <span class="font-semibold text-slate-200">{{
-                        formatNumberByLocale(hoveredDistrict.rate, locale)
-                    }}</span>
+                    <span
+                        class="text-[10px] font-normal text-slate-500 dark:text-slate-400"
+                        >{{ hoveredDistrict.division }}</span
+                    >
                 </div>
                 <div
-                    class="flex items-center justify-between border-t border-slate-800/80 pt-1 text-[10px] text-slate-400"
+                    class="flex items-center justify-between text-slate-600 dark:text-slate-300"
+                >
+                    <span class="text-slate-500 dark:text-slate-400">{{
+                        isBn ? 'যাচাইকৃত রেকর্ড:' : 'Verified Records:'
+                    }}</span>
+                    <strong
+                        class="font-bold text-rose-600 dark:text-rose-400"
+                        >{{
+                            formatNumberByLocale(hoveredDistrict.count, locale)
+                        }}</strong
+                    >
+                </div>
+                <div
+                    class="flex items-center justify-between text-slate-600 dark:text-slate-300"
+                >
+                    <span class="text-slate-500 dark:text-slate-400">{{
+                        isBn ? 'প্রতি লাখে হার:' : 'Rate / 100k:'
+                    }}</span>
+                    <span
+                        class="font-semibold text-slate-800 dark:text-slate-200"
+                        >{{
+                            formatNumberByLocale(hoveredDistrict.rate, locale)
+                        }}</span
+                    >
+                </div>
+                <div
+                    class="flex items-center justify-between border-t border-slate-200 pt-1 text-[10px] text-slate-500 dark:border-slate-800/80 dark:text-slate-400"
                 >
                     <span>{{
                         isBn ? 'জনসংখ্যা (আদমশুমারি ২২):' : 'Pop (Census 2022):'
@@ -299,12 +312,12 @@ function switchMode(newMode: 'incident' | 'commenter') {
                     }}</span>
                 </div>
                 <div
-                    class="pt-1 text-center text-[9px] font-medium text-rose-300/80"
+                    class="pt-1 text-center text-[9px] font-medium text-rose-600 dark:text-rose-300/80"
                 >
                     {{
                         isBn
-                            ? 'বিস্তারিত দেখতে ক্লিক করুন →'
-                            : 'Click to view details →'
+                            ? 'বিস্তারিত দেখতে ক্লিক করুন'
+                            : 'Click to view details'
                     }}
                 </div>
             </div>
@@ -312,51 +325,61 @@ function switchMode(newMode: 'incident' | 'commenter') {
 
         <!-- Legend & Attribution -->
         <div
-            class="flex w-full flex-col items-center justify-between gap-4 border-t border-slate-800 pt-4 text-xs text-slate-400 sm:flex-row"
+            class="flex w-full flex-col items-center justify-between gap-4 border-t border-slate-200 pt-4 text-xs text-slate-500 dark:border-slate-800 dark:text-slate-400 sm:flex-row"
         >
             <!-- Legend -->
             <div class="flex items-center gap-2">
-                <span class="text-[11px] text-slate-400">{{
+                <span class="text-[11px] text-slate-600 dark:text-slate-400">{{
                     isBn ? 'রেকর্ড সংখ্যা:' : 'Record count:'
                 }}</span>
                 <div class="flex items-center gap-1">
                     <span
-                        class="h-3 w-4 rounded-sm bg-[#1e293b]"
+                        class="h-3 w-4 rounded-sm bg-slate-200 dark:bg-[#1e293b]"
                         title="0"
                     ></span>
-                    <span class="text-[10px] text-slate-400">০</span>
+                    <span class="text-[10px] text-slate-600 dark:text-slate-400"
+                        >০</span
+                    >
                 </div>
                 <div class="flex items-center gap-1">
                     <span
                         class="h-3 w-4 rounded-sm bg-[#881337]"
                         title="1-2"
                     ></span>
-                    <span class="text-[10px] text-slate-400">১-২</span>
+                    <span class="text-[10px] text-slate-600 dark:text-slate-400"
+                        >১-২</span
+                    >
                 </div>
                 <div class="flex items-center gap-1">
                     <span
                         class="h-3 w-4 rounded-sm bg-[#be123c]"
                         title="3-10"
                     ></span>
-                    <span class="text-[10px] text-slate-400">৩-১০</span>
+                    <span class="text-[10px] text-slate-600 dark:text-slate-400"
+                        >৩-১০</span
+                    >
                 </div>
                 <div class="flex items-center gap-1">
                     <span
                         class="h-3 w-4 rounded-sm bg-[#e11d48]"
                         title="11-20"
                     ></span>
-                    <span class="text-[10px] text-slate-400">১১-২০</span>
+                    <span class="text-[10px] text-slate-600 dark:text-slate-400"
+                        >১১-২০</span
+                    >
                 </div>
                 <div class="flex items-center gap-1">
                     <span
                         class="h-3 w-4 rounded-sm bg-[#f43f5e]"
                         title="21+"
                     ></span>
-                    <span class="text-[10px] text-slate-400">২১+</span>
+                    <span class="text-[10px] text-slate-600 dark:text-slate-400"
+                        >২১+</span
+                    >
                 </div>
             </div>
 
-            <div class="text-[10px] text-slate-400">
+            <div class="text-[10px] text-slate-500 dark:text-slate-400">
                 মানচিত্র তথ্যসূত্র: BBS / UN OCHA (CC BY-IGO 3.0)
             </div>
         </div>

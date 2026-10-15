@@ -151,9 +151,21 @@ function resetForm() {
                 class="space-y-4 rounded-2xl border border-emerald-500/30 bg-emerald-950/20 p-8 text-center"
             >
                 <div
-                    class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/20 text-2xl font-bold text-emerald-400"
+                    class="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
                 >
-                    ✓
+                    <svg
+                        class="h-7 w-7"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="2"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M4.5 12.75l6 6 9-13.5"
+                        />
+                    </svg>
                 </div>
                 <h2 class="text-xl font-bold text-white">
                     {{
@@ -220,18 +232,65 @@ function resetForm() {
                                     : 'border-slate-800 bg-slate-950/60 text-slate-400 hover:border-slate-700 hover:text-slate-200'
                             "
                         >
-                            <div class="mb-1 text-base">
-                                <span v-if="t.value === 'bug_report'">🐞</span>
-                                <span v-else-if="t.value === 'feature_request'"
-                                    >💡</span
+                            <div class="mb-1.5 flex justify-center">
+                                <svg
+                                    v-if="t.value === 'bug_report'"
+                                    class="h-4 w-4 text-rose-400"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
                                 >
-                                <span
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                                    />
+                                </svg>
+                                <svg
+                                    v-else-if="t.value === 'feature_request'"
+                                    class="h-4 w-4 text-amber-400"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                                    />
+                                </svg>
+                                <svg
                                     v-else-if="
                                         t.value === 'improvement_suggestion'
                                     "
-                                    >⚡</span
+                                    class="h-4 w-4 text-emerald-400"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
                                 >
-                                <span v-else>💬</span>
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M13 10V3L4 14h7v7l9-11h-7z"
+                                    />
+                                </svg>
+                                <svg
+                                    v-else
+                                    class="h-4 w-4 text-sky-400"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                                    />
+                                </svg>
                             </div>
                             <div>{{ isBn ? t.label_bn : t.label_en }}</div>
                         </button>

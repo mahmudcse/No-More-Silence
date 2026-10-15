@@ -72,11 +72,11 @@ function selectMonth(year: number, month: number) {
 
         <div class="mx-auto max-w-6xl space-y-8 px-4 py-10 sm:px-6 lg:px-8">
             <!-- Header Section -->
-            <div class="border-b border-slate-800 pb-6">
+            <div class="border-b border-slate-200 pb-6 dark:border-slate-800">
                 <div class="flex flex-wrap items-center justify-between gap-4">
                     <div>
                         <span
-                            class="rounded border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 text-xs font-semibold text-emerald-400"
+                            class="rounded border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400"
                         >
                             {{
                                 isBn
@@ -85,7 +85,7 @@ function selectMonth(year: number, month: number) {
                             }}
                         </span>
                         <h1
-                            class="mt-2 text-3xl font-extrabold tracking-tight text-white sm:text-4xl"
+                            class="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl"
                         >
                             {{
                                 isBn
@@ -93,7 +93,9 @@ function selectMonth(year: number, month: number) {
                                     : 'Monthly Transparency Reports'
                             }}
                         </h1>
-                        <p class="mt-2 max-w-3xl text-sm text-slate-400">
+                        <p
+                            class="mt-2 max-w-3xl text-sm text-slate-600 dark:text-slate-400"
+                        >
                             {{
                                 isBn
                                     ? 'জনস্বার্থে পরিচালিত এই প্ল্যাটফর্মে আমরা প্রতিটি রিপোর্টের যাচাইকরণ প্রক্রিয়া, আপিল নিষ্পত্তি ও সম্পাদনার জবাবদিহিতা মাসিকভিত্তিতে উন্মুক্ত করি।'
@@ -115,8 +117,8 @@ function selectMonth(year: number, month: number) {
                             :class="
                                 rep.year === selectedYear &&
                                 rep.month === selectedMonth
-                                    ? 'border-rose-500 bg-rose-500/20 font-bold text-rose-300'
-                                    : 'border-slate-800 bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-white'
+                                    ? 'border-rose-500 bg-rose-50 font-bold text-rose-700 dark:border-rose-500 dark:bg-rose-500/20 dark:text-rose-300'
+                                    : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white'
                             "
                         >
                             {{ rep.period }}
@@ -127,36 +129,62 @@ function selectMonth(year: number, month: number) {
 
             <!-- Current Report Banner -->
             <div
-                class="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900/90 p-4"
+                class="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900/90"
             >
                 <div class="flex items-center gap-3">
-                    <span class="text-2xl">📊</span>
+                    <div
+                        class="flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                    >
+                        <svg
+                            class="h-5 w-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                            />
+                        </svg>
+                    </div>
                     <div>
                         <div
-                            class="text-xs font-medium uppercase tracking-wider text-slate-400"
+                            class="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400"
                         >
                             {{ isBn ? 'নির্বাচিত সময়কাল' : 'Selected Period' }}
                         </div>
-                        <div class="text-lg font-bold text-white">
+                        <div
+                            class="text-lg font-bold text-slate-900 dark:text-white"
+                        >
                             {{ currentReport.period }}
                         </div>
                     </div>
                 </div>
 
-                <div class="text-right text-xs text-slate-400">
+                <div
+                    class="text-right text-xs text-slate-500 dark:text-slate-400"
+                >
                     <div>
                         {{ isBn ? 'যাচাইকরণ মান:' : 'Verification Standard:' }}
-                        <strong class="font-semibold text-emerald-400">{{
-                            isBn ? '৮-দফা মানদণ্ড' : '8-Point System'
-                        }}</strong>
+                        <strong
+                            class="font-semibold text-emerald-700 dark:text-emerald-400"
+                            >{{
+                                isBn ? '৮-দফা মানদণ্ড' : '8-Point System'
+                            }}</strong
+                        >
                     </div>
                     <div>
                         {{ isBn ? 'সম্পাদকীয় নিয়ম:' : 'Editorial Rule:' }}
-                        <strong class="font-semibold text-slate-300">{{
-                            isBn
-                                ? 'দ্বৈত যাচাইকরণ (Two-Person Rule)'
-                                : 'Two-Person Rule'
-                        }}</strong>
+                        <strong
+                            class="font-semibold text-slate-700 dark:text-slate-300"
+                            >{{
+                                isBn
+                                    ? 'দ্বৈত যাচাইকরণ (Two-Person Rule)'
+                                    : 'Two-Person Rule'
+                            }}</strong
+                        >
                     </div>
                 </div>
             </div>
@@ -165,34 +193,40 @@ function selectMonth(year: number, month: number) {
             <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 <!-- Card 1: Submissions -->
                 <div
-                    class="space-y-3 rounded-2xl border border-slate-800 bg-slate-900/70 p-5"
+                    class="space-y-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900/70"
                 >
                     <div
-                        class="text-xs font-semibold uppercase tracking-wider text-slate-400"
+                        class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400"
                     >
                         {{ isBn ? 'জমা পড়া রিপোর্ট' : 'Submissions' }}
                     </div>
-                    <div class="text-3xl font-black text-white">
+                    <div
+                        class="text-3xl font-black text-slate-900 dark:text-white"
+                    >
                         {{ currentReport.submissions.total }}
                     </div>
                     <div
-                        class="space-y-1.5 border-t border-slate-800 pt-2 text-xs text-slate-400"
+                        class="space-y-1.5 border-t border-slate-100 pt-2 text-xs text-slate-500 dark:border-slate-800 dark:text-slate-400"
                     >
                         <div class="flex justify-between">
                             <span>{{
                                 isBn ? 'বেনামী সাবমিশন:' : 'Anonymous:'
                             }}</span>
-                            <span class="font-bold text-slate-200">{{
-                                currentReport.submissions.anonymous
-                            }}</span>
+                            <span
+                                class="font-bold text-slate-800 dark:text-slate-200"
+                                >{{ currentReport.submissions.anonymous }}</span
+                            >
                         </div>
                         <div class="flex justify-between">
                             <span>{{
                                 isBn ? 'নিবন্ধিত রিপোর্টার:' : 'Authenticated:'
                             }}</span>
-                            <span class="font-bold text-slate-200">{{
-                                currentReport.submissions.authenticated
-                            }}</span>
+                            <span
+                                class="font-bold text-slate-800 dark:text-slate-200"
+                                >{{
+                                    currentReport.submissions.authenticated
+                                }}</span
+                            >
                         </div>
                         <div class="flex justify-between">
                             <span>{{
@@ -200,27 +234,32 @@ function selectMonth(year: number, month: number) {
                                     ? 'মোবাইল শেয়ার টার্গেট:'
                                     : 'Web Share Target:'
                             }}</span>
-                            <span class="font-bold text-slate-200">{{
-                                currentReport.submissions.web_share_target
-                            }}</span>
+                            <span
+                                class="font-bold text-slate-800 dark:text-slate-200"
+                                >{{
+                                    currentReport.submissions.web_share_target
+                                }}</span
+                            >
                         </div>
                     </div>
                 </div>
 
                 <!-- Card 2: Verification Outcomes -->
                 <div
-                    class="space-y-3 rounded-2xl border border-slate-800 bg-slate-900/70 p-5"
+                    class="space-y-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900/70"
                 >
                     <div
-                        class="text-xs font-semibold uppercase tracking-wider text-slate-400"
+                        class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400"
                     >
                         {{ isBn ? 'যাচাই ও অনুমোদন' : 'Verification' }}
                     </div>
-                    <div class="text-3xl font-black text-emerald-400">
+                    <div
+                        class="text-3xl font-black text-emerald-600 dark:text-emerald-400"
+                    >
                         {{ currentReport.outcomes.verified }}
                     </div>
                     <div
-                        class="space-y-1.5 border-t border-slate-800 pt-2 text-xs text-slate-400"
+                        class="space-y-1.5 border-t border-slate-100 pt-2 text-xs text-slate-500 dark:border-slate-800 dark:text-slate-400"
                     >
                         <div class="flex justify-between">
                             <span>{{
@@ -228,17 +267,19 @@ function selectMonth(year: number, month: number) {
                                     ? 'বাতিলকৃত (অপর্যাপ্ত প্রমাণ):'
                                     : 'Rejected:'
                             }}</span>
-                            <span class="font-bold text-rose-400">{{
-                                currentReport.outcomes.rejected
-                            }}</span>
+                            <span
+                                class="font-bold text-rose-600 dark:text-rose-400"
+                                >{{ currentReport.outcomes.rejected }}</span
+                            >
                         </div>
                         <div class="flex justify-between">
                             <span>{{
                                 isBn ? 'ডুপ্লিকেট একীভূত:' : 'Duplicates:'
                             }}</span>
-                            <span class="font-bold text-slate-200">{{
-                                currentReport.outcomes.duplicate
-                            }}</span>
+                            <span
+                                class="font-bold text-slate-800 dark:text-slate-200"
+                                >{{ currentReport.outcomes.duplicate }}</span
+                            >
                         </div>
                         <div class="flex justify-between">
                             <span>{{
@@ -246,38 +287,46 @@ function selectMonth(year: number, month: number) {
                                     ? 'স্প্যাম / অপ্রাসঙ্গিক:'
                                     : 'Spam Filtered:'
                             }}</span>
-                            <span class="font-bold text-slate-200">{{
-                                currentReport.outcomes.spam
-                            }}</span>
+                            <span
+                                class="font-bold text-slate-800 dark:text-slate-200"
+                                >{{ currentReport.outcomes.spam }}</span
+                            >
                         </div>
                     </div>
                 </div>
 
                 <!-- Card 3: Editorial Speed -->
                 <div
-                    class="space-y-3 rounded-2xl border border-slate-800 bg-slate-900/70 p-5"
+                    class="space-y-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900/70"
                 >
                     <div
-                        class="text-xs font-semibold uppercase tracking-wider text-slate-400"
+                        class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400"
                     >
                         {{ isBn ? 'গড় নিষ্পত্তির সময়' : 'Avg Turnaround' }}
                     </div>
-                    <div class="text-3xl font-black text-sky-400">
+                    <div
+                        class="text-3xl font-black text-sky-600 dark:text-sky-400"
+                    >
                         {{ currentReport.turnaround.avg_verification_hours }}
-                        <span class="text-sm font-normal text-slate-400">{{
-                            isBn ? 'ঘণ্টা' : 'hrs'
-                        }}</span>
+                        <span
+                            class="text-sm font-normal text-slate-500 dark:text-slate-400"
+                            >{{ isBn ? 'ঘণ্টা' : 'hrs' }}</span
+                        >
                     </div>
                     <div
-                        class="space-y-1.5 border-t border-slate-800 pt-2 text-xs text-slate-400"
+                        class="space-y-1.5 border-t border-slate-100 pt-2 text-xs text-slate-500 dark:border-slate-800 dark:text-slate-400"
                     >
                         <div class="flex justify-between">
                             <span>{{
                                 isBn ? 'সম্পন্ন রিভিউ একশন:' : 'Review Actions:'
                             }}</span>
-                            <span class="font-bold text-slate-200">{{
-                                currentReport.turnaround.total_reviews_logged
-                            }}</span>
+                            <span
+                                class="font-bold text-slate-800 dark:text-slate-200"
+                                >{{
+                                    currentReport.turnaround
+                                        .total_reviews_logged
+                                }}</span
+                            >
                         </div>
                         <div class="flex justify-between">
                             <span>{{
@@ -285,7 +334,8 @@ function selectMonth(year: number, month: number) {
                                     ? 'পর্যালোচনা চেকলিস্ট:'
                                     : 'Checklist Audit:'
                             }}</span>
-                            <span class="font-bold text-emerald-400"
+                            <span
+                                class="font-bold text-emerald-600 dark:text-emerald-400"
                                 >100% Logged</span
                             >
                         </div>
@@ -293,43 +343,48 @@ function selectMonth(year: number, month: number) {
                             <span>{{
                                 isBn ? 'প্রত্যাহারকৃত রেকর্ড:' : 'Retracted:'
                             }}</span>
-                            <span class="font-bold text-amber-400">{{
-                                currentReport.outcomes.retracted
-                            }}</span>
+                            <span
+                                class="font-bold text-amber-600 dark:text-amber-400"
+                                >{{ currentReport.outcomes.retracted }}</span
+                            >
                         </div>
                     </div>
                 </div>
 
                 <!-- Card 4: Appeals & Right of Reply -->
                 <div
-                    class="space-y-3 rounded-2xl border border-slate-800 bg-slate-900/70 p-5"
+                    class="space-y-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900/70"
                 >
                     <div
-                        class="text-xs font-semibold uppercase tracking-wider text-slate-400"
+                        class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400"
                     >
                         {{ isBn ? 'আপিল ও আত্মপক্ষ' : 'Appeals & Reply' }}
                     </div>
-                    <div class="text-3xl font-black text-amber-400">
+                    <div
+                        class="text-3xl font-black text-amber-600 dark:text-amber-400"
+                    >
                         {{ currentReport.appeals.filed }}
                     </div>
                     <div
-                        class="space-y-1.5 border-t border-slate-800 pt-2 text-xs text-slate-400"
+                        class="space-y-1.5 border-t border-slate-100 pt-2 text-xs text-slate-500 dark:border-slate-800 dark:text-slate-400"
                     >
                         <div class="flex justify-between">
                             <span>{{
                                 isBn ? 'গৃহীত আপিল:' : 'Accepted:'
                             }}</span>
-                            <span class="font-bold text-emerald-400">{{
-                                currentReport.appeals.accepted
-                            }}</span>
+                            <span
+                                class="font-bold text-emerald-600 dark:text-emerald-400"
+                                >{{ currentReport.appeals.accepted }}</span
+                            >
                         </div>
                         <div class="flex justify-between">
                             <span>{{
                                 isBn ? 'খারিজকৃত আপিল:' : 'Rejected:'
                             }}</span>
-                            <span class="font-bold text-slate-200">{{
-                                currentReport.appeals.rejected
-                            }}</span>
+                            <span
+                                class="font-bold text-slate-800 dark:text-slate-200"
+                                >{{ currentReport.appeals.rejected }}</span
+                            >
                         </div>
                         <div class="flex justify-between">
                             <span>{{
@@ -337,9 +392,13 @@ function selectMonth(year: number, month: number) {
                                     ? 'আত্মপক্ষ বক্তব্য প্রকাশ:'
                                     : 'Reply Published:'
                             }}</span>
-                            <span class="font-bold text-sky-400">{{
-                                currentReport.appeals.right_of_reply_published
-                            }}</span>
+                            <span
+                                class="font-bold text-sky-600 dark:text-sky-400"
+                                >{{
+                                    currentReport.appeals
+                                        .right_of_reply_published
+                                }}</span
+                            >
                         </div>
                     </div>
                 </div>
@@ -347,9 +406,9 @@ function selectMonth(year: number, month: number) {
 
             <!-- Historical Overview Table -->
             <div
-                class="space-y-4 rounded-2xl border border-slate-800 bg-slate-900/60 p-6"
+                class="space-y-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/60"
             >
-                <h2 class="text-base font-bold text-white">
+                <h2 class="text-base font-bold text-slate-900 dark:text-white">
                     {{
                         isBn
                             ? 'বিগত ৬ মাসের সংক্ষিপ্ত পরিসংখ্যান'
@@ -358,9 +417,11 @@ function selectMonth(year: number, month: number) {
                 </h2>
 
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs text-slate-300">
+                    <table
+                        class="w-full text-left text-xs text-slate-700 dark:text-slate-300"
+                    >
                         <thead
-                            class="border-b border-slate-800 bg-slate-950/50 font-semibold uppercase text-slate-400"
+                            class="border-b border-slate-200 bg-slate-50 font-semibold uppercase text-slate-600 dark:border-slate-800 dark:bg-slate-950/50 dark:text-slate-400"
                         >
                             <tr>
                                 <th class="px-3 py-2.5">
@@ -385,20 +446,22 @@ function selectMonth(year: number, month: number) {
                                 </th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-800/60 font-mono">
+                        <tbody
+                            class="divide-y divide-slate-100 font-mono dark:divide-slate-800/60"
+                        >
                             <tr
                                 v-for="rep in history"
                                 :key="`${rep.year}-${rep.month}`"
-                                class="transition-colors hover:bg-slate-800/40"
+                                class="transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/40"
                                 :class="
                                     rep.year === selectedYear &&
                                     rep.month === selectedMonth
-                                        ? 'bg-slate-800/30'
+                                        ? 'bg-slate-100/70 font-semibold dark:bg-slate-800/30'
                                         : ''
                                 "
                             >
                                 <td
-                                    class="px-3 py-2.5 font-sans font-bold text-slate-200"
+                                    class="px-3 py-2.5 font-sans font-bold text-slate-900 dark:text-slate-200"
                                 >
                                     {{ rep.period }}
                                 </td>
@@ -406,20 +469,22 @@ function selectMonth(year: number, month: number) {
                                     {{ rep.submissions.total }}
                                 </td>
                                 <td
-                                    class="px-3 py-2.5 text-right font-bold text-emerald-400"
+                                    class="px-3 py-2.5 text-right font-bold text-emerald-600 dark:text-emerald-400"
                                 >
                                     {{ rep.outcomes.verified }}
                                 </td>
                                 <td
-                                    class="px-3 py-2.5 text-right text-rose-400"
+                                    class="px-3 py-2.5 text-right text-rose-600 dark:text-rose-400"
                                 >
                                     {{ rep.outcomes.rejected }}
                                 </td>
-                                <td class="px-3 py-2.5 text-right text-sky-400">
+                                <td
+                                    class="px-3 py-2.5 text-right text-sky-600 dark:text-sky-400"
+                                >
                                     {{ rep.appeals.accepted }}
                                 </td>
                                 <td
-                                    class="px-3 py-2.5 text-right text-slate-400"
+                                    class="px-3 py-2.5 text-right text-slate-500 dark:text-slate-400"
                                 >
                                     {{ rep.turnaround.avg_verification_hours }}h
                                 </td>

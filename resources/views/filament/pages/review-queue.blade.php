@@ -26,7 +26,7 @@
                     <select wire:change="selectReport($event.target.value)" class="text-sm font-medium bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-700 rounded-lg py-1.5 px-3">
                         @foreach ($this->pendingReports as $pending)
                             <option value="{{ $pending->id }}" @selected($pending->id === $selectedReportId)>
-                                #{{ $pending->id }} — {{ $pending->category?->label() ?? 'Uncategorized' }} [{{ $pending->workflow_status->value }}]
+                                #{{ $pending->id }}: {{ $pending->category?->label() ?? 'Uncategorized' }} [{{ $pending->workflow_status->value }}]
                             </option>
                         @endforeach
                     </select>
@@ -56,10 +56,27 @@
 
                         <div class="space-y-4">
                             @forelse ($this->selectedReport->getMedia('original') as $media)
-                                <div class="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-950">
-                                    <a href="{{ $media->getUrl() }}" target="_blank" rel="noopener noreferrer">
-                                        <img src="{{ $media->getUrl() }}" alt="Evidence screenshot" class="w-full h-auto object-contain max-h-[500px]" />
-                                    </a>
+                                @php
+                                    $evidenceType = $media->getCustomProperty('evidence_type', 'comment');
+                                    $badgeConfig = match($evidenceType) {
+                                        'post' => ['label' => 'Original Post', 'class' => 'bg-blue-500/10 text-blue-700 dark:text-blue-300 border-blue-500/20'],
+                                        'comment' => ['label' => 'Offensive Comment', 'class' => 'bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-500/20'],
+                                        'profile' => ['label' => 'Commenter Profile', 'class' => 'bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/20'],
+                                        default => ['label' => 'Other Evidence', 'class' => 'bg-gray-500/10 text-gray-700 dark:text-gray-300 border-gray-500/20'],
+                                    };
+                                @endphp
+                                <div class="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-950 p-3 space-y-2.5">
+                                    <div class="flex items-center justify-between">
+                                        <span class="inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-semibold {{ $badgeConfig['class'] }}">
+                                            {{ $badgeConfig['label'] }}
+                                        </span>
+                                        <span class="text-[11px] text-gray-400 font-mono">{{ $media->file_name }}</span>
+                                    </div>
+                                    <div class="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800 bg-black/10">
+                                        <a href="{{ $media->getUrl() }}" target="_blank" rel="noopener noreferrer">
+                                            <img src="{{ $media->getUrl() }}" alt="Evidence screenshot" class="w-full h-auto object-contain max-h-[500px]" />
+                                        </a>
+                                    </div>
                                 </div>
                             @empty
                                 <div class="p-8 text-center text-gray-400 bg-gray-50 dark:bg-gray-800 rounded-xl">

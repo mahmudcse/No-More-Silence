@@ -77,4 +77,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// Filament Admin Panel Locale Switcher
+Route::get('/admin/locale/{locale}', function (string $locale) {
+    if (in_array($locale, ['en', 'bn'], true)) {
+        session(['filament_locale' => $locale]);
+    }
+
+    return redirect()->back(fallback: url('/admin'));
+})->name('filament.admin.locale.switch')->middleware(['web']);
+
 require __DIR__.'/auth.php';
