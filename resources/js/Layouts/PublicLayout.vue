@@ -318,6 +318,17 @@ const mobileMenuOpen = ref(false);
                     >
                         {{ isBn ? 'আমার জমাকৃত রিপোর্ট' : 'My Submissions' }}
                     </Link>
+                    <Link
+                        href="/feedback"
+                        class="block rounded-md px-3 py-2 text-sm font-medium text-sky-400 hover:bg-slate-800"
+                        @click="mobileMenuOpen = false"
+                    >
+                        {{
+                            isBn
+                                ? 'মতামত বা ত্রুটি জানান'
+                                : 'Feedback / Report Bug'
+                        }}
+                    </Link>
                 </div>
             </div>
         </header>
@@ -532,6 +543,18 @@ const mobileMenuOpen = ref(false);
                                         isBn
                                             ? 'স্বচ্ছতা প্রতিবেদন (Transparency)'
                                             : 'Transparency Reports'
+                                    }}
+                                </Link>
+                            </div>
+                            <div>
+                                <Link
+                                    href="/feedback"
+                                    class="text-slate-400 transition-colors hover:text-slate-200"
+                                >
+                                    {{
+                                        isBn
+                                            ? 'মতামত ও ত্রুটি জানান (Feedback / Bug)'
+                                            : 'Report Bug / Feedback'
                                     }}
                                 </Link>
                             </div>

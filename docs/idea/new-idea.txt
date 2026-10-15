@@ -1,3 +1,5 @@
 laravel octane and frankenphp.
 
 asking users to report bug and feature request or any existing feature improvement suggestions.
+
+The default color, mdash, lot of things has a look and feel like AI made. please change those.

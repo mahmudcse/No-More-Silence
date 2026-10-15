@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Api\V1\AppealController;
+use App\Http\Controllers\Api\V1\FeedbackController;
 use App\Http\Controllers\Api\V1\OpenDataController;
 use App\Http\Controllers\Api\V1\PublicDistrictController;
 use App\Http\Controllers\Api\V1\PublicIncidentController;
@@ -62,4 +63,7 @@ Route::prefix('v1')->middleware(['throttle:60,1'])->group(function (): void {
     // Transparency Reports
     Route::get('/transparency', [TransparencyController::class, 'index'])->name('api.v1.transparency.index');
     Route::get('/transparency/{year}/{month}', [TransparencyController::class, 'show'])->name('api.v1.transparency.show');
+
+    // User Feedback, Bug Reports & Suggestions
+    Route::post('/feedback', [FeedbackController::class, 'store'])->name('api.v1.feedback.store');
 });

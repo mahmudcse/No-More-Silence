@@ -48,3 +48,7 @@ ehthumbs.db
 /.junie
 /.gemini
 /.cursor
+
+**/caddy
+frankenphp
+frankenphp-worker.php
