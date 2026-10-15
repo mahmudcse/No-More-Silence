@@ -60,12 +60,6 @@ const { isBn, locale } = useLanguage();
                     >{{ isBn ? 'হোম' : 'Home' }}</Link
                 >
                 <span>/</span>
-                <Link
-                    href="/incidents"
-                    class="transition-colors hover:text-slate-900 dark:hover:text-white"
-                    >{{ isBn ? 'ঘটনাসমূহ' : 'Incidents' }}</Link
-                >
-                <span>/</span>
                 <span
                     class="max-w-xs truncate text-slate-800 dark:text-slate-300"
                     >{{ isBn ? incident.title_bn : incident.title_en }}</span

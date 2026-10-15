@@ -46,7 +46,7 @@ const mobileMenuOpen = ref(false);
 
         <!-- Emergency Helpline Top Ribbon -->
         <div
-            class="border-b border-rose-200/60 bg-rose-50/70 px-4 py-1.5 text-center text-xs text-rose-950 backdrop-blur-md transition-colors dark:border-rose-900/40 dark:bg-rose-950/40 dark:text-rose-200"
+            class="border-b border-rose-200/50 bg-rose-50/50 px-4 py-1.5 text-center text-xs text-rose-950 backdrop-blur-md transition-colors dark:border-rose-900/40 dark:bg-rose-950/30 dark:text-rose-200"
         >
             <div
                 class="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-6 gap-y-1"
@@ -96,7 +96,7 @@ const mobileMenuOpen = ref(false);
 
         <!-- Main Header (Apple Glass Navbar) -->
         <header
-            class="sticky top-0 z-40 border-b border-black/[0.06] bg-white/75 backdrop-blur-2xl transition-colors dark:border-white/[0.08] dark:bg-black/75"
+            class="sticky top-0 z-40 border-b border-black/[0.06] bg-white/[0.48] backdrop-blur-2xl saturate-180 transition-colors dark:border-white/[0.08] dark:bg-black/[0.50]"
         >
             <div
                 class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8"
@@ -179,12 +179,6 @@ const mobileMenuOpen = ref(false);
                         {{ isBn ? 'জেলা মানচিত্র' : 'Map' }}
                     </Link>
                     <Link
-                        href="/incidents"
-                        class="rounded-full px-3 py-1.5 text-slate-600 transition-all hover:bg-black/[0.04] hover:text-slate-900 dark:text-slate-300 dark:hover:bg-white/[0.08] dark:hover:text-white"
-                    >
-                        {{ isBn ? 'ঘটনাসমূহ' : 'Incidents' }}
-                    </Link>
-                    <Link
                         href="/methodology"
                         class="rounded-full px-3 py-1.5 text-slate-600 transition-all hover:bg-black/[0.04] hover:text-slate-900 dark:text-slate-300 dark:hover:bg-white/[0.08] dark:hover:text-white"
                     >
@@ -201,6 +195,12 @@ const mobileMenuOpen = ref(false);
                         class="rounded-full px-3 py-1.5 text-slate-600 transition-all hover:bg-black/[0.04] hover:text-slate-900 dark:text-slate-300 dark:hover:bg-white/[0.08] dark:hover:text-white"
                     >
                         {{ isBn ? 'ট্র্যাকিং' : 'Track' }}
+                    </Link>
+                    <Link
+                        href="/feedback"
+                        class="rounded-full px-3 py-1.5 text-slate-600 transition-all hover:bg-black/[0.04] hover:text-slate-900 dark:text-slate-300 dark:hover:bg-white/[0.08] dark:hover:text-white"
+                    >
+                        {{ isBn ? 'মতামত' : 'Feedback' }}
                     </Link>
                 </nav>
 
@@ -352,7 +352,7 @@ const mobileMenuOpen = ref(false);
             <!-- Mobile Drawer -->
             <div
                 v-show="mobileMenuOpen"
-                class="space-y-1 border-b border-black/[0.06] bg-white/90 px-4 pb-4 pt-2 backdrop-blur-2xl transition-colors dark:border-white/[0.08] dark:bg-black/90 md:hidden"
+                class="space-y-1 border-b border-black/[0.06] bg-white/70 px-4 pb-4 pt-2 backdrop-blur-2xl transition-colors dark:border-white/[0.08] dark:bg-black/70 md:hidden"
             >
                 <Link
                     href="/"
@@ -374,13 +374,6 @@ const mobileMenuOpen = ref(false);
                     @click="mobileMenuOpen = false"
                 >
                     {{ isBn ? 'জেলা মানচিত্র' : 'Map' }}
-                </Link>
-                <Link
-                    href="/incidents"
-                    class="block rounded-xl px-3 py-2 text-sm font-medium text-slate-800 hover:bg-black/[0.04] dark:text-slate-200 dark:hover:bg-white/[0.08]"
-                    @click="mobileMenuOpen = false"
-                >
-                    {{ isBn ? 'ঘটনাসমূহ' : 'Incidents' }}
                 </Link>
                 <Link
                     href="/methodology"

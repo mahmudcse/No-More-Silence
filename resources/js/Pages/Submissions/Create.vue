@@ -21,13 +21,6 @@ interface SharedData {
     files?: SharedFileItem[];
 }
 
-interface IncidentItem {
-    id: number;
-    title_bn: string;
-    title_en: string;
-    district_id: number | null;
-}
-
 interface DistrictItem {
     id: number;
     name_bn: string;
@@ -41,11 +34,9 @@ interface CategoryItem {
 }
 
 const props = defineProps<{
-    incidents: IncidentItem[];
-    districts: DistrictItem[];
     categories: CategoryItem[];
+    districts?: DistrictItem[];
     turnstileSiteKey?: string | null;
-    preselectedIncidentId?: string | number | null;
     sharedData?: SharedData | null;
 }>();
 
@@ -68,11 +59,6 @@ const form = ref({
     submitted_comment_url: '',
     comment_text: '',
     category: '',
-    incident_id: props.preselectedIncidentId
-        ? String(props.preselectedIncidentId)
-        : '',
-    new_incident_title: '',
-    new_incident_district_id: '',
     reporter_email: '',
     cf_turnstile_response: '',
 });
@@ -245,21 +231,6 @@ async function handleSubmit() {
         }
         if (form.value.category) {
             formData.append('category', form.value.category);
-        }
-        if (form.value.incident_id) {
-            formData.append('incident_id', form.value.incident_id);
-        }
-        if (form.value.new_incident_title) {
-            formData.append(
-                'new_incident_title',
-                form.value.new_incident_title,
-            );
-        }
-        if (form.value.new_incident_district_id) {
-            formData.append(
-                'new_incident_district_id',
-                form.value.new_incident_district_id,
-            );
         }
         if (form.value.reporter_email) {
             formData.append('reporter_email', form.value.reporter_email);
@@ -1530,8 +1501,8 @@ onMounted(async () => {
                             >
                                 {{
                                     isBn
-                                        ? '৩. মন্তব্যের শ্রেণিবিভাগ ও ঘটনা সংযুক্তি'
-                                        : '3. Category & Incident Context'
+                                        ? '৩. মন্তব্যের শ্রেণিবিভাগ'
+                                        : '3. Category & Classification'
                                 }}
                             </h3>
                             <p
@@ -1539,8 +1510,8 @@ onMounted(async () => {
                             >
                                 {{
                                     isBn
-                                        ? 'মন্তব্যটি কোন ধরনের সহিংসতার সমর্থনে এবং এটি নির্দিষ্ট কোনো ঘটনার সাথে সম্পর্কিত কি না তা নির্বাচন করুন।'
-                                        : 'Classify the nature of violation and optionally associate it with an existing incident.'
+                                        ? 'মন্তব্যটি কোন ধরনের সহিংসতার সমর্থনে তা নির্বাচন করুন।'
+                                        : 'Classify the nature of the violation.'
                                 }}
                             </p>
                         </div>
@@ -1581,79 +1552,6 @@ onMounted(async () => {
                                     }}</span>
                                 </label>
                             </div>
-                        </div>
-
-                        <!-- Incident Linking -->
-                        <div>
-                            <label
-                                class="block text-xs font-semibold text-slate-700 dark:text-slate-300"
-                            >
-                                {{
-                                    isBn
-                                        ? 'সম্পর্কিত ঘটনা নির্বাচন করুন (যদি থাকে)'
-                                        : 'Link to Incident (Optional)'
-                                }}
-                            </label>
-                            <select
-                                v-model="form.incident_id"
-                                class="mt-1.5 w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 focus:border-rose-500 focus:ring-1 focus:ring-rose-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
-                            >
-                                <option value="">
-                                    {{
-                                        isBn
-                                            ? '-- কোনো নির্দিষ্ট ঘটনা নয় / সাধারণ সহিংসতা --'
-                                            : '-- No specific incident / General --'
-                                    }}
-                                </option>
-                                <option
-                                    v-for="inc in incidents"
-                                    :key="inc.id"
-                                    :value="String(inc.id)"
-                                >
-                                    {{ isBn ? inc.title_bn : inc.title_en }}
-                                </option>
-                            </select>
-                        </div>
-
-                        <!-- Or New Incident -->
-                        <div
-                            v-if="!form.incident_id"
-                            class="space-y-3 rounded-xl border border-slate-200 bg-slate-50/70 p-4 dark:border-slate-800 dark:bg-slate-900/60"
-                        >
-                            <div
-                                class="text-xs font-semibold text-slate-600 dark:text-slate-400"
-                            >
-                                {{
-                                    isBn
-                                        ? 'অথবা নতুন ঘটনার নাম লিখুন (ঐচ্ছিক)'
-                                        : 'Or Specify a New Incident (Optional)'
-                                }}
-                            </div>
-                            <input
-                                v-model="form.new_incident_title"
-                                type="text"
-                                placeholder="যেমন: মাগুরা ধর্ষণ মামলা ২০২৬"
-                                class="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm text-slate-900 placeholder-slate-400 focus:border-rose-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500"
-                            />
-                            <select
-                                v-model="form.new_incident_district_id"
-                                class="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm text-slate-900 focus:border-rose-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
-                            >
-                                <option value="">
-                                    {{
-                                        isBn
-                                            ? '-- জেলা নির্বাচন করুন --'
-                                            : '-- Select District --'
-                                    }}
-                                </option>
-                                <option
-                                    v-for="dist in districts"
-                                    :key="dist.id"
-                                    :value="String(dist.id)"
-                                >
-                                    {{ isBn ? dist.name_bn : dist.name_en }}
-                                </option>
-                            </select>
                         </div>
 
                         <!-- Reporter Email (Optional) -->

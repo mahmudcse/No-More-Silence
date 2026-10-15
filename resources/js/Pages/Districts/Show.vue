@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import ReportCard, { type ReportItem } from '@/Components/ReportCard.vue';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import { useLanguage } from '@/composables/useLanguage';
-import { formatDateByLocale, formatNumberByLocale } from '@/utils/bangla';
+import { formatNumberByLocale } from '@/utils/bangla';
 import { Head, Link } from '@inertiajs/vue3';
+import { computed } from 'vue';
 
 export interface DistrictDetail {
     id: number;
@@ -16,26 +18,29 @@ export interface DistrictDetail {
         name_en: string;
         name_bn: string;
     } | null;
-    incidents_count: number;
-    incidents_count_bn: string;
-}
-
-export interface IncidentSummary {
-    id: number;
-    title_en: string;
-    title_bn: string;
-    slug: string;
-    occurred_on: string | null;
-    summary: string | null;
     reports_count?: number;
+    reports_count_bn?: string;
+    incidents_count?: number;
+    incidents_count_bn?: string;
 }
 
-defineProps<{
+const props = defineProps<{
     district: DistrictDetail;
-    incidents: IncidentSummary[];
+    reports?: {
+        data: ReportItem[];
+        links?: Array<{ url: string | null; label: string; active: boolean }>;
+    } | ReportItem[];
+    incidents?: any[];
 }>();
 
 const { isBn, locale } = useLanguage();
+
+const reportsList = computed<ReportItem[]>(() => {
+    if (Array.isArray(props.reports)) {
+        return props.reports;
+    }
+    return props.reports?.data ?? [];
+});
 </script>
 
 <template>
@@ -115,7 +120,7 @@ const { isBn, locale } = useLanguage();
                         >
                             {{
                                 formatNumberByLocale(
-                                    district.incidents_count,
+                                    district.reports_count ?? district.incidents_count ?? 0,
                                     locale,
                                 )
                             }}
@@ -123,7 +128,7 @@ const { isBn, locale } = useLanguage();
                         <div
                             class="text-xs font-medium text-slate-500 dark:text-slate-400"
                         >
-                            {{ isBn ? 'নথিবদ্ধ ঘটনা' : 'Incidents on Record' }}
+                            {{ isBn ? 'নথিবদ্ধ মন্তব্য' : 'Verified Comments' }}
                         </div>
                     </div>
                 </div>
@@ -184,7 +189,7 @@ const { isBn, locale } = useLanguage();
                 </div>
             </div>
 
-            <!-- Incidents in this District -->
+            <!-- Verified Comments in this District -->
             <div class="space-y-4">
                 <div
                     class="border-b border-slate-200 pb-3 dark:border-slate-800"
@@ -194,92 +199,28 @@ const { isBn, locale } = useLanguage();
                     >
                         {{
                             isBn
-                                ? `${district.name_bn} জেলার নথিবদ্ধ ঘটনাসমূহ`
-                                : `Incidents Recorded in ${district.name_en}`
+                                ? `${district.name_bn} জেলার নথিবদ্ধ মন্তব্যসমূহ`
+                                : `Verified Comments in ${district.name_en}`
                         }}
                     </h2>
                     <p class="text-xs text-slate-600 dark:text-slate-400">
                         {{
                             isBn
-                                ? 'এই জেলায় সংঘটিত সহিংসতা ও সংশ্লিষ্ট নথিবদ্ধ মন্তব্যের তালিকা।'
-                                : 'Incidents occurring in this district and documented comments.'
+                                ? 'এই জেলায় সংশ্লিষ্ট নথিবদ্ধ মন্তব্যের প্রমাণ ও বিবরণ।'
+                                : 'Verified comments documented for this district.'
                         }}
                     </p>
                 </div>
 
                 <div
-                    v-if="incidents.length > 0"
+                    v-if="reportsList.length > 0"
                     class="grid grid-cols-1 gap-6 md:grid-cols-2"
                 >
-                    <div
-                        v-for="inc in incidents"
-                        :key="inc.id"
-                        class="flex flex-col justify-between space-y-3 rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition-colors hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900/70 dark:hover:border-slate-700"
-                    >
-                        <div class="space-y-2">
-                            <span
-                                v-if="inc.occurred_on"
-                                class="text-[11px] text-slate-500 dark:text-slate-400"
-                            >
-                                {{
-                                    formatDateByLocale(inc.occurred_on, locale)
-                                }}
-                            </span>
-                            <h3
-                                class="text-base font-bold leading-snug text-slate-900 dark:text-white"
-                            >
-                                <Link
-                                    :href="`/incidents/${inc.slug}`"
-                                    class="transition-colors hover:text-rose-600 dark:hover:text-rose-400"
-                                >
-                                    {{ isBn ? inc.title_bn : inc.title_en }}
-                                </Link>
-                            </h3>
-                            <p
-                                v-if="inc.summary"
-                                class="line-clamp-2 text-xs leading-relaxed text-slate-600 dark:text-slate-400"
-                            >
-                                {{ inc.summary }}
-                            </p>
-                        </div>
-
-                        <div
-                            class="flex items-center justify-between border-t border-slate-100 pt-3 text-xs dark:border-slate-800/80"
-                        >
-                            <span
-                                class="font-semibold text-rose-600 dark:text-rose-400"
-                            >
-                                {{
-                                    formatNumberByLocale(
-                                        inc.reports_count ?? 0,
-                                        locale,
-                                    )
-                                }}
-                                {{ isBn ? 'টি মন্তব্য' : 'comments' }}
-                            </span>
-                            <Link
-                                :href="`/incidents/${inc.slug}`"
-                                class="inline-flex items-center gap-1 font-medium text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"
-                            >
-                                <span>{{
-                                    isBn ? 'বিস্তারিত দেখুন' : 'View details'
-                                }}</span>
-                                <svg
-                                    class="h-3.5 w-3.5"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                >
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-                                    />
-                                </svg>
-                            </Link>
-                        </div>
-                    </div>
+                    <ReportCard
+                        v-for="rep in reportsList"
+                        :key="rep.uuid"
+                        :report="rep"
+                    />
                 </div>
                 <div
                     v-else
@@ -287,8 +228,8 @@ const { isBn, locale } = useLanguage();
                 >
                     {{
                         isBn
-                            ? 'এই জেলায় বর্তমানে কোনো ঘটনা নথিবদ্ধ নেই।'
-                            : 'No incidents currently recorded in this district.'
+                            ? 'এই জেলায় বর্তমানে কোনো মন্তব্য নথিবদ্ধ নেই।'
+                            : 'No verified comments currently documented in this district.'
                     }}
                 </div>
             </div>

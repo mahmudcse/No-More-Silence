@@ -175,9 +175,8 @@ function getCategoryColor(category?: string | null): string {
                     class="shrink-0 font-medium text-slate-600 dark:text-slate-400"
                     >{{ isBn ? 'ঘটনা:' : 'Incident:' }}</span
                 >
-                <Link
-                    :href="`/incidents/${report.incident.slug}`"
-                    class="truncate text-slate-700 underline underline-offset-2 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"
+                <span
+                    class="truncate text-slate-700 dark:text-slate-300"
                 >
                     {{
                         isBn
@@ -190,7 +189,7 @@ function getCategoryColor(category?: string | null): string {
                     >
                         ({{ report.incident.district }})</span
                     >
-                </Link>
+                </span>
             </div>
         </div>
 

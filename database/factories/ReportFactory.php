@@ -27,6 +27,7 @@ class ReportFactory extends Factory
             'severity' => fake()->numberBetween(1, 3),
             'workflow_status' => WorkflowStatus::Submitted,
             'visibility' => Visibility::Hidden,
+            'is_hidden_from_homepage' => false,
             'platform' => Platform::Facebook,
             'submitted_via' => SubmittedVia::Web,
         ];
@@ -45,6 +46,13 @@ class ReportFactory extends Factory
         return $this->verified()->state(fn (array $attributes) => [
             'visibility' => Visibility::Public,
             'published_at' => now(),
+        ]);
+    }
+
+    public function hiddenFromHomepage(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_hidden_from_homepage' => true,
         ]);
     }
 }

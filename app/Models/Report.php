@@ -31,8 +31,9 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  * @property CarbonInterface|null $comment_posted_at
  * @property CarbonInterface|null $verified_at
  * @property CarbonInterface|null $published_at
+ * @property bool $is_hidden_from_homepage
  */
-#[Fillable(['tracking_code_hash', 'reporter_id', 'facebook_profile_id', 'incident_id', 'submitted_profile_url', 'submitted_comment_url', 'comment_text', 'comment_text_translation', 'comment_posted_at', 'category', 'severity', 'workflow_status', 'visibility', 'platform', 'submitted_via', 'submitted_by', 'duplicate_of_id', 'rejected_reason', 'verified_at', 'verified_by', 'published_at', 'published_by', 'submitter_ip_hash'])]
+#[Fillable(['tracking_code_hash', 'reporter_id', 'facebook_profile_id', 'incident_id', 'submitted_profile_url', 'submitted_comment_url', 'comment_text', 'comment_text_translation', 'comment_posted_at', 'category', 'severity', 'workflow_status', 'visibility', 'platform', 'submitted_via', 'submitted_by', 'duplicate_of_id', 'rejected_reason', 'verified_at', 'verified_by', 'published_at', 'published_by', 'submitter_ip_hash', 'is_hidden_from_homepage'])]
 class Report extends Model implements HasMedia
 {
     /** @use HasFactory<ReportFactory> */
@@ -55,6 +56,7 @@ class Report extends Model implements HasMedia
             'comment_posted_at' => 'datetime',
             'verified_at' => 'datetime',
             'published_at' => 'datetime',
+            'is_hidden_from_homepage' => 'boolean',
         ];
     }
 

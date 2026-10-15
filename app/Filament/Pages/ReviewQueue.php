@@ -17,7 +17,6 @@ use App\Models\Report;
 use App\Models\User;
 use App\Support\ReportLock;
 use BackedEnum;
-use DomainException;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Support\Icons\Heroicon;
@@ -181,10 +180,10 @@ class ReviewQueue extends Page
         $report = Report::findOrFail($this->selectedReportId);
 
         // Save current updates to report before verification
-        $report->facebook_profile_id = $this->facebook_profile_id;
-        $report->incident_id = $this->incident_id;
+        $report->facebook_profile_id = filled($this->facebook_profile_id) ? (int) $this->facebook_profile_id : null;
+        $report->incident_id = filled($this->incident_id) ? (int) $this->incident_id : null;
         $report->category = $this->category ? ReportCategory::from($this->category) : null;
-        $report->severity = $this->severity;
+        $report->severity = filled($this->severity) ? (int) $this->severity : null;
         $report->comment_text = $this->comment_text;
         $report->save();
 
@@ -204,7 +203,7 @@ class ReviewQueue extends Page
                 ->send();
 
             $this->loadNextInQueue();
-        } catch (DomainException $e) {
+        } catch (\Throwable $e) {
             Notification::make()
                 ->title('Verification failed')
                 ->body($e->getMessage())
@@ -248,7 +247,7 @@ class ReviewQueue extends Page
                 ->send();
 
             $this->loadNextInQueue();
-        } catch (DomainException $e) {
+        } catch (\Throwable $e) {
             Notification::make()
                 ->title('Rejection failed')
                 ->body($e->getMessage())
@@ -282,7 +281,7 @@ class ReviewQueue extends Page
                 ->send();
 
             $this->loadNextInQueue();
-        } catch (DomainException $e) {
+        } catch (\Throwable $e) {
             Notification::make()
                 ->title('Action failed')
                 ->body($e->getMessage())
@@ -327,7 +326,7 @@ class ReviewQueue extends Page
                 ->send();
 
             $this->loadNextInQueue();
-        } catch (DomainException $e) {
+        } catch (\Throwable $e) {
             Notification::make()
                 ->title('Action failed')
                 ->body($e->getMessage())
@@ -375,6 +374,22 @@ class ReviewQueue extends Page
     public function getIncidentsProperty(): Collection
     {
         return Incident::query()->orderBy('occurred_on', 'desc')->limit(50)->get();
+    }
+
+    public function toggleHomepageVisibility(): void
+    {
+        if (! $this->selectedReportId) {
+            return;
+        }
+
+        $report = Report::findOrFail($this->selectedReportId);
+        $newState = ! $report->is_hidden_from_homepage;
+        $report->update(['is_hidden_from_homepage' => $newState]);
+
+        Notification::make()
+            ->title($newState ? 'Report hidden from homepage' : 'Report visible on homepage')
+            ->success()
+            ->send();
     }
 
     private function resetChecklist(): void

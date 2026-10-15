@@ -9,3 +9,4 @@ people can search a name and see how many occurances are recorded under this fac
 Admin can login to filament panel and see all the reports and can remove, or publish it to homepage. There should be layers of admins with roles. admin can make a role, and assign that role to a admin to work with.
 
 Show every report, just show if it's verified or not.
+where is the option for feature request and feedback for improvement?

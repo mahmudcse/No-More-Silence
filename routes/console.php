@@ -8,4 +8,5 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
+Schedule::command('stats:aggregate-visits')->dailyAt('00:02');
 Schedule::command('stats:snapshot')->dailyAt('00:05');

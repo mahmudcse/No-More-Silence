@@ -6,7 +6,6 @@ namespace App\Http\Controllers;
 
 use App\Enums\ReportCategory;
 use App\Models\District;
-use App\Models\Incident;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
@@ -20,12 +19,6 @@ class SubmissionViewController extends Controller
 {
     public function create(Request $request): Response
     {
-        $incidents = Incident::query()
-            ->select(['id', 'title_bn', 'title_en', 'district_id'])
-            ->latest('occurred_on')
-            ->take(30)
-            ->get();
-
         $districts = District::query()
             ->select(['id', 'name_bn', 'name_en'])
             ->orderBy('name_en')
@@ -46,11 +39,9 @@ class SubmissionViewController extends Controller
         }
 
         return Inertia::render('Submissions/Create', [
-            'incidents' => $incidents,
             'districts' => $districts,
             'categories' => $categories,
             'turnstileSiteKey' => config('services.turnstile.site_key'),
-            'preselectedIncidentId' => $request->query('incident_id'),
             'sharedData' => $sharedData,
         ]);
     }

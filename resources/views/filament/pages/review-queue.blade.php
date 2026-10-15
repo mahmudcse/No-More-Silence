@@ -1,256 +1,429 @@
 <x-filament-panels::page>
-    <div class="space-y-6">
+    <style>
+        .rq-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .rq-topbar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+        .rq-topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex: 1 1 300px;
+        }
+        .rq-topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .rq-layout-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            align-items: start;
+        }
+        @media (min-width: 1024px) {
+            .rq-layout-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        .rq-col {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .rq-field-group {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        @media (min-width: 640px) {
+            .rq-field-group-2col {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        .rq-label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.375rem;
+            color: var(--gray-700, #374151);
+        }
+        :is(.dark) .rq-label {
+            color: var(--gray-300, #d1d5db);
+        }
+        .rq-evidence-card {
+            border-radius: 0.75rem;
+            padding: 0.75rem;
+            border: 1px solid rgba(156, 163, 175, 0.25);
+            background: rgba(156, 163, 175, 0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .rq-evidence-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .rq-evidence-img-wrap {
+            border-radius: 0.5rem;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(156, 163, 175, 0.2);
+            text-align: center;
+        }
+        .rq-evidence-img {
+            max-height: 480px;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            display: block;
+        }
+        .rq-check-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+        .rq-check-item:hover {
+            background: rgba(156, 163, 175, 0.1);
+        }
+        .rq-check-text {
+            font-size: 0.8125rem;
+            line-height: 1.25rem;
+            color: var(--gray-700, #374151);
+        }
+        :is(.dark) .rq-check-text {
+            color: var(--gray-300, #d1d5db);
+        }
+        .rq-actions-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .rq-sub-actions-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(156, 163, 175, 0.2);
+        }
+        @media (min-width: 640px) {
+            .rq-sub-actions-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        .rq-url-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            font-size: 0.8125rem;
+        }
+    </style>
+
+    <div class="rq-container">
         @if ($isLockedByOther)
-            <div class="p-4 rounded-xl bg-danger-500/10 border border-danger-500 text-danger-700 dark:text-danger-400 font-medium flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <x-heroicon-o-lock-closed class="w-6 h-6" />
+            <x-filament::callout color="danger" icon="heroicon-o-lock-closed">
+                <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 1rem;">
                     <span>This report is currently being reviewed by <strong>{{ $lockedByName }}</strong>. Action buttons are disabled to prevent duplicate reviews.</span>
+                    <x-filament::button wire:click="loadNextInQueue" color="danger" size="sm">
+                        Skip to Next
+                    </x-filament::button>
                 </div>
-                <button wire:click="loadNextInQueue" type="button" class="px-3 py-1.5 bg-danger-600 text-white rounded-lg text-sm font-semibold hover:bg-danger-500 transition">
-                    Skip to Next
-                </button>
-            </div>
+            </x-filament::callout>
         @endif
 
         @if (! $this->selectedReport)
-            <div class="text-center py-16 bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800">
-                <x-heroicon-o-check-circle class="w-16 h-16 mx-auto text-success-500 mb-4" />
-                <h3 class="text-xl font-bold text-gray-900 dark:text-white">Review Queue is Empty</h3>
-                <p class="text-gray-500 dark:text-gray-400 mt-2">All submitted reports have been triaged or verified.</p>
-            </div>
+            <x-filament::empty-state
+                icon="heroicon-o-check-circle"
+                heading="Review Queue is Empty"
+                description="All submitted reports have been triaged or verified."
+            />
         @else
-            <!-- Top Queue Navigation Bar -->
-            <div class="flex items-center justify-between bg-white dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800">
-                <div class="flex items-center gap-4">
-                    <span class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Queue:</span>
-                    <select wire:change="selectReport($event.target.value)" class="text-sm font-medium bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-700 rounded-lg py-1.5 px-3">
-                        @foreach ($this->pendingReports as $pending)
-                            <option value="{{ $pending->id }}" @selected($pending->id === $selectedReportId)>
-                                #{{ $pending->id }}: {{ $pending->category?->label() ?? 'Uncategorized' }} [{{ $pending->workflow_status->value }}]
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div class="flex items-center gap-2">
-                    <span class="text-xs text-gray-400">UUID: {{ $this->selectedReport->uuid }}</span>
-                    <button wire:click="loadNextInQueue" type="button" class="text-sm text-primary-600 dark:text-primary-400 hover:underline font-medium">
-                        Next Report &rarr;
-                    </button>
-                </div>
-            </div>
-
-            <!-- Two-Column Side-by-Side Reviewer -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                <!-- Left Column: Evidence & External Links -->
-                <div class="lg:col-span-6 space-y-6">
-                    <!-- Media Gallery -->
-                    <div class="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 space-y-4">
-                        <div class="flex items-center justify-between">
-                            <h4 class="font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                                <x-heroicon-o-photo class="w-5 h-5 text-primary-500" />
-                                Submitted Evidence
-                            </h4>
-                            <span class="text-xs text-gray-400">{{ $this->selectedReport->getMedia('original')->count() }} image(s)</span>
+            <!-- Top Queue Navigation -->
+            <x-filament::section compact>
+                <div class="rq-topbar">
+                    <div class="rq-topbar-left">
+                        <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.7;">Queue:</span>
+                        <div style="min-width: 260px; max-width: 480px; flex: 1;">
+                            <x-filament::input.wrapper>
+                                <x-filament::input.select wire:change="selectReport($event.target.value)">
+                                    @foreach ($this->pendingReports as $pending)
+                                        <option value="{{ $pending->id }}" @selected($pending->id === $selectedReportId)>
+                                            #{{ $pending->id }}: {{ $pending->category?->label() ?? 'Uncategorized' }} [{{ $pending->workflow_status->value }}]
+                                        </option>
+                                    @endforeach
+                                </x-filament::input.select>
+                            </x-filament::input.wrapper>
                         </div>
+                    </div>
 
-                        <div class="space-y-4">
+                    <div class="rq-topbar-right">
+                        @if ($this->selectedReport->is_hidden_from_homepage)
+                            <x-filament::button
+                                wire:click="toggleHomepageVisibility"
+                                color="warning"
+                                size="xs"
+                                icon="heroicon-m-eye-slash">
+                                Hidden from Homepage
+                            </x-filament::button>
+                        @else
+                            <x-filament::button
+                                wire:click="toggleHomepageVisibility"
+                                color="gray"
+                                size="xs"
+                                icon="heroicon-m-eye">
+                                Visible on Homepage
+                            </x-filament::button>
+                        @endif
+                        <span style="font-family: monospace; font-size: 0.75rem; opacity: 0.6;">UUID: {{ $this->selectedReport->uuid }}</span>
+                        <x-filament::button wire:click="loadNextInQueue" color="gray" size="sm" icon="heroicon-m-arrow-right" icon-position="after">
+                            Next Report
+                        </x-filament::button>
+                    </div>
+                </div>
+            </x-filament::section>
+
+            <!-- 2-Column Workstation Grid -->
+            <div class="rq-layout-grid">
+                <!-- Left Column: Evidence & URLs -->
+                <div class="rq-col">
+                    <!-- Submitted Evidence Gallery -->
+                    <x-filament::section heading="Submitted Evidence" icon="heroicon-o-photo">
+                        <x-slot name="headerEnd">
+                            <x-filament::badge color="gray">
+                                {{ $this->selectedReport->getMedia('original')->count() }} image(s)
+                            </x-filament::badge>
+                        </x-slot>
+
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
                             @forelse ($this->selectedReport->getMedia('original') as $media)
                                 @php
                                     $evidenceType = $media->getCustomProperty('evidence_type', 'comment');
                                     $badgeConfig = match($evidenceType) {
-                                        'post' => ['label' => 'Original Post', 'class' => 'bg-blue-500/10 text-blue-700 dark:text-blue-300 border-blue-500/20'],
-                                        'comment' => ['label' => 'Offensive Comment', 'class' => 'bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-500/20'],
-                                        'profile' => ['label' => 'Commenter Profile', 'class' => 'bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/20'],
-                                        default => ['label' => 'Other Evidence', 'class' => 'bg-gray-500/10 text-gray-700 dark:text-gray-300 border-gray-500/20'],
+                                        'post' => ['label' => 'Original Post', 'color' => 'info'],
+                                        'comment' => ['label' => 'Offensive Comment', 'color' => 'danger'],
+                                        'profile' => ['label' => 'Commenter Profile', 'color' => 'warning'],
+                                        default => ['label' => 'Other Evidence', 'color' => 'gray'],
                                     };
                                 @endphp
-                                <div class="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-950 p-3 space-y-2.5">
-                                    <div class="flex items-center justify-between">
-                                        <span class="inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-semibold {{ $badgeConfig['class'] }}">
+                                <div class="rq-evidence-card">
+                                    <div class="rq-evidence-header">
+                                        <x-filament::badge :color="$badgeConfig['color']">
                                             {{ $badgeConfig['label'] }}
-                                        </span>
-                                        <span class="text-[11px] text-gray-400 font-mono">{{ $media->file_name }}</span>
+                                        </x-filament::badge>
+                                        <span style="font-size: 0.75rem; font-family: monospace; opacity: 0.6;">{{ $media->file_name }}</span>
                                     </div>
-                                    <div class="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800 bg-black/10">
-                                        <a href="{{ $media->getUrl() }}" target="_blank" rel="noopener noreferrer">
-                                            <img src="{{ $media->getUrl() }}" alt="Evidence screenshot" class="w-full h-auto object-contain max-h-[500px]" />
+                                    <div class="rq-evidence-img-wrap">
+                                        <a href="{{ $media->getUrl() }}" target="_blank" rel="noopener noreferrer" title="Click to view full size">
+                                            <img src="{{ $media->getUrl() }}" alt="Evidence screenshot" class="rq-evidence-img" />
                                         </a>
                                     </div>
                                 </div>
                             @empty
-                                <div class="p-8 text-center text-gray-400 bg-gray-50 dark:bg-gray-800 rounded-xl">
+                                <div style="padding: 2rem; text-align: center; opacity: 0.6;">
                                     No image evidence attached.
                                 </div>
                             @endforelse
                         </div>
-                    </div>
+                    </x-filament::section>
 
                     <!-- Submitted URLs -->
-                    <div class="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 space-y-3">
-                        <h4 class="font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                            <x-heroicon-o-link class="w-5 h-5 text-primary-500" />
-                            Submitted URLs
-                        </h4>
-
-                        <div class="space-y-2 text-sm">
-                            <div>
-                                <span class="text-xs font-semibold text-gray-500 block">Profile URL:</span>
+                    <x-filament::section heading="Submitted URLs" icon="heroicon-o-link">
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <div class="rq-url-item">
+                                <span class="rq-label">Profile URL:</span>
                                 @if ($this->selectedReport->submitted_profile_url)
-                                    <a href="{{ $this->selectedReport->submitted_profile_url }}" target="_blank" rel="noopener noreferrer" class="text-primary-600 dark:text-primary-400 hover:underline break-all font-mono text-xs">
-                                        {{ $this->selectedReport->submitted_profile_url }} &UpperRightArrow;
-                                    </a>
+                                    <x-filament::link :href="$this->selectedReport->submitted_profile_url" target="_blank" icon="heroicon-m-arrow-top-right-on-square">
+                                        {{ $this->selectedReport->submitted_profile_url }}
+                                    </x-filament::link>
                                 @else
-                                    <span class="text-gray-400 italic">None provided</span>
+                                    <span style="font-style: italic; opacity: 0.6;">None provided</span>
                                 @endif
                             </div>
 
-                            <div>
-                                <span class="text-xs font-semibold text-gray-500 block">Comment / Post Permalink:</span>
+                            <div class="rq-url-item">
+                                <span class="rq-label">Comment / Post Permalink:</span>
                                 @if ($this->selectedReport->submitted_comment_url)
-                                    <a href="{{ $this->selectedReport->submitted_comment_url }}" target="_blank" rel="noopener noreferrer" class="text-primary-600 dark:text-primary-400 hover:underline break-all font-mono text-xs">
-                                        {{ $this->selectedReport->submitted_comment_url }} &UpperRightArrow;
-                                    </a>
+                                    <x-filament::link :href="$this->selectedReport->submitted_comment_url" target="_blank" icon="heroicon-m-arrow-top-right-on-square">
+                                        {{ $this->selectedReport->submitted_comment_url }}
+                                    </x-filament::link>
                                 @else
-                                    <span class="text-gray-400 italic">None provided</span>
+                                    <span style="font-style: italic; opacity: 0.6;">None provided</span>
                                 @endif
                             </div>
                         </div>
-                    </div>
+                    </x-filament::section>
                 </div>
 
                 <!-- Right Column: Verification Workspace & Actions -->
-                <div class="lg:col-span-6 space-y-6">
-                    <div class="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 space-y-5">
-                        <h4 class="font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                            <x-heroicon-o-identification class="w-5 h-5 text-primary-500" />
-                            Profile & Incident Attribution
-                        </h4>
+                <div class="rq-col">
+                    <!-- Attribution Card -->
+                    <x-filament::section heading="Profile & Incident Attribution" icon="heroicon-o-identification">
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <div class="rq-field-group rq-field-group-2col">
+                                <div>
+                                    <label class="rq-label">Target Profile</label>
+                                    <x-filament::input.wrapper>
+                                        <x-filament::input.select wire:model="facebook_profile_id">
+                                            <option value="">-- Link Profile --</option>
+                                            @foreach ($this->profiles as $p)
+                                                <option value="{{ $p->id }}">{{ $p->current_display_name }} ({{ $p->canonical_url }})</option>
+                                            @endforeach
+                                        </x-filament::input.select>
+                                    </x-filament::input.wrapper>
+                                </div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label class="text-xs font-semibold text-gray-700 dark:text-gray-300 block mb-1">Target Profile</label>
-                                <select wire:model="facebook_profile_id" class="w-full text-sm bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-700 rounded-lg">
-                                    <option value="">-- Link Profile --</option>
-                                    @foreach ($this->profiles as $p)
-                                        <option value="{{ $p->id }}">{{ $p->current_display_name }} ({{ $p->canonical_url }})</option>
-                                    @endforeach
-                                </select>
+                                <div>
+                                    <label class="rq-label">Associated Incident</label>
+                                    <x-filament::input.wrapper>
+                                        <x-filament::input.select wire:model="incident_id">
+                                            <option value="">-- Link Incident --</option>
+                                            @foreach ($this->incidents as $inc)
+                                                <option value="{{ $inc->id }}">{{ $inc->title_en }} ({{ $inc->occurred_on?->format('Y-m-d') }})</option>
+                                            @endforeach
+                                        </x-filament::input.select>
+                                    </x-filament::input.wrapper>
+                                </div>
+                            </div>
+
+                            <div class="rq-field-group rq-field-group-2col">
+                                <div>
+                                    <label class="rq-label">Category</label>
+                                    <x-filament::input.wrapper>
+                                        <x-filament::input.select wire:model="category">
+                                            <option value="">-- Select Category --</option>
+                                            @foreach (\App\Enums\ReportCategory::cases() as $cat)
+                                                <option value="{{ $cat->value }}">{{ $cat->label() }}</option>
+                                            @endforeach
+                                        </x-filament::input.select>
+                                    </x-filament::input.wrapper>
+                                </div>
+
+                                <div>
+                                    <label class="rq-label">Severity</label>
+                                    <x-filament::input.wrapper>
+                                        <x-filament::input.select wire:model="severity">
+                                            <option value="1">1 - Low</option>
+                                            <option value="2">2 - Medium</option>
+                                            <option value="3">3 - High</option>
+                                        </x-filament::input.select>
+                                    </x-filament::input.wrapper>
+                                </div>
                             </div>
 
                             <div>
-                                <label class="text-xs font-semibold text-gray-700 dark:text-gray-300 block mb-1">Associated Incident</label>
-                                <select wire:model="incident_id" class="w-full text-sm bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-700 rounded-lg">
-                                    <option value="">-- Link Incident --</option>
-                                    @foreach ($this->incidents as $inc)
-                                        <option value="{{ $inc->id }}">{{ $inc->title_en }} ({{ $inc->occurred_on?->format('Y-m-d') }})</option>
-                                    @endforeach
-                                </select>
+                                <label class="rq-label">Verbatim Comment Text</label>
+                                <x-filament::input.wrapper>
+                                    <textarea wire:model="comment_text" rows="3" class="fi-input" style="padding: 0.5rem 0.75rem; width: 100%; border: none; outline: none; background: transparent; font-family: monospace; font-size: 0.875rem;"></textarea>
+                                </x-filament::input.wrapper>
                             </div>
                         </div>
+                    </x-filament::section>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label class="text-xs font-semibold text-gray-700 dark:text-gray-300 block mb-1">Category</label>
-                                <select wire:model="category" class="w-full text-sm bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-700 rounded-lg">
-                                    <option value="">-- Select Category --</option>
-                                    @foreach (\App\Enums\ReportCategory::cases() as $cat)
-                                        <option value="{{ $cat->value }}">{{ $cat->label() }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+                    <!-- 4-Point Verification Checklist -->
+                    <x-filament::section heading="4-Point Verification Checklist" icon="heroicon-o-check-badge">
+                        <x-slot name="headerEnd">
+                            <x-filament::badge color="danger">
+                                All 4 required for Verify
+                            </x-filament::badge>
+                        </x-slot>
 
-                            <div>
-                                <label class="text-xs font-semibold text-gray-700 dark:text-gray-300 block mb-1">Severity</label>
-                                <select wire:model="severity" class="w-full text-sm bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-700 rounded-lg">
-                                    <option value="1">1 - Low</option>
-                                    <option value="2">2 - Medium</option>
-                                    <option value="3">3 - High</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="text-xs font-semibold text-gray-700 dark:text-gray-300 block mb-1">Verbatim Comment Text</label>
-                            <textarea wire:model="comment_text" rows="3" class="w-full text-sm bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-700 rounded-lg font-mono"></textarea>
-                        </div>
-                    </div>
-
-                    <!-- 8-Point Verification Checklist -->
-                    <div class="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 space-y-4">
-                        <div class="flex items-center justify-between">
-                            <h4 class="font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                                <x-heroicon-o-check-badge class="w-5 h-5 text-success-500" />
-                                8-Point Verification Checklist
-                            </h4>
-                            <span class="text-xs text-danger-500 font-medium">All 8 required for Verify</span>
-                        </div>
-
-                        <div class="space-y-3">
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                             @foreach (\App\Enums\VerificationCheck::cases() as $check)
-                                <label class="flex items-start gap-3 p-2.5 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50 cursor-pointer transition">
-                                    <input type="checkbox" wire:model="checklist.{{ $check->value }}" class="rounded text-success-600 focus:ring-success-500 mt-1" />
-                                    <span class="text-xs text-gray-700 dark:text-gray-300">
+                                <label class="rq-check-item">
+                                    <x-filament::input.checkbox wire:model="checklist.{{ $check->value }}" />
+                                    <span class="rq-check-text">
                                         <strong>{{ $check->name }}:</strong> {{ $check->label() }}
                                     </span>
                                 </label>
                             @endforeach
                         </div>
 
-                        <div>
-                            <label class="text-xs font-semibold text-gray-700 dark:text-gray-300 block mb-1">Moderator Review Note</label>
-                            <input type="text" wire:model="review_note" placeholder="Optional audit log note..." class="w-full text-sm bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-700 rounded-lg" />
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(156, 163, 175, 0.2);">
+                            <label class="rq-label">Moderator Review Note</label>
+                            <x-filament::input.wrapper>
+                                <x-filament::input type="text" wire:model="review_note" placeholder="Optional audit log note..." />
+                            </x-filament::input.wrapper>
                         </div>
-                    </div>
+                    </x-filament::section>
 
-                    <!-- Workflow Actions -->
-                    <div class="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 space-y-4">
-                        <div class="flex flex-wrap items-center gap-3">
-                            <button
-                                wire:click="verify"
-                                @disabled($isLockedByOther)
-                                type="button"
-                                class="px-5 py-2.5 bg-success-600 text-white rounded-xl text-sm font-bold hover:bg-success-500 disabled:opacity-50 transition shadow-sm">
-                                Verify Report
-                            </button>
+                    <!-- Moderation Actions -->
+                    <x-filament::section heading="Moderation Actions" icon="heroicon-o-shield-check">
+                        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+                            <div class="rq-actions-row">
+                                <x-filament::button
+                                    wire:click="verify"
+                                    :disabled="$isLockedByOther"
+                                    color="success"
+                                    size="lg"
+                                    icon="heroicon-m-check">
+                                    Verify Report
+                                </x-filament::button>
 
-                            <button
-                                wire:click="requestInfo"
-                                @disabled($isLockedByOther)
-                                type="button"
-                                class="px-4 py-2.5 bg-gray-600 text-white rounded-xl text-sm font-semibold hover:bg-gray-500 disabled:opacity-50 transition">
-                                Request Info
-                            </button>
-                        </div>
+                                <x-filament::button
+                                    wire:click="requestInfo"
+                                    :disabled="$isLockedByOther"
+                                    color="gray"
+                                    size="lg"
+                                    icon="heroicon-m-question-mark-circle">
+                                    Request Info
+                                </x-filament::button>
 
-                        <div class="pt-4 border-t border-gray-200 dark:border-gray-800 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <!-- Reject Action Form -->
-                            <div class="space-y-2">
-                                <label class="text-xs font-semibold text-danger-600 dark:text-danger-400">Reject Report</label>
-                                <input type="text" wire:model="rejection_reason" placeholder="Reason for rejection..." class="w-full text-xs bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-700 rounded-lg" />
-                                <button
-                                    wire:click="reject"
-                                    @disabled($isLockedByOther)
-                                    type="button"
-                                    class="w-full px-3 py-1.5 bg-danger-600 text-white rounded-lg text-xs font-semibold hover:bg-danger-500 disabled:opacity-50 transition">
-                                    Confirm Reject
-                                </button>
+                                <x-filament::button
+                                    wire:click="toggleHomepageVisibility"
+                                    :color="$this->selectedReport->is_hidden_from_homepage ? 'warning' : 'gray'"
+                                    size="lg"
+                                    :icon="$this->selectedReport->is_hidden_from_homepage ? 'heroicon-m-eye-slash' : 'heroicon-m-eye'">
+                                    {{ $this->selectedReport->is_hidden_from_homepage ? 'Hidden (Show on Home)' : 'Hide from Home' }}
+                                </x-filament::button>
                             </div>
 
-                            <!-- Duplicate Action Form -->
-                            <div class="space-y-2">
-                                <label class="text-xs font-semibold text-purple-600 dark:text-purple-400">Mark as Duplicate</label>
-                                <input type="number" wire:model="duplicate_of_id" placeholder="Original Report ID..." class="w-full text-xs bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-700 rounded-lg" />
-                                <button
-                                    wire:click="markDuplicate"
-                                    @disabled($isLockedByOther)
-                                    type="button"
-                                    class="w-full px-3 py-1.5 bg-purple-600 text-white rounded-lg text-xs font-semibold hover:bg-purple-500 disabled:opacity-50 transition">
-                                    Mark Duplicate
-                                </button>
+                            <div class="rq-sub-actions-grid">
+                                <!-- Reject Form -->
+                                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                    <label class="rq-label" style="color: var(--danger-600, #dc2626);">Reject Report</label>
+                                    <x-filament::input.wrapper>
+                                        <x-filament::input type="text" wire:model="rejection_reason" placeholder="Reason for rejection..." />
+                                    </x-filament::input.wrapper>
+                                    <x-filament::button
+                                        wire:click="reject"
+                                        :disabled="$isLockedByOther"
+                                        color="danger"
+                                        size="sm">
+                                        Confirm Reject
+                                    </x-filament::button>
+                                </div>
+
+                                <!-- Duplicate Form -->
+                                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                    <label class="rq-label" style="color: var(--warning-600, #d97706);">Mark as Duplicate</label>
+                                    <x-filament::input.wrapper>
+                                        <x-filament::input type="number" wire:model="duplicate_of_id" placeholder="Original Report ID..." />
+                                    </x-filament::input.wrapper>
+                                    <x-filament::button
+                                        wire:click="markDuplicate"
+                                        :disabled="$isLockedByOther"
+                                        color="warning"
+                                        size="sm">
+                                        Mark Duplicate
+                                    </x-filament::button>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </x-filament::section>
                 </div>
             </div>
         @endif

@@ -42,6 +42,14 @@ final class VerifyReport
             )).'.');
         }
 
+        if ($report->workflow_status === WorkflowStatus::Submitted) {
+            $report = $this->workflow->transition($report, WorkflowStatus::Triaged, $admin, note: 'Triaged during verification');
+        }
+
+        if ($report->workflow_status === WorkflowStatus::Triaged) {
+            $report = $this->workflow->transition($report, WorkflowStatus::InVerification, $admin, note: 'Promoted to in-verification');
+        }
+
         $report = $this->workflow->transition($report, WorkflowStatus::Verified, $admin, $checklist, $note);
 
         $report->forceFill([

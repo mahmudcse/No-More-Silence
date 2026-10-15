@@ -22,6 +22,7 @@ Route::prefix('v1')->middleware(['throttle:60,1'])->group(function (): void {
     Route::get('/stats/districts', [StatsController::class, 'districts'])->name('api.v1.stats.districts');
 
     // Reports
+    Route::get('/reports', [PublicReportController::class, 'index'])->name('api.v1.reports.index');
     Route::get('/reports/featured', [PublicReportController::class, 'featured'])->name('api.v1.reports.featured');
     Route::get('/reports/{uuid}', [PublicReportController::class, 'show'])->name('api.v1.reports.show');
 

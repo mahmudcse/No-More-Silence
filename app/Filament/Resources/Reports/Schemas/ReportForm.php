@@ -15,6 +15,7 @@ use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 
 class ReportForm
@@ -54,6 +55,10 @@ class ReportForm
             Select::make('visibility')
                 ->label('Visibility')
                 ->options(self::enumOptions(Visibility::class)),
+            Toggle::make('is_hidden_from_homepage')
+                ->label('Hide from Homepage')
+                ->helperText('When enabled, this report will not be displayed in the homepage feed.')
+                ->default(false),
             Select::make('platform')
                 ->label('Platform')
                 ->options(self::enumOptions(Platform::class)),

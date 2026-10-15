@@ -82,3 +82,22 @@ test('review queue verifies report when all checks are completed', function (): 
 
     expect($report->fresh()->workflow_status)->toBe(WorkflowStatus::Verified);
 });
+
+test('review queue can toggle homepage visibility for a report', function (): void {
+    $admin = User::factory()->create()->givePermissionTo('verify_report');
+    $report = Report::factory()->create([
+        'workflow_status' => WorkflowStatus::InVerification,
+        'is_hidden_from_homepage' => false,
+    ]);
+
+    actingAs($admin);
+    Livewire::test(ReviewQueue::class, ['report' => $report->id])
+        ->call('toggleHomepageVisibility');
+
+    expect($report->fresh()->is_hidden_from_homepage)->toBeTrue();
+
+    Livewire::test(ReviewQueue::class, ['report' => $report->id])
+        ->call('toggleHomepageVisibility');
+
+    expect($report->fresh()->is_hidden_from_homepage)->toBeFalse();
+});

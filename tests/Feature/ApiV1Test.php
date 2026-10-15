@@ -120,6 +120,34 @@ test('api featured reports returns only published and public records', function 
         ->and($uuids)->not->toContain($hiddenReport->uuid);
 });
 
+test('api reports index endpoint returns paginated recent reports with meta', function (): void {
+    Report::factory()->create([
+        'workflow_status' => WorkflowStatus::Verified,
+        'visibility' => Visibility::Public,
+        'comment_text' => 'পাবলিক মন্তব্য',
+    ]);
+
+    getJson(route('api.v1.reports.index'))
+        ->assertOk()
+        ->assertJsonStructure([
+            'data' => [
+                '*' => [
+                    'uuid',
+                    'comment_text',
+                    'workflow_status',
+                    'is_verified',
+                    'photos',
+                ],
+            ],
+            'meta' => [
+                'current_page',
+                'last_page',
+                'has_more',
+                'total',
+            ],
+        ]);
+});
+
 test('api report show returns public report and rejects hidden report', function (): void {
     $publicReport = Report::factory()->create([
         'workflow_status' => WorkflowStatus::Verified,

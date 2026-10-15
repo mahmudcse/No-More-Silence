@@ -6,26 +6,16 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\PublicIncidentResource;
 use App\Models\Incident;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class IncidentViewController extends Controller
 {
-    public function index(Request $request): Response
+    public function index(Request $request): RedirectResponse
     {
-        $incidents = Incident::query()
-            ->with(['district'])
-            ->withCount(['reports' => function ($query) {
-                $query->where('workflow_status', 'verified')->whereIn('visibility', ['public', 'featured']);
-            }])
-            ->latest('occurred_on')
-            ->paginate(12)
-            ->withQueryString();
-
-        return Inertia::render('Incidents/Index', [
-            'incidents' => $incidents,
-        ]);
+        return redirect()->route('home');
     }
 
     public function show(string $slug): Response

@@ -11,7 +11,11 @@ Current Phase: Phase 4 — PWA & Android (COMPLETED) + Apple-Style Glass Design 
 - [x] **Ambient Depth Lighting:** Implemented ambient blurred gradient orbs in `PublicLayout.vue` background to create realistic optical refraction through frosted translucent cards.
 - [x] **Apple Glass UI Across Core Pages:**
   - `PublicLayout.vue`: Frosted navigation bar, pill action toggles (Theme, Language, CTA), translucent mobile drawer, and blurred footer.
-  - `Welcome.vue`: Apple grand scale hero typography, frosted search input card, glass stat counters, and subtle callout banners.
+- [x] **Two-Column Facebook Feed Layout (`Welcome.vue`):**
+  - Removed wasted vertical hero space (removed giant title & description) so records appear immediately.
+  - Implemented 12-column responsive layout: 8 cols left feed for recent reported records + 4 cols right sidebar for search, live stats counters, and district heatmap.
+  - Built `FacebookPostCard.vue`: Facebook group post design with user profile avatar, verification status badge (Verified Record / Under Review), verbatim comment body, Facebook-style photo collage (1, 2, 3, 4+ photos with overlay count), fullscreen image lightbox modal (keyboard navigation, prev/next, zoom), and action buttons (Dispute, Share, Source).
+  - Infinite scroll with IntersectionObserver & manual load more fallback integrated with `GET /api/v1/reports` endpoint.
   - `ReportCard.vue`: Translucent category badges, frosted glass cards with subtle border depth, and backdrop-blurred evidence modal.
   - `Search.vue`: Glass search form bar, pill tags, and translucent profile result cards.
   - `Submissions/Create.vue`: Apple glass intake wizard container, frosted alert banners, and rounded pill navigation controls.

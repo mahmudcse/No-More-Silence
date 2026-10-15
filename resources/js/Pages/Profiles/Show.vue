@@ -284,8 +284,8 @@ const { isBn, locale } = useLanguage();
                     <p class="text-xs text-slate-600 dark:text-slate-400">
                         {{
                             isBn
-                                ? 'প্রতিটি মন্তব্য ঘটনার প্রেক্ষাপটে এবং স্বাধীন স্ক্রিনশট ও ডিজিটাল হ্যাশ প্রমাণের ভিত্তিতে নথিবদ্ধ।'
-                                : 'Every comment is preserved in incident context with tamper-evident hashes.'
+                                ? 'প্রতিটি মন্তব্য স্বাধীন স্ক্রিনশট ও ডিজিটাল হ্যাশ প্রমাণের ভিত্তিতে নথিবদ্ধ।'
+                                : 'Every comment is preserved with verified evidence and tamper-evident hashes.'
                         }}
                     </p>
                 </div>

@@ -16,18 +16,36 @@ class HomeController extends Controller
 {
     public function index(StatsService $statsService): Response
     {
-        $featuredReports = Report::query()
-            ->where('workflow_status', WorkflowStatus::Verified)
-            ->whereIn('visibility', [Visibility::Public, Visibility::Featured])
+        $reportsQuery = Report::query()
+            ->where('is_hidden_from_homepage', false)
+            ->where(function ($q): void {
+                $q->where(function ($vq): void {
+                    $vq->where('workflow_status', WorkflowStatus::Verified)
+                        ->whereIn('visibility', [Visibility::Public, Visibility::Featured]);
+                })
+                    ->orWhere(function ($uq): void {
+                        $uq->whereIn('workflow_status', [
+                            WorkflowStatus::Submitted,
+                            WorkflowStatus::InVerification,
+                            WorkflowStatus::Triaged,
+                        ]);
+                    });
+            })
             ->with(['facebookProfile', 'incident.district', 'media'])
-            ->latest('published_at')
-            ->limit(6)
-            ->get();
+            ->latest('created_at');
+
+        $paginated = $reportsQuery->paginate(8);
 
         return Inertia::render('Welcome', [
             'nationalStats' => $statsService->getNationalStats(),
             'districtStats' => $statsService->getDistrictStats('incident'),
-            'featuredReports' => PublicReportResource::collection($featuredReports)->resolve(),
+            'featuredReports' => PublicReportResource::collection($paginated->items())->resolve(),
+            'initialPagination' => [
+                'current_page' => $paginated->currentPage(),
+                'last_page' => $paginated->lastPage(),
+                'has_more' => $paginated->hasMorePages(),
+                'total' => $paginated->total(),
+            ],
         ]);
     }
 }

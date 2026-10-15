@@ -127,8 +127,8 @@ function getActiveStepIndex(status: string): number {
                 >
                     {{
                         isBn
-                            ? 'রিপোর্ট জমা দেওয়ার সময় প্রাপ্ত ট্র্যাকিং কোডটি দিয়ে আপনার রিপোর্টের বর্তমান অবস্থা এবং ৮-দফা যাচাইকরণের ধাপ জেনে নিন।'
-                            : 'Enter your private tracking code to view the live status and 8-point verification pipeline of your submitted report.'
+                            ? 'রিপোর্ট জমা দেওয়ার সময় প্রাপ্ত ট্র্যাকিং কোডটি দিয়ে আপনার রিপোর্টের বর্তমান অবস্থা এবং ৪-দফা যাচাইকরণের ধাপ জেনে নিন।'
+                            : 'Enter your private tracking code to view the live status and 4-point verification pipeline of your submitted report.'
                     }}
                 </p>
             </div>

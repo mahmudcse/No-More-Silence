@@ -48,7 +48,7 @@ class WebSearchController extends Controller
                     }
                 }
 
-                $results = $profile ? [new PublicProfileResource($profile)] : [];
+                $results = $profile ? [(new PublicProfileResource($profile))->resolve()] : [];
             } else {
                 $type = 'name';
                 $warning = ApiSearchController::SAME_NAME_WARNING_BN;

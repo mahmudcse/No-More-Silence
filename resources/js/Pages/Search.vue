@@ -3,7 +3,7 @@ import PublicLayout from '@/Layouts/PublicLayout.vue';
 import { useLanguage } from '@/composables/useLanguage';
 import { formatDateByLocale, formatNumberByLocale } from '@/utils/bangla';
 import { Link, router } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 export interface SearchResultProfile {
     uuid: string;
@@ -31,6 +31,10 @@ const props = defineProps<{
 
 const { isBn, locale } = useLanguage();
 const searchQuery = ref(props.initialQuery || '');
+
+const normalizedResults = computed<SearchResultProfile[]>(() => {
+    return (props.results || []).map((item: any) => (item?.data ? item.data : item));
+});
 
 function handleSearch() {
     if (searchQuery.value.trim()) {
@@ -166,16 +170,16 @@ function handleSearch() {
                     <div>
                         {{ isBn ? 'পাওয়া গেছে:' : 'Found:' }}
                         <strong class="text-slate-900 dark:text-white">{{
-                            formatNumberByLocale(results.length, locale)
+                            formatNumberByLocale(normalizedResults.length, locale)
                         }}</strong>
                         {{ isBn ? 'টি প্রোফাইল' : 'profile(s)' }}
                     </div>
                 </div>
 
                 <!-- Profile Cards List -->
-                <div v-if="results.length > 0" class="space-y-4">
+                <div v-if="normalizedResults.length > 0" class="space-y-4">
                     <div
-                        v-for="profile in results"
+                        v-for="profile in normalizedResults"
                         :key="profile.uuid"
                         class="flex flex-col items-start justify-between gap-4 rounded-2xl p-5 apple-glass-card shadow-glass transition-all duration-300 hover:-translate-y-0.5 hover:shadow-glass-lg sm:flex-row sm:items-center"
                     >

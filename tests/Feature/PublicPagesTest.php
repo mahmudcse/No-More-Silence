@@ -117,7 +117,7 @@ test('profile page returns 404 for non-existent profile or profile with zero pub
         ->assertNotFound();
 });
 
-test('incidents index and show pages render successfully', function (): void {
+test('incidents index redirects to home and show page renders successfully', function (): void {
     $district = createPublicTestDistrict();
     $incident = Incident::factory()->create([
         'district_id' => $district->id,
@@ -126,11 +126,7 @@ test('incidents index and show pages render successfully', function (): void {
     ]);
 
     get(route('incidents.index'))
-        ->assertOk()
-        ->assertInertia(fn ($page) => $page
-            ->component('Incidents/Index')
-            ->has('incidents.data')
-        );
+        ->assertRedirect(route('home'));
 
     get(route('incidents.show', ['slug' => $incident->slug]))
         ->assertOk()
@@ -188,7 +184,6 @@ test('phase 3 public pages render successfully', function (): void {
             ->component('Submissions/Create')
             ->has('categories')
             ->has('districts')
-            ->has('incidents')
         );
 
     get(route('track'))
@@ -202,4 +197,71 @@ test('phase 3 public pages render successfully', function (): void {
     get(route('reporter.dashboard'))
         ->assertOk()
         ->assertInertia(fn ($page) => $page->component('Reporter/Dashboard'));
+});
+
+test('reports hidden from homepage do not appear in welcome page featured reports', function (): void {
+    $district = createPublicTestDistrict();
+    $profile = FacebookProfile::factory()->create(['current_display_name' => 'Visible Profile', 'public_reports_count' => 1]);
+    $incident = Incident::factory()->create(['district_id' => $district->id, 'title_bn' => 'টেস্ট ঘটনা']);
+
+    Report::factory()->create([
+        'facebook_profile_id' => $profile->id,
+        'incident_id' => $incident->id,
+        'workflow_status' => WorkflowStatus::Verified,
+        'visibility' => Visibility::Public,
+        'comment_text' => 'Visible homepage comment',
+        'is_hidden_from_homepage' => false,
+        'published_at' => now(),
+    ]);
+
+    Report::factory()->create([
+        'facebook_profile_id' => $profile->id,
+        'incident_id' => $incident->id,
+        'workflow_status' => WorkflowStatus::Verified,
+        'visibility' => Visibility::Public,
+        'comment_text' => 'Hidden homepage comment',
+        'is_hidden_from_homepage' => true,
+        'published_at' => now(),
+    ]);
+
+    get(route('home'))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->component('Welcome')
+            ->where('featuredReports', function ($reports): bool {
+                $comments = collect($reports)->pluck('comment_text');
+
+                return $comments->contains('Visible homepage comment')
+                    && ! $comments->contains('Hidden homepage comment');
+            })
+        );
+});
+
+test('reports hidden from homepage are excluded from public reports API feed', function (): void {
+    $district = createPublicTestDistrict();
+    $profile = FacebookProfile::factory()->create();
+    $incident = Incident::factory()->create(['district_id' => $district->id]);
+
+    Report::factory()->create([
+        'facebook_profile_id' => $profile->id,
+        'incident_id' => $incident->id,
+        'workflow_status' => WorkflowStatus::Submitted,
+        'comment_text' => 'Visible submitted report',
+        'is_hidden_from_homepage' => false,
+    ]);
+
+    Report::factory()->create([
+        'facebook_profile_id' => $profile->id,
+        'incident_id' => $incident->id,
+        'workflow_status' => WorkflowStatus::Submitted,
+        'comment_text' => 'Hidden submitted report',
+        'is_hidden_from_homepage' => true,
+    ]);
+
+    $response = test()->getJson(route('api.v1.reports.index'));
+
+    $response->assertOk();
+    $texts = collect($response->json('data'))->pluck('comment_text');
+    expect($texts)->toContain('Visible submitted report')
+        ->and($texts)->not->toContain('Hidden submitted report');
 });

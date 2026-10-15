@@ -23,7 +23,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/search', [WebSearchController::class, 'index'])->name('search');
 
 // Profiles, Incidents, Districts
-Route::get('/profiles/{uuid}', [ProfileViewController::class, 'show'])->name('profiles.show');
+Route::get('/profiles/{uuid}', [ProfileViewController::class, 'show'])->whereUuid('uuid')->name('profiles.show');
 Route::get('/incidents', [IncidentViewController::class, 'index'])->name('incidents.index');
 Route::get('/incidents/{slug}', [IncidentViewController::class, 'show'])->name('incidents.show');
 Route::get('/districts', [DistrictViewController::class, 'index'])->name('districts.index');

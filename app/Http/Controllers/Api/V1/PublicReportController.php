@@ -15,6 +15,46 @@ use Illuminate\Http\Request;
 class PublicReportController extends Controller
 {
     /**
+     * Get recent reports (verified and pending) with pagination for infinite scroll.
+     */
+    public function index(Request $request): JsonResponse
+    {
+        $limit = (int) $request->query('limit', 8);
+        if ($limit < 1 || $limit > 30) {
+            $limit = 8;
+        }
+
+        $reports = Report::query()
+            ->where('is_hidden_from_homepage', false)
+            ->where(function ($q): void {
+                $q->where(function ($vq): void {
+                    $vq->where('workflow_status', WorkflowStatus::Verified)
+                        ->whereIn('visibility', [Visibility::Public, Visibility::Featured]);
+                })
+                    ->orWhere(function ($uq): void {
+                        $uq->whereIn('workflow_status', [
+                            WorkflowStatus::Submitted,
+                            WorkflowStatus::InVerification,
+                            WorkflowStatus::Triaged,
+                        ]);
+                    });
+            })
+            ->with(['facebookProfile', 'incident.district', 'media'])
+            ->latest('created_at')
+            ->paginate($limit);
+
+        return response()->json([
+            'data' => PublicReportResource::collection($reports->items()),
+            'meta' => [
+                'current_page' => $reports->currentPage(),
+                'last_page' => $reports->lastPage(),
+                'has_more' => $reports->hasMorePages(),
+                'total' => $reports->total(),
+            ],
+        ]);
+    }
+
+    /**
      * Get featured verified reports for the homepage feed.
      */
     public function featured(Request $request): JsonResponse
@@ -25,6 +65,7 @@ class PublicReportController extends Controller
         }
 
         $reports = Report::query()
+            ->where('is_hidden_from_homepage', false)
             ->where('workflow_status', WorkflowStatus::Verified)
             ->whereIn('visibility', [Visibility::Public, Visibility::Featured])
             ->with(['facebookProfile', 'incident.district', 'media'])
