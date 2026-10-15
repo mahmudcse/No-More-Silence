@@ -57,15 +57,15 @@ class Report extends Model implements HasMedia
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('original')
-            ->useDisk('local')
+            ->useDisk(config('media-library.disk_original', 'local'))
             ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp']);
 
         $this->addMediaCollection('redacted')
-            ->useDisk('public')
+            ->useDisk(config('media-library.disk_redacted', 'public'))
             ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp']);
 
         $this->addMediaCollection('archive')
-            ->useDisk('local');
+            ->useDisk(config('media-library.disk_archive', 'local'));
     }
 
     public function getActivitylogOptions(): LogOptions

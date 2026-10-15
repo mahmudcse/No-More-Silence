@@ -1,3 +1,4 @@
+/bootstrap/ssr
 /node_modules
 /public/build
 /public/css/filament
@@ -11,17 +12,39 @@
 .env
 .env.backup
 .env.production
+.env.*.local
 .phpactor.json
 .phpunit.result.cache
+.pest
 Homestead.json
 Homestead.yaml
 auth.json
-npm-debug.log
-yarn-error.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.sentry-native
+
+# IDEs and Editors
 /.fleet
 /.idea
 /.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+ehthumbs.db
+
+# Assistant & Local Tooling
 /.sail
 /.claude
 /.commandcode
 /.junie
+/.gemini
+/.cursor

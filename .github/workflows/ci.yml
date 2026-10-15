@@ -1,0 +1,87 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  backend:
+    name: Backend (Pint, Larastan, Pest)
+    runs-on: ubuntu-latest
+
+    services:
+      redis:
+        image: redis:alpine
+        ports:
+          - 6379:6379
+        options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 3
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          extensions: mbstring, dom, fileinfo, curl, libxml, zip, pcntl, pdo, sqlite, pdo_sqlite, redis, bcmath, exif
+          coverage: none
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-interaction --no-progress
+
+      - name: Prepare environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Run Pint Code Style Check
+        run: vendor/bin/pint --test
+
+      - name: Run Larastan Static Analysis
+        run: vendor/bin/phpstan analyse --no-progress
+
+      - name: Run Tests
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: ':memory:'
+          CACHE_STORE: array
+          QUEUE_CONNECTION: sync
+          SESSION_DRIVER: array
+        run: php artisan test
+
+  frontend:
+    name: Frontend (ESLint, TypeScript, Build)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Build Assets (Vite & SSR)
+        run: npm run build

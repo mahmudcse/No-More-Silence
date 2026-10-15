@@ -34,6 +34,9 @@ return [
      * one or more of the disks you've configured in config/filesystems.php.
      */
     'disk_name' => env('MEDIA_DISK', 'public'),
+    'disk_original' => env('MEDIA_DISK_ORIGINAL', 'local'),
+    'disk_redacted' => env('MEDIA_DISK_REDACTED', 'public'),
+    'disk_archive' => env('MEDIA_DISK_ARCHIVE', 'local'),
 
     /*
      * The disk on which to store conversions (thumbnails, etc.) and responsive images

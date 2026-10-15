@@ -60,6 +60,32 @@ return [
             'report' => false,
         ],
 
+        'r2-private' => [
+            'driver' => 's3',
+            'key' => env('CLOUDFLARE_R2_ACCESS_KEY_ID', env('AWS_ACCESS_KEY_ID')),
+            'secret' => env('CLOUDFLARE_R2_SECRET_ACCESS_KEY', env('AWS_SECRET_ACCESS_KEY')),
+            'region' => 'auto',
+            'bucket' => env('CLOUDFLARE_R2_BUCKET_PRIVATE'),
+            'url' => env('CLOUDFLARE_R2_URL_PRIVATE'),
+            'endpoint' => env('CLOUDFLARE_R2_ENDPOINT'),
+            'use_path_style_endpoint' => env('CLOUDFLARE_R2_USE_PATH_STYLE_ENDPOINT', false),
+            'throw' => false,
+            'report' => false,
+        ],
+
+        'r2-public' => [
+            'driver' => 's3',
+            'key' => env('CLOUDFLARE_R2_ACCESS_KEY_ID', env('AWS_ACCESS_KEY_ID')),
+            'secret' => env('CLOUDFLARE_R2_SECRET_ACCESS_KEY', env('AWS_SECRET_ACCESS_KEY')),
+            'region' => 'auto',
+            'bucket' => env('CLOUDFLARE_R2_BUCKET_PUBLIC'),
+            'url' => env('CLOUDFLARE_R2_URL_PUBLIC'),
+            'endpoint' => env('CLOUDFLARE_R2_ENDPOINT'),
+            'use_path_style_endpoint' => env('CLOUDFLARE_R2_USE_PATH_STYLE_ENDPOINT', false),
+            'throw' => false,
+            'report' => false,
+        ],
+
     ],
 
     /*

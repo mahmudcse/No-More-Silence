@@ -1,0 +1,85 @@
+# No More Silence — Implementation Progress
+
+Last Updated: 2026-10-15
+Current Phase: Phase 0 — Foundations (COMPLETED)
+
+## Phase 0 Checklist Status
+
+- [x] **Legal Consultation & Documentation:** Drafted ToS (`docs/legal/terms-of-service.md`), Privacy Policy (`docs/legal/privacy-policy.md`), Methodology (`docs/legal/methodology.md`), and Infrastructure/Governance (`docs/legal/infrastructure-and-governance.md`).
+- [x] **Domain, Registrar & Infrastructure Decisions:** Documented privacy registrar outside BD, EU VPS hosting, Cloudflare WAF/Turnstile, R2 dual-bucket architecture, and transition plan to legal-aid NGO.
+- [x] **Repository Setup:** Vue 3 + Inertia + TypeScript + Tailwind CSS starter kit, Pest v4, Larastan level 6, Laravel Pint, ESLint, Prettier, and GitHub Actions CI (`.github/workflows/ci.yml`).
+- [x] **Laravel Sail:** Installed and running with PostgreSQL 17, Redis, Meilisearch, and Mailpit (`APP_PORT=8084`).
+- [x] **Cloudflare R2 Storage:** Installed `league/flysystem-aws-s3-v3` (^3.35), configured `r2-private` and `r2-public` disks in `config/filesystems.php`, configured dynamic disks in `config/media-library.php` and `Report` model, documented in `.env.example` and `.env`.
+- [x] **Laravel Horizon:** Installed `laravel/horizon` (^5.50), published config & assets, configured `viewHorizon` gate in `app/Providers/HorizonServiceProvider.php`, and verified with automated test suite (`tests/Feature/HorizonAccessTest.php`).
+- [x] **Sentry Integration:** Installed `sentry/sentry-laravel` (^4.29), published `config/sentry.php`, integrated exception handling in `bootstrap/app.php` via `\Sentry\Laravel\Integration::handles($exceptions)`, documented in `.env.example` and `.env`.
+- [x] **i18n & Bengali Support:** Bengali default locale (`APP_LOCALE=bn`), English fallback (`en`), Hind Siliguri Bengali font loaded via Bunny Fonts in Tailwind, and numeral converter helper (`App\Support\BanglaNumber`) with unit tests.
+- [x] **Districts & Divisions Seeding:** Seeded all 8 divisions and 64 districts in `database/seeders/DivisionsAndDistrictsSeeder.php` with BBS geocodes, Bengali/English names, and official BBS Population & Housing Census 2022 population figures (total 165,089,479).
+- [x] **Git & Environment Hygiene:** Comprehensive `.gitignore` updated, untracked build artifacts (`build/`), Pint formatted, Larastan level 6 passed (0 errors), Pest suite passed (73 tests, 152 assertions), and frontend built (`npm run lint && npm run build`).
+
+---
+
+## Detailed Step Log
+
+### Step 1: Git Ignore & Repository Cleanup
+- Audited repository and updated `.gitignore` with comprehensive exclusions:
+  - PHPStan/Larastan build artifacts (`/build`)
+  - SSR artifacts (`/bootstrap/ssr`)
+  - Filament public asset directories (`/public/css/filament`, `/public/fonts/filament`, `/public/js/filament`)
+  - Environment variations (`.env`, `.env.backup`, `.env.production`, `.env.*.local`)
+  - Testing & cache (`.phpunit.result.cache`, `.pest`, `.phpactor.json`)
+  - OS generated files (`.DS_Store`, `Thumbs.db`, etc.)
+  - IDE configs (`.idea`, `.vscode`, `.fleet`, etc.)
+  - Assistant tooling folders (`.claude`, `.commandcode`, `.junie`, `.gemini`, `.cursor`, `.sail`)
+  - Sentry release artifacts (`.sentry-native`)
+- Untracked legacy `build/` files using `git rm -r --cached build/`.
+
+### Step 2: GitHub Actions CI Workflow
+- Configured `.github/workflows/ci.yml` with two parallel jobs:
+  - `backend`: PHP 8.5, Redis service, Composer cache, Pint code style check, Larastan level 6 static analysis, Pest test suite with SQLite in-memory runner.
+  - `frontend`: Node 22, npm cache, ESLint check, TypeScript check (`vue-tsc`), Vite build & SSR build.
+
+### Step 3: Cloudflare R2 & Media Library Storage
+- Installed `league/flysystem-aws-s3-v3` (^3.35).
+- Configured `r2-private` and `r2-public` disk definitions in `config/filesystems.php`.
+- Added configurable disk options (`MEDIA_DISK_ORIGINAL`, `MEDIA_DISK_REDACTED`, `MEDIA_DISK_ARCHIVE`) in `config/media-library.php`.
+- Updated `Report` model (`registerMediaCollections`) to read disk configurations dynamically, using private local/R2 disk for original evidence and public local/R2 disk for redacted public evidence.
+- Added R2 environment configuration entries in `.env.example` and `.env`.
+
+### Step 4: Laravel Horizon Installation & Configuration
+- Installed `laravel/horizon` (^5.50).
+- Published Horizon service provider and assets via `artisan horizon:install`.
+- Configured `viewHorizon` gate in `app/Providers/HorizonServiceProvider.php` to authorize users with `super_admin` role or explicit whitelist emails.
+- Added automated test coverage in `tests/Feature/HorizonAccessTest.php` testing local access, production guest denial, regular user denial, and super admin access.
+
+### Step 5: Sentry Error Monitoring Integration
+- Installed `sentry/sentry-laravel` (^4.29).
+- Published `config/sentry.php`.
+- Hooked exception handler in `bootstrap/app.php` using `\Sentry\Laravel\Integration::handles($exceptions)`.
+- Added `SENTRY_LARAVEL_DSN` and `SENTRY_TRACES_SAMPLE_RATE` configuration keys to `.env.example` and `.env`.
+
+### Step 6: 64 Districts Population Data Seeding
+- Updated `database/seeders/DivisionsAndDistrictsSeeder.php` with official BBS Population and Housing Census 2022 figures for all 64 districts.
+- Successfully verified seeding into PostgreSQL with 64 districts populated (total population: 165,089,479).
+
+### Step 7: Legal, Policy, & Infrastructure Documentation
+- Drafted Terms of Service in `docs/legal/terms-of-service.md` addressing BD cyber law, zero victim PII policy, neutral terminology, and limitation of liability.
+- Drafted Privacy Policy in `docs/legal/privacy-policy.md` addressing reporter anonymity, EXIF stripping, IP hash retention, and profile owner rights.
+- Drafted Verification Methodology in `docs/legal/methodology.md` outlining the 5-step pipeline, two-person rule, perceptual hashing, and categories.
+- Documented Infrastructure Decisions in `docs/legal/infrastructure-and-governance.md` covering privacy registrar, EU VPS hosting, Cloudflare WAF, and NGO governance transition.
+
+### Step 8: Code Quality, Testing & Verification
+- `vendor/bin/pint --format agent`: Formatted and verified clean.
+- `vendor/bin/phpstan analyse --no-progress`: Level 6 static analysis passed with 0 errors across `app/`, `database/`, and `tests/`.
+- `php artisan test`: All 73 feature and unit tests passing (152 assertions).
+- `npm run lint`: ESLint check passed cleanly.
+- `npm run build`: `vue-tsc` passed, client Vite build and server SSR build generated successfully.
+
+---
+
+## Ready for Phase 1: Domain Core & Admin
+Next phase items to implement:
+- Finalize and wire all Filament admin panel resources (Reports, Profiles, Incidents, Reporters, Appeals, ActivityLog).
+- Complete Review Queue page with checklist and locking mechanism.
+- Implement server-side redaction tool with client UI integration.
+- Enforce two-person publishing rule and self-review policy checks.
+- Manual report creation flow for moderators to import and re-verify historical records.
